@@ -1,0 +1,283 @@
+// Mock FHIR resource data for testing
+import { PatientExtractor } from '../../src/converters/patient_extractor';
+import { ObservationExtractor } from '../../src/converters/observation_extractor';
+import { ExtractorRegistry } from '../../src/converters/extractor_registry';
+import { FHIRBundleConverter } from '../../src/converters/fhir_bundle_converter';
+import { TBundle } from '../../src/types/resources/Bundle';
+import { TPatient } from '../../src/types/resources/Patient';
+
+const mockPatient = {
+  resourceType: 'Patient',
+  id: 'patient-1',
+  name: [
+    {
+      given: ['John'],
+      family: 'Doe',
+    },
+  ],
+  birthDate: '1980-01-01',
+  gender: 'male',
+  address: [
+    {
+      line: ['123 Test Street'],
+      city: 'Testville',
+      state: 'TS',
+    },
+  ],
+  telecom: [
+    {
+      system: 'phone',
+      value: '555-1234',
+    },
+  ],
+  extension: [
+    {
+      extension: [
+        {
+          valueCoding: {
+            display: 'White',
+          },
+        },
+      ],
+    },
+    {
+      extension: [
+        {
+          valueCoding: {
+            display: 'Not Hispanic or Latino',
+          },
+        },
+      ],
+    },
+  ],
+};
+
+const mockObservation = {
+  resourceType: 'Observation',
+  id: 'obs-1',
+  status: 'final',
+  subject: {
+    reference: 'Patient/patient-1',
+  },
+  code: {
+    coding: [
+      {
+        code: '8302-2',
+        display: 'Body Height',
+      },
+    ],
+  },
+  valueQuantity: {
+    value: 175,
+    unit: 'cm',
+  },
+  effectiveDateTime: '2023-01-01T10:00:00Z',
+};
+
+const mockBundle: TBundle = {
+  entry: [{ resource: mockPatient }, { resource: mockObservation }],
+  type: 'collection',
+};
+
+describe('FHIR Resource Extractors', () => {
+  describe('PatientExtractor', () => {
+    const extractor = new PatientExtractor();
+
+    it('should extract patient data correctly', () => {
+      const extractedPatient = extractor.extract(mockPatient);
+
+      expect(extractedPatient).toEqual({
+        id: 'patient-1',
+        nameGiven: 'John',
+        nameFamily: 'Doe',
+        birthDate: '1980-01-01',
+        gender: 'male',
+        race: 'White',
+        ethnicity: 'Not Hispanic or Latino',
+        addressLine: '123 Test Street',
+        addressCity: 'Testville',
+        addressState: 'TS',
+        telecomPhone: '555-1234',
+      });
+    });
+
+    it('should handle missing optional fields', () => {
+      const incompletePatient: TPatient = { ...mockPatient };
+      delete incompletePatient.name;
+      delete incompletePatient.address;
+      delete incompletePatient.telecom;
+
+      const extractedPatient = extractor.extract(incompletePatient);
+
+      expect(extractedPatient.nameGiven).toBeUndefined();
+      expect(extractedPatient.addressLine).toBeUndefined();
+      expect(extractedPatient.telecomPhone).toBeUndefined();
+    });
+  });
+
+  describe('ObservationExtractor', () => {
+    const extractor = new ObservationExtractor();
+
+    it('should extract observation data correctly', () => {
+      const extractedObservation = extractor.extract(mockObservation);
+
+      expect(extractedObservation).toEqual({
+        id: 'obs-1',
+        patientId: 'patient-1',
+        status: 'final',
+        category: undefined,
+        code: '8302-2',
+        codeDisplay: 'Body Height',
+        valueQuantity: 175,
+        valueString: undefined,
+        effectiveDatetime: '2023-01-01T10:00:00Z',
+      });
+    });
+  });
+
+  describe('ExtractorRegistry', () => {
+    it('should register and retrieve extractors', () => {
+      // Ensure extractors are registered
+      const patientExtractor = ExtractorRegistry.getExtractor('Patient');
+      const observationExtractor =
+        ExtractorRegistry.getExtractor('Observation');
+
+      expect(patientExtractor).toBeTruthy();
+      expect(observationExtractor).toBeTruthy();
+    });
+
+    it('should throw error for unknown resource type', () => {
+      expect(() => {
+        ExtractorRegistry.getExtractor('UnknownResource');
+      }).toThrow('No extractor found for resource type: UnknownResource');
+    });
+  });
+
+  describe('FHIRBundleConverter', () => {
+    const converter = new FHIRBundleConverter();
+
+    it('should convert bundle to CSV-compatible data', () => {
+      const extractedData = converter.convertToCSV(mockBundle);
+
+      expect(Object.keys(extractedData)).toContain('Patient');
+      expect(Object.keys(extractedData)).toContain('Observation');
+
+      expect(extractedData['Patient'].length).toBe(1);
+      expect(extractedData['Observation'].length).toBe(1);
+    });
+
+    it('should handle empty bundle', () => {
+      const emptyBundle: TBundle = { entry: [], type: 'collection' };
+      const extractedData = converter.convertToCSV(emptyBundle);
+
+      expect(Object.keys(extractedData).length).toBe(0);
+    });
+  });
+});
+
+// Additional test cases for other extractors
+describe('Additional Resource Extractors', () => {
+  const extractorTestCases = [
+    {
+      resourceType: 'Condition',
+      mockResource: {
+        resourceType: 'Condition',
+        id: 'condition-1',
+        subject: { reference: 'Patient/patient-1' },
+        clinicalStatus: {
+          coding: [{ code: 'active' }],
+        },
+        code: {
+          coding: [
+            {
+              code: '123456',
+              display: 'Example Condition',
+            },
+          ],
+        },
+      },
+      expectedFields: ['id', 'patientId', 'clinicalStatus', 'code'],
+    },
+    {
+      resourceType: 'Immunization',
+      mockResource: {
+        resourceType: 'Immunization',
+        id: 'imm-1',
+        patient: { reference: 'Patient/patient-1' },
+        vaccineCode: {
+          coding: [
+            {
+              code: 'VAC-1',
+              display: 'Example Vaccine',
+            },
+          ],
+        },
+        status: 'completed',
+      },
+      expectedFields: ['id', 'patientId', 'status', 'vaccineCode'],
+    },
+    // Add more test cases for other resource types
+  ];
+
+  extractorTestCases.forEach(testCase => {
+    describe(`${testCase.resourceType} Extractor`, () => {
+      it(`should extract ${testCase.resourceType} data correctly`, () => {
+        const extractor = ExtractorRegistry.getExtractor(testCase.resourceType);
+        const extractedResource = extractor.extract(testCase.mockResource);
+
+        // Check that all expected fields are present
+        testCase.expectedFields.forEach(field => {
+          expect(extractedResource).toHaveProperty(field);
+        });
+      });
+    });
+  });
+});
+
+// Error Handling Test
+describe('Extractor Error Handling', () => {
+  it('should handle malformed resources gracefully', () => {
+    const malformedResources = [
+      { resourceType: 'Patient' }, // Completely empty
+      null,
+      undefined,
+    ];
+
+    malformedResources.forEach(resource => {
+      const extractors = Object.keys(ExtractorRegistry['extractors']);
+
+      extractors.forEach(resourceType => {
+        const extractor = ExtractorRegistry.getExtractor(resourceType);
+
+        expect(() => {
+          extractor.extract(resource);
+        }).not.toThrow(); // Should not throw, but return an object with undefined/null values
+      });
+    });
+  });
+});
+
+// Performance Test
+describe('Extractor Performance', () => {
+  it('should handle large number of resources efficiently', () => {
+    // Generate a large bundle with multiple resource types
+    const largeBundle: TBundle = {
+      entry: Array.from({ length: 1000 }, (_, i) => ({
+        resource: {
+          ...mockPatient,
+          id: `patient-${i}`,
+        },
+      })),
+      type: 'collection',
+    };
+
+    const startTime = performance.now();
+    const extractedData = new FHIRBundleConverter().convertToCSV(largeBundle);
+    const endTime = performance.now();
+
+    expect(extractedData['Patient'].length).toBe(1000);
+
+    // Ensure conversion takes less than 1 second for 1000 resources
+    expect(endTime - startTime).toBeLessThan(1000);
+  });
+});
