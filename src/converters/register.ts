@@ -23,6 +23,8 @@ import { LocationExtractor } from './location_extractor';
 import { ProvenanceExtractor } from './provenance_extractor';
 import { CareTeamExtractor } from './care_team_extractor';
 import { CoverageExtractor } from './coverage_extractor';
+import { Extractor } from './base_extractor';
+import { TResource } from '../types/resources/Resource';
 
 const extractorMap = {
   Patient: PatientExtractor,
@@ -50,6 +52,20 @@ const extractorMap = {
   Coverage: CoverageExtractor,
 };
 
-Object.entries(extractorMap).forEach(([resourceType, ExtractorClass]) => {
-  ExtractorRegistry.register(resourceType, ExtractorClass);
-});
+// add a register function
+// to the ExtractorRegistry class
+
+export class ExtractorRegistrar {
+  static register(resourceType: string, ExtractorClass: Extractor<TResource>) {
+    if (ExtractorRegistry.has(resourceType)) {
+      throw new Error(`Extractor for ${resourceType} is already registered.`);
+    }
+    ExtractorRegistry.register(resourceType, ExtractorClass);
+  }
+
+  static registerAll() {
+    for (const [resourceType, ExtractorClass] of Object.entries(extractorMap)) {
+      this.register(resourceType, ExtractorClass);
+    }
+  }
+}

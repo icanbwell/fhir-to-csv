@@ -5,6 +5,10 @@ import { ExtractorRegistry } from '../../src/converters/extractor_registry';
 import { FHIRBundleConverter } from '../../src/converters/fhir_bundle_converter';
 import { TBundle } from '../../src/types/resources/Bundle';
 import { TPatient } from '../../src/types/resources/Patient';
+import { ExtractorRegistrar } from '../../src/converters/register';
+import { TResource } from '../../src/types/resources/Resource';
+
+ExtractorRegistrar.registerAll();
 
 const mockPatient = {
   resourceType: 'Patient',
@@ -237,7 +241,7 @@ describe('Additional Resource Extractors', () => {
 // Error Handling Test
 describe('Extractor Error Handling', () => {
   it('should handle malformed resources gracefully', () => {
-    const malformedResources = [
+    const malformedResources: (TResource | null | undefined)[] = [
       { resourceType: 'Patient' }, // Completely empty
       null,
       undefined,
