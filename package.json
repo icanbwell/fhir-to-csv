@@ -49,8 +49,6 @@
     "commitizen": "^4.3.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.15.3",
-    "@typescript-eslint/eslint-plugin": "^8.31.1",
-    "@typescript-eslint/parser": "^8.31.1",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
@@ -63,7 +61,8 @@
     "semantic-release": "^24.2.3",
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --cache --cache-location .eslintcache --fix"
