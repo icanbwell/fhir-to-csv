@@ -1,9 +1,24 @@
 # Reusable workflow for PRs; to eject, you can replace this file with
 # https://github.com/ryansonshine/ryansonshine/blob/main/.github/workflows/pr.yml
-name: Pull Request
+name: Node.js CI
 
-on: [pull_request]
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
-    uses: ryansonshine/ryansonshine/.github/workflows/pr.yml@main
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'yarn'
+      - run: yarn install --frozen-lockfile
+      - run: yarn test
