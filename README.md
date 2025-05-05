@@ -1,6 +1,6 @@
 # fhir-to-csv
 
-> Template to kickstart creating a Node.js module using TypeScript and VSCode
+> Test to kickstart creating a Node.js module using TypeScript and VSCode
 
 Inspired by [node-module-boilerplate](https://github.com/sindresorhus/node-module-boilerplate)
 
