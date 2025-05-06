@@ -4,6 +4,7 @@ import { ExtractorRegistry } from './extractor_registry';
 import { TBundleEntry } from '../types/partials/BundleEntry';
 import xlsx from 'xlsx';
 import JSZip from 'jszip';
+import { Readable } from 'node:stream';
 
 export class FHIRBundleConverter {
   convertToDictionaries(
@@ -103,13 +104,14 @@ export class FHIRBundleConverter {
   // Convert extracted data to Excel format using xlsx package
   convertToExcel(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): Buffer {
+  ): NodeJS.ReadableStream {
     const workbook = xlsx.utils.book_new();
     Object.entries(extractedData).forEach(([resourceType, resources]) => {
       const worksheet = xlsx.utils.json_to_sheet(resources);
       xlsx.utils.book_append_sheet(workbook, worksheet, resourceType);
     });
-    return xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    const buffer: Buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
+    return Readable.from(buffer);
   }
 
   // CSV escape utility

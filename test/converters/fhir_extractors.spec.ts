@@ -193,12 +193,16 @@ describe('FHIR Resource Extractors', () => {
     });
 
     it('should convert bundle to Zipped CSV data', () => {
-      const extractedData: NodeJS.ReadableStream  = converter.convertToCSVZipped(
+      const extractedData: NodeJS.ReadableStream = converter.convertToCSVZipped(
         converter.convertToDictionaries(mockBundle)
       );
 
-            // get folder containing this test
+      // get folder containing this test
       const tempFolder = __dirname + '/temp';
+      // if subfolder temp from current folder exists then delete it
+      if (fs.existsSync(tempFolder)) {
+        fs.rmSync(tempFolder, { recursive: true, force: true });
+      }
       // if subfolder temp from current folder does not exist then create it
       if (!fs.existsSync(tempFolder)) {
         fs.mkdirSync(tempFolder);
@@ -213,18 +217,26 @@ describe('FHIR Resource Extractors', () => {
     });
 
     it('should convert bundle to Excel data', () => {
-      const extractedData: Buffer = converter.convertToExcel(
+      const extractedData: NodeJS.ReadableStream = converter.convertToExcel(
         converter.convertToDictionaries(mockBundle)
       );
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
+      // if subfolder temp from current folder exists then delete it
+      if (fs.existsSync(tempFolder)) {
+        fs.rmSync(tempFolder, { recursive: true, force: true });
+      }
       // if subfolder temp from current folder does not exist then create it
       if (!fs.existsSync(tempFolder)) {
         fs.mkdirSync(tempFolder);
       }
 
       // write buffer to file
-      fs.writeFileSync(tempFolder + '/test.xlsx', extractedData);
+      const writeStream = fs.createWriteStream(tempFolder + '/test.xlsx');
+      extractedData.pipe(writeStream);
+      writeStream.on('finish', () => {
+        console.log('Zipped CSV data written to test.zip');
+      });
     });
 
     it('should handle empty bundle', () => {
