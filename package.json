@@ -1,6 +1,6 @@
 {
   "name": "@imranq2/fhir-to-csv",
-  "version": "0.0.0-development",
+  "version": "x.x.x",
   "description": "A template for creating npm packages using TypeScript and VSCode",
   "main": "./lib/index.js",
   "files": [
