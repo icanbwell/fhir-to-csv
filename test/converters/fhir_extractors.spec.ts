@@ -171,8 +171,9 @@ describe('FHIR Resource Extractors', () => {
     });
 
     it('should convert bundle to CSV data', async () => {
+      const extractedDictionaries = await converter.convertToDictionaries(mockBundle);
       const extractedData: Record<string, string[]> = await converter.convertToCSV(
-        await converter.convertToDictionaries(mockBundle)
+        extractedDictionaries
       );
 
       // test that the csv data contains the correct headers

@@ -1,5 +1,5 @@
 export abstract class BaseResourceExtractor<T> {
-  abstract extract(resource: T): Record<string, any>;
+  abstract extract(resource: T): Promise<Record<string, any>>;
 }
 
 // Utility type for extractors

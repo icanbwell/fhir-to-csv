@@ -74,8 +74,8 @@ export class FHIRBundleConverter {
 
       // Create CSV rows for each resource
       for (const resource of resources) {
-        const row = Array.from(allKeys).map(key =>
-          this.escapeCSV(resource[key])
+        const row: string[] = Array.from(allKeys).map(
+          key => this.escapeCSV(resource[key])
         );
         csvRows.push(row.join(','));
       }
@@ -115,7 +115,7 @@ export class FHIRBundleConverter {
 
   // CSV escape utility
   // noinspection JSUnusedLocalSymbols
-  private async escapeCSV(value: any): Promise<string> {
+  private escapeCSV(value: any): string {
     if (value == null) return '';
     const stringValue = String(value);
     const escapedValue = stringValue.replace(/"/g, '""');
