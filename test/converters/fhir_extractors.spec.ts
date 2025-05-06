@@ -171,10 +171,10 @@ describe('FHIR Resource Extractors', () => {
     });
 
     it('should convert bundle to CSV data', async () => {
-      const extractedDictionaries = await converter.convertToDictionaries(mockBundle);
-      const extractedData: Record<string, string[]> = await converter.convertToCSV(
-        extractedDictionaries
-      );
+      const extractedDictionaries =
+        await converter.convertToDictionaries(mockBundle);
+      const extractedData: Record<string, string[]> =
+        await converter.convertToCSV(extractedDictionaries);
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0]).toEqual(
@@ -193,9 +193,10 @@ describe('FHIR Resource Extractors', () => {
     });
 
     it('should convert bundle to Zipped CSV data', async () => {
-      const extractedData: NodeJS.ReadableStream = await converter.convertToCSVZipped(
-        await converter.convertToDictionaries(mockBundle)
-      );
+      const extractedData: NodeJS.ReadableStream =
+        await converter.convertToCSVZipped(
+          await converter.convertToDictionaries(mockBundle)
+        );
 
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
@@ -217,9 +218,10 @@ describe('FHIR Resource Extractors', () => {
     });
 
     it('should convert bundle to Excel data', async () => {
-      const extractedData: NodeJS.ReadableStream = await converter.convertToExcel(
-        await converter.convertToDictionaries(mockBundle)
-      );
+      const extractedData: NodeJS.ReadableStream =
+        await converter.convertToExcel(
+          await converter.convertToDictionaries(mockBundle)
+        );
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
       // if subfolder temp from current folder exists then delete it
@@ -296,7 +298,9 @@ describe('Additional Resource Extractors', () => {
     describe(`${testCase.resourceType} Extractor`, () => {
       it(`should extract ${testCase.resourceType} data correctly`, async () => {
         const extractor = ExtractorRegistry.getExtractor(testCase.resourceType);
-        const extractedResource = await extractor.extract(testCase.mockResource);
+        const extractedResource = await extractor.extract(
+          testCase.mockResource
+        );
 
         // Check that all expected fields are present
         testCase.expectedFields.forEach(field => {
@@ -356,5 +360,145 @@ describe('Extractor Performance', () => {
 
     // Ensure conversion takes less than 1 second for 1000 resources
     expect(endTime - startTime).toBeLessThan(1000);
+  });
+});
+
+describe('Full Bundle Extractors', () => {
+  describe('FHIRBundleConverter', () => {
+    const converter = new FHIRBundleConverter();
+    const bundle = {
+      resourceType: 'Bundle',
+      type: 'searchset',
+      timestamp: '2025-05-06T08:53:38.3838Z',
+      entry: [
+        {
+          resource: {
+            resourceType: 'Patient',
+            id: '123',
+            name: [
+              {
+                use: 'official',
+                family: 'Doe',
+                given: ['John'],
+              },
+            ],
+          },
+        },
+        {
+          resource: {
+            resourceType: 'Observation',
+            id: '456',
+            status: 'final',
+            code: {
+              text: 'Heart Rate',
+            },
+            subject: {
+              reference: 'Patient/123',
+            },
+          },
+        },
+        {
+          resource: {
+            resourceType: 'Observation',
+            id: '789',
+            status: 'final',
+            code: {
+              text: 'Heart Rate',
+            },
+            subject: {
+              reference: 'Patient/123',
+            },
+          },
+        },
+      ],
+    };
+
+    it('should convert bundle to CSV-compatible data', async () => {
+      const extractedData = await converter.convertToDictionaries(bundle);
+
+      expect(Object.keys(extractedData)).toContain('Patient');
+      expect(Object.keys(extractedData)).toContain('Observation');
+
+      expect(extractedData['Patient'].length).toBe(1);
+      expect(extractedData['Observation'].length).toBe(2);
+    });
+
+    it('should convert bundle to CSV data', async () => {
+      const extractedDictionaries =
+        await converter.convertToDictionaries(bundle);
+      const extractedData: Record<string, string[]> =
+        await converter.convertToCSV(extractedDictionaries);
+
+      // test that the csv data contains the correct headers
+      expect(extractedData['Patient'][0]).toEqual(
+        'id,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,telecomPhone'
+      );
+      expect(extractedData['Patient'][1]).toEqual(
+        '123,John,Doe,,,,,,,,'
+      );
+
+      expect(extractedData['Observation'][0]).toEqual(
+        'id,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime'
+      );
+      expect(extractedData['Observation'][1]).toEqual(
+        '456,123,final,,,,,,'
+      );
+    });
+
+    it('should convert bundle to Zipped CSV data', async () => {
+      const extractedData: NodeJS.ReadableStream =
+        await converter.convertToCSVZipped(
+          await converter.convertToDictionaries(bundle)
+        );
+
+      // get folder containing this test
+      const tempFolder = __dirname + '/temp';
+      // if subfolder temp from current folder exists then delete it
+      if (fs.existsSync(tempFolder)) {
+        fs.rmSync(tempFolder, { recursive: true, force: true });
+      }
+      // if subfolder temp from current folder does not exist then create it
+      if (!fs.existsSync(tempFolder)) {
+        fs.mkdirSync(tempFolder);
+      }
+
+      // write extractedData NodeJs.ReadableStream to file
+      const writeStream = fs.createWriteStream(tempFolder + '/test.zip');
+      extractedData.pipe(writeStream);
+      writeStream.on('finish', () => {
+        console.log('Zipped CSV data written to test.zip');
+      });
+    });
+
+    it('should convert bundle to Excel data', async () => {
+      const extractedData: NodeJS.ReadableStream =
+        await converter.convertToExcel(
+          await converter.convertToDictionaries(bundle)
+        );
+      // get folder containing this test
+      const tempFolder = __dirname + '/temp';
+      // if subfolder temp from current folder exists then delete it
+      if (fs.existsSync(tempFolder)) {
+        fs.rmSync(tempFolder, { recursive: true, force: true });
+      }
+      // if subfolder temp from current folder does not exist then create it
+      if (!fs.existsSync(tempFolder)) {
+        fs.mkdirSync(tempFolder);
+      }
+
+      // write buffer to file
+      const writeStream = fs.createWriteStream(tempFolder + '/test.xlsx');
+      extractedData.pipe(writeStream);
+      writeStream.on('finish', () => {
+        console.log('Zipped CSV data written to test.zip');
+      });
+    });
+
+    it('should handle empty bundle', async () => {
+      const emptyBundle: TBundle = { entry: [], type: 'collection' };
+      const extractedData = await converter.convertToDictionaries(emptyBundle);
+
+      expect(Object.keys(extractedData).length).toBe(0);
+    });
   });
 });
