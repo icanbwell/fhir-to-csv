@@ -4,7 +4,7 @@ name: Node.js Package
 
 on:
   release:
-    types: [created]
+    types: [ created ]
 
 jobs:
   publish-npm:
@@ -16,9 +16,18 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
           cache: 'yarn'
+      - name: Debug GitHub context
+        run: |
+          echo "GitHub Ref: $GITHUB_REF"
+          echo "GitHub Ref Name: $GITHUB_REF_NAME"
+          echo "Full GitHub context:"
+          echo '${{ toJson(github) }}'
       - name: Extract version from release tag
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(echo "$GITHUB_REF" | sed -e 's,.*/\([^/]\+\)$,\1,' -e 's/^v//')
+          echo "Extracted version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
       - run: yarn install --frozen-lockfile
       - run: yarn version --new-version ${{ steps.get_version.outputs.VERSION }}
       - run: yarn publish --access public
