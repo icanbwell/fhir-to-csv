@@ -45,8 +45,12 @@
     "url": "https://github.com/icanbwell/fhir-to-csv/issues"
   },
   "homepage": "https://github.com/icanbwell/fhir-to-csv#readme",
-  "devDependencies": {
+  "dependencies": {
+    "@json2csv/node": "^7.0.6",
     "xlsx": "^0.18.5",
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
     "commitizen": "^4.3.1",
     "@types/jest": "^29.5.14",
     "@types/node": "^22.15.3",
@@ -63,12 +67,7 @@
     "ts-jest": "^29.3.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.1",
-    "jszip": "^3.10.1"
-  },
-  "peerDependencies": {
-    "xlsx": "^0.18.5",
-    "jszip": "^3.10.1"
+    "typescript-eslint": "^8.31.1"
   },
   "lint-staged": {
     "*.{ts,js}": "eslint --cache --cache-location .eslintcache --fix"
