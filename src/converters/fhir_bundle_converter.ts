@@ -2,6 +2,7 @@ import { TBundle } from '../types/resources/Bundle';
 import { TResource } from '../types/resources/Resource';
 import { ExtractorRegistry } from './extractor_registry';
 import { TBundleEntry } from '../types/partials/BundleEntry';
+import xlsx from 'xlsx';
 
 export class FHIRBundleConverter {
   convertToDictionaries(
@@ -81,6 +82,18 @@ export class FHIRBundleConverter {
       csvRowsByResourceType[resourceType] = csvRows;
     });
     return csvRowsByResourceType;
+  }
+
+  // Convert extracted data to Excel format using xlsx package
+  convertToExcel(
+    extractedData: Record<string, Record<string, any[]>[]>
+  ): Buffer {
+    const workbook = xlsx.utils.book_new();
+    Object.entries(extractedData).forEach(([resourceType, resources]) => {
+      const worksheet = xlsx.utils.json_to_sheet(resources);
+      xlsx.utils.book_append_sheet(workbook, worksheet, resourceType);
+    });
+    return xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
   }
 
   // CSV escape utility

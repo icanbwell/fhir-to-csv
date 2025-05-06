@@ -7,6 +7,7 @@ import { TBundle } from '../../src/types/resources/Bundle';
 import { TPatient } from '../../src/types/resources/Patient';
 import { ExtractorRegistrar } from '../../src/converters/register';
 import { TResource } from '../../src/types/resources/Resource';
+import * as fs from 'node:fs';
 
 ExtractorRegistrar.registerAll();
 
@@ -171,14 +172,40 @@ describe('FHIR Resource Extractors', () => {
     });
 
     it('should convert bundle to CSV data', () => {
-      const extractedData: Record<string, string[]> = converter.convertToCSV(converter.convertToDictionaries(mockBundle));
+      const extractedData: Record<string, string[]> = converter.convertToCSV(
+        converter.convertToDictionaries(mockBundle)
+      );
 
       // test that the csv data contains the correct headers
-      expect(extractedData['Patient'][0]).toEqual('id,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,telecomPhone');
-      expect(extractedData['Patient'][1]).toEqual('patient-1,John,Doe,1980-01-01,male,White,Not Hispanic or Latino,123 Test Street,Testville,TS,555-1234');
+      expect(extractedData['Patient'][0]).toEqual(
+        'id,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,telecomPhone'
+      );
+      expect(extractedData['Patient'][1]).toEqual(
+        'patient-1,John,Doe,1980-01-01,male,White,Not Hispanic or Latino,123 Test Street,Testville,TS,555-1234'
+      );
 
-      expect(extractedData['Observation'][0]).toEqual('id,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime');
-      expect(extractedData['Observation'][1]).toEqual('obs-1,patient-1,final,,8302-2,Body Height,175,,2023-01-01T10:00:00Z');
+      expect(extractedData['Observation'][0]).toEqual(
+        'id,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime'
+      );
+      expect(extractedData['Observation'][1]).toEqual(
+        'obs-1,patient-1,final,,8302-2,Body Height,175,,2023-01-01T10:00:00Z'
+      );
+    });
+
+    it('should convert bundle to Excel data', () => {
+      const extractedData: Buffer = converter.convertToExcel(
+        converter.convertToDictionaries(mockBundle)
+      );
+      // get folder containing this test
+      const tempFolder = __dirname + '/temp';
+      // if subfolder temp from current folder does not exist then create it
+      // remember to create a subfolder from the current folder containing this test
+      if (!fs.existsSync(tempFolder)) {
+        fs.mkdirSync(tempFolder);
+      }
+
+      // write buffer to file
+      fs.writeFileSync(tempFolder + '/test.xlsx', extractedData);
     });
 
     it('should handle empty bundle', () => {
@@ -289,7 +316,9 @@ describe('Extractor Performance', () => {
     };
 
     const startTime = performance.now();
-    const extractedData = new FHIRBundleConverter().convertToDictionaries(largeBundle);
+    const extractedData = new FHIRBundleConverter().convertToDictionaries(
+      largeBundle
+    );
     const endTime = performance.now();
 
     expect(extractedData['Patient'].length).toBe(1000);
