@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TPractitionerRole } from '../types/resources/PractitionerRole';
 
 export class PractitionerRoleExtractor extends BaseResourceExtractor<TPractitionerRole> {
-  extract(practitionerRole: TPractitionerRole): Record<string, any> {
+  async extract(practitionerRole: TPractitionerRole): Promise<Record<string, any>> {
     return {
       id: practitionerRole.id,
       practitionerId: practitionerRole.practitioner?.reference

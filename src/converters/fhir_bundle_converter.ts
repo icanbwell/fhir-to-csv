@@ -1,19 +1,18 @@
 import { TBundle } from '../types/resources/Bundle';
 import { TResource } from '../types/resources/Resource';
 import { ExtractorRegistry } from './extractor_registry';
-import { TBundleEntry } from '../types/partials/BundleEntry';
 import xlsx from 'xlsx';
 import JSZip from 'jszip';
 import { Readable } from 'node:stream';
 
 export class FHIRBundleConverter {
-  convertToDictionaries(
+  async convertToDictionaries(
     bundle: TBundle
-  ): Record<string, Record<string, any[]>[]> {
+  ): Promise<Record<string, Record<string, any[]>[]>> {
     const extractedData: Record<string, Record<string, any[]>[]> = {};
     const errorLog: Record<string, string[]> = {};
 
-    bundle.entry?.forEach((entry: TBundleEntry) => {
+    for (const entry of bundle.entry || []) {
       const resource: TResource | undefined = entry.resource;
       const resourceType: string | undefined = resource
         ? resource.resourceType
@@ -24,7 +23,7 @@ export class FHIRBundleConverter {
           // Attempt to get extractor
           const extractor = ExtractorRegistry.getExtractor(resourceType);
           const extractedResource: Record<string, any> =
-            extractor.extract(resource);
+            await extractor.extract(resource);
 
           // Initialize array for resource type if not exists
           if (!extractedData[resourceType]) {
@@ -44,7 +43,7 @@ export class FHIRBundleConverter {
           console.error(`Error extracting ${resourceType}:`, error);
         }
       }
-    });
+    }
 
     // Optionally, you could write error logs to a file or send them to a logging service
     if (Object.keys(errorLog).length > 0) {
@@ -55,13 +54,13 @@ export class FHIRBundleConverter {
   }
 
   // Convert extracted data to CSV format
-  convertToCSV(
+  async convertToCSV(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): Record<string, string[]> {
+  ): Promise<Record<string, string[]>> {
     const csvRowsByResourceType: Record<string, string[]> = {};
 
     // iterate over each resource type
-    Object.entries(extractedData).forEach(([resourceType, resources]) => {
+    for (const [resourceType, resources] of Object.entries(extractedData)) {
       const csvRows: string[] = [];
       const allKeys: Set<string> = new Set();
 
@@ -74,42 +73,42 @@ export class FHIRBundleConverter {
       csvRows.push(Array.from(allKeys).join(','));
 
       // Create CSV rows for each resource
-      resources.forEach(resource => {
-        const row = Array.from(allKeys).map(key =>
-          this.escapeCSV(resource[key])
+      for (const resource of resources) {
+        const row: string[] = Array.from(allKeys).map(
+          key => this.escapeCSV(resource[key])
         );
         csvRows.push(row.join(','));
-      });
+      }
 
       csvRowsByResourceType[resourceType] = csvRows;
-    });
+    }
     return csvRowsByResourceType;
   }
 
-  convertToCSVZipped(
+  async convertToCSVZipped(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): NodeJS.ReadableStream {
-    const csvRowsByResourceType = this.convertToCSV(extractedData);
+  ): Promise<NodeJS.ReadableStream> {
+    const csvRowsByResourceType = await this.convertToCSV(extractedData);
     const zip = new JSZip();
 
     // Add each CSV to the zip file
-    Object.entries(csvRowsByResourceType).forEach(([resourceType, csvRows]) => {
+    for (const [resourceType, csvRows] of Object.entries(csvRowsByResourceType)) {
       const csvContent = csvRows.join('\n');
       zip.file(`${resourceType}.csv`, csvContent);
-    });
+    }
 
     return zip.generateNodeStream();
   }
 
   // Convert extracted data to Excel format using xlsx package
-  convertToExcel(
+  async convertToExcel(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): NodeJS.ReadableStream {
+  ): Promise<NodeJS.ReadableStream> {
     const workbook = xlsx.utils.book_new();
-    Object.entries(extractedData).forEach(([resourceType, resources]) => {
+    for (const [resourceType, resources] of Object.entries(extractedData)) {
       const worksheet = xlsx.utils.json_to_sheet(resources);
       xlsx.utils.book_append_sheet(workbook, worksheet, resourceType);
-    });
+    }
     const buffer: Buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
     return Readable.from(buffer);
   }

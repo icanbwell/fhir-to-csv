@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TServiceRequest } from '../types/resources/ServiceRequest';
 
 export class ServiceRequestExtractor extends BaseResourceExtractor<TServiceRequest> {
-  extract(serviceRequest: TServiceRequest): Record<string, any> {
+  async extract(serviceRequest: TServiceRequest): Promise<Record<string, any>> {
     return {
       id: serviceRequest.id,
       patientId: serviceRequest.subject?.reference?.split('/')?.pop(),

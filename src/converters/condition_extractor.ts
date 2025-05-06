@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TCondition } from '../types/resources/Condition';
 
 export class ConditionExtractor extends BaseResourceExtractor<TCondition> {
-  extract(condition: TCondition): Record<string, any> {
+  async extract(condition: TCondition): Promise<Record<string, any>> {
     return {
       id: condition.id,
       patientId: condition.subject?.reference?.split('/')?.pop(),
