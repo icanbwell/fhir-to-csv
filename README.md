@@ -97,3 +97,7 @@ converter.convertToDictionaries(bundle).then(extractedData => {
   });
 });
 ```
+
+### Note on Dependency Installation
+
+After adding this package to your project, ensure that you install the required dependencies by running `npm install` or `yarn install`.

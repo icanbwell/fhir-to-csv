@@ -66,6 +66,10 @@
     "typescript-eslint": "^8.31.1",
     "jszip": "^3.10.1"
   },
+  "peerDependencies": {
+    "xlsx": "^0.18.5",
+    "jszip": "^3.10.1"
+  },
   "lint-staged": {
     "*.{ts,js}": "eslint --cache --cache-location .eslintcache --fix"
   },
