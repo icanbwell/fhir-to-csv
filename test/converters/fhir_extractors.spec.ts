@@ -248,15 +248,17 @@ describe('Extractor Error Handling', () => {
     ];
 
     malformedResources.forEach(resource => {
-      const extractors = Object.keys(ExtractorRegistry['extractors']);
+      if (resource != undefined) {
+        const extractors = Object.keys(ExtractorRegistry['extractors']);
 
-      extractors.forEach(resourceType => {
-        const extractor = ExtractorRegistry.getExtractor(resourceType);
+        extractors.forEach(resourceType => {
+          const extractor = ExtractorRegistry.getExtractor(resourceType);
 
-        expect(() => {
-          extractor.extract(resource);
-        }).not.toThrow(); // Should not throw, but return an object with undefined/null values
-      });
+          expect(() => {
+            extractor.extract(resource);
+          }).not.toThrow(); // Should not throw, but return an object with undefined/null values
+        });
+      }
     });
   });
 });

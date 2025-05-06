@@ -21,4 +21,7 @@ jobs:
           node-version: 20
           cache: 'yarn'
       - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: yarn typecheck
+      - run: make run-pre-commit
       - run: yarn test

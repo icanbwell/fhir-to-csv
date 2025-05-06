@@ -4,8 +4,8 @@ import { ExtractorRegistry } from './extractor_registry';
 import { TBundleEntry } from '../types/partials/BundleEntry';
 
 export class FHIRBundleConverter {
-  convertToCSV(bundle: TBundle): Record<string, any[]> {
-    const extractedData: Record<string, any[]> = {};
+  convertToCSV(bundle: TBundle): Record<string, Record<string, never[]>[]> {
+    const extractedData: Record<string, Record<string, never[]>[]> = {};
     const errorLog: Record<string, string[]> = {};
 
     bundle.entry?.forEach((entry: TBundleEntry) => {
@@ -14,11 +14,11 @@ export class FHIRBundleConverter {
         ? resource.resourceType
         : undefined;
 
-      if (resourceType != undefined) {
+      if (resource != undefined && resourceType != undefined) {
         try {
           // Attempt to get extractor
           const extractor = ExtractorRegistry.getExtractor(resourceType);
-          const extractedResource = extractor.extract(resource);
+          const extractedResource: Record<string, never> = extractor.extract(resource);
 
           // Initialize array for resource type if not exists
           if (!extractedData[resourceType]) {
@@ -49,7 +49,7 @@ export class FHIRBundleConverter {
   }
 
   // CSV escape utility
-  private escapeCSV(value: any): string {
+  private escapeCSV(value: never): string {
     if (value == null) return '';
     const stringValue = String(value);
     const escapedValue = stringValue.replace(/"/g, '""');
