@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TDevice } from '../types/resources/Device';
 
 export class DeviceExtractor extends BaseResourceExtractor<TDevice> {
-  extract(device: TDevice): Record<string, any> {
+  async extract(device: TDevice): Promise<Record<string, any>> {
     return {
       id: device.id,
       patientId: device.patient?.reference?.split('/')?.pop(),

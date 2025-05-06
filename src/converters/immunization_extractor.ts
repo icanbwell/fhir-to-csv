@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TImmunization } from '../types/resources/Immunization';
 
 export class ImmunizationExtractor extends BaseResourceExtractor<TImmunization> {
-  extract(immunization: TImmunization): Record<string, any> {
+  async extract(immunization: TImmunization): Promise<Record<string, any>> {
     return {
       id: immunization.id,
       patientId: immunization.patient?.reference?.split('/')?.pop(),

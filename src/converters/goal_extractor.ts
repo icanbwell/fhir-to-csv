@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TGoal } from '../types/resources/Goal';
 
 export class GoalExtractor extends BaseResourceExtractor<TGoal> {
-  extract(goal: TGoal): Record<string, any> {
+  async extract(goal: TGoal): Promise<Record<string, any>> {
     return {
       id: goal.id,
       patientId: goal.subject?.reference?.split('/')?.pop(),

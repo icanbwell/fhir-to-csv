@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TProcedure } from '../types/resources/Procedure';
 
 export class ProcedureExtractor extends BaseResourceExtractor<TProcedure> {
-  extract(procedure: TProcedure): Record<string, any> {
+  async extract(procedure: TProcedure): Promise<Record<string, any>> {
     return {
       id: procedure.id,
       patientId: procedure.subject?.reference?.split('/')?.pop(),

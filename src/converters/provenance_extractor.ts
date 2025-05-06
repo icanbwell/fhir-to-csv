@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TProvenance } from '../types/resources/Provenance';
 
 export class ProvenanceExtractor extends BaseResourceExtractor<TProvenance> {
-  extract(provenance: TProvenance): Record<string, any> {
+  async extract(provenance: TProvenance): Promise<Record<string, any>> {
     return {
       id: provenance.id,
       recorded: provenance.recorded?.toString(),

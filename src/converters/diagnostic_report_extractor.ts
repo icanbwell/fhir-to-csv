@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TDiagnosticReport } from '../types/resources/DiagnosticReport';
 
 export class DiagnosticReportExtractor extends BaseResourceExtractor<TDiagnosticReport> {
-  extract(report: TDiagnosticReport): Record<string, any> {
+  async extract(report: TDiagnosticReport): Promise<Record<string, any>> {
     return {
       id: report.id,
       patientId: report.subject?.reference?.split('/')?.pop(),

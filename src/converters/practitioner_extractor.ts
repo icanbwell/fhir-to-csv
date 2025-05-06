@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TPractitioner } from '../types/resources/Practitioner';
 
 export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> {
-  extract(practitioner: TPractitioner): Record<string, any> {
+  async extract(practitioner: TPractitioner): Promise<Record<string, any>> {
     return {
       id: practitioner.id,
       nameGiven: practitioner.name?.[0]?.given?.[0],

@@ -2,7 +2,7 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TMedication } from '../types/resources/Medication';
 
 export class MedicationExtractor extends BaseResourceExtractor<TMedication> {
-  extract(medication: TMedication): Record<string, any> {
+  async extract(medication: TMedication): Promise<Record<string, any>> {
     return {
       id: medication.id,
       code: medication.code?.coding?.[0]?.code,
