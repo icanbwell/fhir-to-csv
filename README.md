@@ -1,117 +1,54 @@
-# fhir-to-csv
+# FHIR to CSV Conversion
 
-> Template to kickstart creating a Node.js module using TypeScript and VSCode
+### Purpose
 
-Inspired by [node-module-boilerplate](https://github.com/sindresorhus/node-module-boilerplate)
+The purpose of this project is to convert FHIR resources to CSV format. This is achieved using various extractors and converters present in the codebase.
 
-## Features
+### Overview of Extractors and Converters
 
-- [Semantic Release](https://github.com/semantic-release/semantic-release)
-- [Issue Templates](https://github.com/icanbwell/fhir-to-csv/tree/main/.github/ISSUE_TEMPLATE)
-- [GitHub Actions](https://github.com/icanbwell/fhir-to-csv/tree/main/.github/workflows)
-- [Codecov](https://about.codecov.io/)
-- [VSCode Launch Configurations](https://github.com/icanbwell/fhir-to-csv/blob/main/.vscode/launch.json)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Husky](https://github.com/typicode/husky)
-- [Lint Staged](https://github.com/okonet/lint-staged)
-- [Commitizen](https://github.com/search?q=commitizen)
-- [Jest](https://jestjs.io/)
-- [ESLint](https://eslint.org/)
-- [Prettier](https://prettier.io/)
+The project includes several extractors and converters for different FHIR resources. Each extractor is responsible for extracting relevant data from a specific FHIR resource, and each converter is responsible for converting the extracted data to CSV format.
 
-## Getting started
+### Usage Instructions
 
-### Set up your repository
+To convert FHIR resources to CSV, follow these steps:
 
-**Click the "Use this template" button.**
+1. Create an instance of the `FHIRBundleConverter` class.
+2. Use the `convertToDictionaries` method to extract data from a FHIR bundle.
+3. Use the `convertToCSV` method to convert the extracted data to CSV format.
 
-Alternatively, create a new directory and then run:
+### Code Examples
 
-```bash
-curl -fsSL https://github.com/icanbwell/fhir-to-csv/archive/main.tar.gz | tar -xz --strip-components=1
-```
-
-Replace `FULL_NAME`, `GITHUB_USER`, and `REPO_NAME` in the script below with your own details to personalize your new package:
-
-```bash
-FULL_NAME="John Smith"
-GITHUB_USER="johnsmith"
-REPO_NAME="my-cool-package"
-sed -i.mybak "s/\([\/\"]\)(ryansonshine)/$GITHUB_USER/g; s/typescript-npm-package-template\|my-package-name/$REPO_NAME/g; s/Imran Qureshi/$FULL_NAME/g" package.json package-lock.json README.md
-rm *.mybak
-```
-
-### Add NPM Token
-
-Add your npm token to your GitHub repository secrets as `NPM_TOKEN`.
-
-### Add Codecov integration
-
-Enable the Codecov GitHub App [here](https://github.com/apps/codecov).
-
-**Remove everything from here and above**
-
----
-
-# my-package-name
-
-[![npm package][npm-img]][npm-url]
-[![Build Status][build-img]][build-url]
-[![Downloads][downloads-img]][downloads-url]
-[![Issues][issues-img]][issues-url]
-[![Code Coverage][codecov-img]][codecov-url]
-[![Commitizen Friendly][commitizen-img]][commitizen-url]
-[![Semantic Release][semantic-release-img]][semantic-release-url]
-
-> My awesome module
-
-## Install
-
-```bash
-npm install my-package-name
-```
-
-## Usage
+Here are some code examples demonstrating how to use the extractors and converters to convert FHIR resources to CSV:
 
 ```ts
-import { myPackage } from 'my-package-name';
+import { FHIRBundleConverter } from './src/converters/fhir_bundle_converter';
+import { TBundle } from './src/types/resources/Bundle';
 
-myPackage('hello');
-//=> 'hello from my package'
+// Create an instance of the FHIRBundleConverter
+const converter = new FHIRBundleConverter();
+
+// Assume we have a FHIR bundle
+const bundle: TBundle = {
+  resourceType: 'Bundle',
+  type: 'collection',
+  entry: [
+    {
+      resource: {
+        resourceType: 'Patient',
+        id: 'example',
+        // other patient data
+      },
+    },
+    // other resources
+  ],
+};
+
+// Extract data from the FHIR bundle
+const extractedData = converter.convertToDictionaries(bundle);
+
+// Convert the extracted data to CSV format
+const csvData = converter.convertToCSV(extractedData);
+
+// Output the CSV data
+console.log(csvData);
 ```
-
-## API
-
-### myPackage(input, options?)
-
-#### input
-
-Type: `string`
-
-Lorem ipsum.
-
-#### options
-
-Type: `object`
-
-##### postfix
-
-Type: `string`
-Default: `rainbows`
-
-Lorem ipsum.
-
-[build-img]:https://github.com/icanbwell/fhir-to-csv/actions/workflows/release.yml/badge.svg
-[build-url]:https://github.com/icanbwell/fhir-to-csv/actions/workflows/release.yml
-[downloads-img]:https://img.shields.io/npm/dt/typescript-npm-package-template
-[downloads-url]:https://www.npmtrends.com/typescript-npm-package-template
-[npm-img]:https://img.shields.io/npm/v/typescript-npm-package-template
-[npm-url]:https://www.npmjs.com/package/typescript-npm-package-template
-[issues-img]:https://img.shields.io/github/issues/ryansonshine/typescript-npm-package-template
-[issues-url]:https://github.com/icanbwell/fhir-to-csv/issues
-[codecov-img]:https://codecov.io/gh/ryansonshine/typescript-npm-package-template/branch/main/graph/badge.svg
-[codecov-url]:https://codecov.io/gh/ryansonshine/typescript-npm-package-template
-[semantic-release-img]:https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
-[semantic-release-url]:https://github.com/semantic-release/semantic-release
-[commitizen-img]:https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
-[commitizen-url]:http://commitizen.github.io/cz-cli/
