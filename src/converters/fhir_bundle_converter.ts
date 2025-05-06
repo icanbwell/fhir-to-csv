@@ -3,6 +3,7 @@ import { TResource } from '../types/resources/Resource';
 import { ExtractorRegistry } from './extractor_registry';
 import { TBundleEntry } from '../types/partials/BundleEntry';
 import xlsx from 'xlsx';
+import JSZip from 'jszip';
 
 export class FHIRBundleConverter {
   convertToDictionaries(
@@ -82,6 +83,21 @@ export class FHIRBundleConverter {
       csvRowsByResourceType[resourceType] = csvRows;
     });
     return csvRowsByResourceType;
+  }
+
+  convertToCSVZipped(
+    extractedData: Record<string, Record<string, any[]>[]>
+  ): NodeJS.ReadableStream {
+    const csvRowsByResourceType = this.convertToCSV(extractedData);
+    const zip = new JSZip();
+
+    // Add each CSV to the zip file
+    Object.entries(csvRowsByResourceType).forEach(([resourceType, csvRows]) => {
+      const csvContent = csvRows.join('\n');
+      zip.file(`${resourceType}.csv`, csvContent);
+    });
+
+    return zip.generateNodeStream();
   }
 
   // Convert extracted data to Excel format using xlsx package

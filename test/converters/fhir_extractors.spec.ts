@@ -192,6 +192,26 @@ describe('FHIR Resource Extractors', () => {
       );
     });
 
+    it('should convert bundle to Zipped CSV data', () => {
+      const extractedData: NodeJS.ReadableStream  = converter.convertToCSVZipped(
+        converter.convertToDictionaries(mockBundle)
+      );
+
+            // get folder containing this test
+      const tempFolder = __dirname + '/temp';
+      // if subfolder temp from current folder does not exist then create it
+      if (!fs.existsSync(tempFolder)) {
+        fs.mkdirSync(tempFolder);
+      }
+
+      // write extractedData NodeJs.ReadableStream to file
+      const writeStream = fs.createWriteStream(tempFolder + '/test.zip');
+      extractedData.pipe(writeStream);
+      writeStream.on('finish', () => {
+        console.log('Zipped CSV data written to test.zip');
+      });
+    });
+
     it('should convert bundle to Excel data', () => {
       const extractedData: Buffer = converter.convertToExcel(
         converter.convertToDictionaries(mockBundle)
@@ -199,7 +219,6 @@ describe('FHIR Resource Extractors', () => {
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
       // if subfolder temp from current folder does not exist then create it
-      // remember to create a subfolder from the current folder containing this test
       if (!fs.existsSync(tempFolder)) {
         fs.mkdirSync(tempFolder);
       }
