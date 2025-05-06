@@ -1,7 +1,6 @@
 import { TBundle } from '../types/resources/Bundle';
 import { TResource } from '../types/resources/Resource';
 import { ExtractorRegistry } from './extractor_registry';
-import { TBundleEntry } from '../types/partials/BundleEntry';
 import xlsx from 'xlsx';
 import JSZip from 'jszip';
 import { Readable } from 'node:stream';
