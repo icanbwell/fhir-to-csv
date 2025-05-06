@@ -161,7 +161,7 @@ describe('FHIR Resource Extractors', () => {
     const converter = new FHIRBundleConverter();
 
     it('should convert bundle to CSV-compatible data', () => {
-      const extractedData = converter.convertToCSV(mockBundle);
+      const extractedData = converter.convertToDictionaries(mockBundle);
 
       expect(Object.keys(extractedData)).toContain('Patient');
       expect(Object.keys(extractedData)).toContain('Observation');
@@ -170,9 +170,20 @@ describe('FHIR Resource Extractors', () => {
       expect(extractedData['Observation'].length).toBe(1);
     });
 
+    it('should convert bundle to CSV data', () => {
+      const extractedData: Record<string, string[]> = converter.convertToCSV(converter.convertToDictionaries(mockBundle));
+
+      // test that the csv data contains the correct headers
+      expect(extractedData['Patient'][0]).toEqual('id,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,telecomPhone');
+      expect(extractedData['Patient'][1]).toEqual('patient-1,John,Doe,1980-01-01,male,White,Not Hispanic or Latino,123 Test Street,Testville,TS,555-1234');
+
+      expect(extractedData['Observation'][0]).toEqual('id,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime');
+      expect(extractedData['Observation'][1]).toEqual('obs-1,patient-1,final,,8302-2,Body Height,175,,2023-01-01T10:00:00Z');
+    });
+
     it('should handle empty bundle', () => {
       const emptyBundle: TBundle = { entry: [], type: 'collection' };
-      const extractedData = converter.convertToCSV(emptyBundle);
+      const extractedData = converter.convertToDictionaries(emptyBundle);
 
       expect(Object.keys(extractedData).length).toBe(0);
     });
@@ -278,7 +289,7 @@ describe('Extractor Performance', () => {
     };
 
     const startTime = performance.now();
-    const extractedData = new FHIRBundleConverter().convertToCSV(largeBundle);
+    const extractedData = new FHIRBundleConverter().convertToDictionaries(largeBundle);
     const endTime = performance.now();
 
     expect(extractedData['Patient'].length).toBe(1000);
