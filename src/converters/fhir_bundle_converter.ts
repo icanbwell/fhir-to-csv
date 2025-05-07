@@ -3,7 +3,6 @@ import { TResource } from '../types/resources/Resource';
 import { ExtractorRegistry } from './extractor_registry';
 import xlsx from 'xlsx';
 import JSZip from 'jszip';
-import { Readable } from 'node:stream';
 
 export class FHIRBundleConverter {
   async convertToDictionaries(
@@ -18,7 +17,11 @@ export class FHIRBundleConverter {
         ? resource.resourceType
         : undefined;
 
-      if (resource != undefined && resourceType != undefined) {
+      if (
+        resource != undefined &&
+        resourceType != undefined &&
+        ExtractorRegistry.has(resourceType)
+      ) {
         try {
           // Attempt to get extractor
           const extractor = ExtractorRegistry.getExtractor(resourceType);
@@ -74,8 +77,8 @@ export class FHIRBundleConverter {
 
       // Create CSV rows for each resource
       for (const resource of resources) {
-        const row: string[] = Array.from(allKeys).map(
-          key => this.escapeCSV(resource[key])
+        const row: string[] = Array.from(allKeys).map(key =>
+          this.escapeCSV(resource[key])
         );
         csvRows.push(row.join(','));
       }
@@ -87,30 +90,36 @@ export class FHIRBundleConverter {
 
   async convertToCSVZipped(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): Promise<NodeJS.ReadableStream> {
+  ): Promise<Buffer<ArrayBufferLike>> {
     const csvRowsByResourceType = await this.convertToCSV(extractedData);
     const zip = new JSZip();
 
     // Add each CSV to the zip file
-    for (const [resourceType, csvRows] of Object.entries(csvRowsByResourceType)) {
+    for (const [resourceType, csvRows] of Object.entries(
+      csvRowsByResourceType
+    )) {
       const csvContent = csvRows.join('\n');
       zip.file(`${resourceType}.csv`, csvContent);
     }
 
-    return zip.generateNodeStream();
+    return await zip.generateAsync({
+      type: 'nodebuffer',
+    });
   }
 
   // Convert extracted data to Excel format using xlsx package
   async convertToExcel(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): Promise<NodeJS.ReadableStream> {
+  ): Promise<Buffer<ArrayBufferLike>> {
     const workbook = xlsx.utils.book_new();
     for (const [resourceType, resources] of Object.entries(extractedData)) {
       const worksheet = xlsx.utils.json_to_sheet(resources);
       xlsx.utils.book_append_sheet(workbook, worksheet, resourceType);
     }
-    const buffer: Buffer = xlsx.write(workbook, { type: 'buffer', bookType: 'xlsx' });
-    return Readable.from(buffer);
+    return xlsx.write(workbook, {
+      type: 'buffer',
+      bookType: 'xlsx',
+    });
   }
 
   // CSV escape utility

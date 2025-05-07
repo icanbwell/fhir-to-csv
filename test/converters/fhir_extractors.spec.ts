@@ -193,7 +193,7 @@ describe('FHIR Resource Extractors', () => {
     });
 
     it('should convert bundle to Zipped CSV data', async () => {
-      const extractedData: NodeJS.ReadableStream =
+      const extractedData: Buffer<ArrayBufferLike> =
         await converter.convertToCSVZipped(
           await converter.convertToDictionaries(mockBundle)
         );
@@ -211,14 +211,12 @@ describe('FHIR Resource Extractors', () => {
 
       // write extractedData NodeJs.ReadableStream to file
       const writeStream = fs.createWriteStream(tempFolder + '/test.zip');
-      extractedData.pipe(writeStream);
-      writeStream.on('finish', () => {
-        console.log('Zipped CSV data written to test.zip');
-      });
+      writeStream.write(extractedData);
+      writeStream.end();
     });
 
     it('should convert bundle to Excel data', async () => {
-      const extractedData: NodeJS.ReadableStream =
+      const extractedData: Buffer<ArrayBufferLike> =
         await converter.convertToExcel(
           await converter.convertToDictionaries(mockBundle)
         );
@@ -235,10 +233,8 @@ describe('FHIR Resource Extractors', () => {
 
       // write buffer to file
       const writeStream = fs.createWriteStream(tempFolder + '/test.xlsx');
-      extractedData.pipe(writeStream);
-      writeStream.on('finish', () => {
-        console.log('Zipped CSV data written to test.zip');
-      });
+      writeStream.write(extractedData);
+      writeStream.end();
     });
 
     it('should handle empty bundle', async () => {
@@ -320,19 +316,19 @@ describe('Extractor Error Handling', () => {
       undefined,
     ];
 
-    malformedResources.forEach(async resource => {
+    for (const resource of malformedResources) {
       if (resource != undefined) {
         const extractors = Object.keys(ExtractorRegistry['extractors']);
 
-        extractors.forEach(async resourceType => {
+        for (const resourceType of extractors) {
           const extractor = ExtractorRegistry.getExtractor(resourceType);
 
           expect(async () => {
             await extractor.extract(resource);
           }).not.toThrow(); // Should not throw, but return an object with undefined/null values
-        });
+        }
       }
-    });
+    }
   });
 });
 
@@ -446,7 +442,7 @@ describe('Full Bundle Extractors', () => {
     });
 
     it('should convert bundle to Zipped CSV data', async () => {
-      const extractedData: NodeJS.ReadableStream =
+      const extractedData: Buffer<ArrayBufferLike> =
         await converter.convertToCSVZipped(
           await converter.convertToDictionaries(bundle)
         );
@@ -464,14 +460,12 @@ describe('Full Bundle Extractors', () => {
 
       // write extractedData NodeJs.ReadableStream to file
       const writeStream = fs.createWriteStream(tempFolder + '/test.zip');
-      extractedData.pipe(writeStream);
-      writeStream.on('finish', () => {
-        console.log('Zipped CSV data written to test.zip');
-      });
+      writeStream.write(extractedData);
+      writeStream.end();
     });
 
     it('should convert bundle to Excel data', async () => {
-      const extractedData: NodeJS.ReadableStream =
+      const extractedData: Buffer<ArrayBufferLike> =
         await converter.convertToExcel(
           await converter.convertToDictionaries(bundle)
         );
@@ -488,10 +482,8 @@ describe('Full Bundle Extractors', () => {
 
       // write buffer to file
       const writeStream = fs.createWriteStream(tempFolder + '/test.xlsx');
-      extractedData.pipe(writeStream);
-      writeStream.on('finish', () => {
-        console.log('Zipped CSV data written to test.zip');
-      });
+      writeStream.write(extractedData);
+      writeStream.end();
     });
 
     it('should handle empty bundle', async () => {
