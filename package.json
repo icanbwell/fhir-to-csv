@@ -21,7 +21,7 @@
     "type": "git",
     "url": "git+https://github.com/icanbwell/fhir-to-csv.git"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": {
     "name": "Imran Qureshi",
     "email": "imranq2@users.noreply.github.com",
