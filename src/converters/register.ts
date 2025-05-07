@@ -57,10 +57,9 @@ const extractorMap = {
 
 export class ExtractorRegistrar {
   static register(resourceType: string, ExtractorClass: Extractor<TResource>) {
-    if (ExtractorRegistry.has(resourceType)) {
-      throw new Error(`Extractor for ${resourceType} is already registered.`);
+    if (!ExtractorRegistry.has(resourceType)) {
+      ExtractorRegistry.register(resourceType, ExtractorClass);
     }
-    ExtractorRegistry.register(resourceType, ExtractorClass);
   }
 
   static registerAll() {
