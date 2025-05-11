@@ -2,7 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TDomainResource } from '../types/resources/DomainResource';
 
 export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResource> {
-  async extract(resource: TDomainResource): Promise<Record<string, ExtractorValueType>> {
+  async extract(
+    resource: TDomainResource
+  ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: resource.id,
       versionId: resource.meta?.versionId,
@@ -13,6 +15,11 @@ export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResour
           'https://www.icanbwell.com/sourceAssigningAuthority'
       )?.code,
       source: resource.meta?.source,
+      hidden: resource.meta?.tag?.find(
+        tag =>
+          tag.system ===
+          'https://fhir.icanbwell.com/4_0_0/CodeSystem/server-behavior'
+      )?.code,
       profile1: resource.meta?.profile?.[0],
       tag1: resource.meta?.tag?.[0]?.code,
       tag2: resource.meta?.tag?.[1]?.code,

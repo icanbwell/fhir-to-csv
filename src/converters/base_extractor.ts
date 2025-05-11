@@ -18,34 +18,41 @@ export type ExtractorValueType = string | number | Date | undefined | boolean;
 export abstract class BaseResourceExtractor<T> {
   abstract extract(resource: T): Promise<Record<string, ExtractorValueType>>;
 
+  isPreferredCoding(coding: TCoding | undefined): boolean {
+    if (!coding || !coding.extension) return false;
+    const extension = this.getExtensionByUrl(
+      coding.extension,
+      'https://fhir.icanbwell.com/4_0_0/StructureDefinition/intelligence'
+    );
+    if (extension) {
+      return extension.valueCode === 'preferred';
+    }
+    return false;
+  }
+
   convertCoding(coding: TCoding | undefined): ExtractorValueType {
     if (!coding) return coding;
     // if there is a display name but no code, return the display name
     if (coding.display && !coding.code) {
       return coding.display;
     }
-    if (coding.system && coding.code && coding.display) {
-      return `${this.getFriendlyNameForSystem(coding.system)}=${coding.code} (${coding.display})`;
-    }
-    if (coding.system && coding.code) {
-      return `${this.getFriendlyNameForSystem(coding.system)}=${coding.code}`;
-    }
-    if (coding.system && coding.display) {
-      return `${this.getFriendlyNameForSystem(coding.system)}=${coding.display}`;
+    if (coding.system) {
+      const systemName = this.getFriendlyNameForSystem(coding.system);
+      if (coding.code && coding.display) {
+        return `${systemName}=${coding.code} (${coding.display})`;
+      }
+      if (coding.code) {
+        return `${systemName}=${coding.code}`;
+      }
+      if (coding.display) {
+        return `${systemName}=${coding.display}`;
+      }
+      return systemName;
     }
     if (coding.code && coding.display) {
       return `${coding.code} (${coding.display})`;
     }
-    if (coding.code) {
-      return coding.code;
-    }
-    if (coding.display) {
-      return coding.display;
-    }
-    if (coding.system) {
-      return this.getFriendlyNameForSystem(coding.system);
-    }
-    return undefined;
+    return coding.code || coding.display || undefined;
   }
 
   getCodingFields(
@@ -57,6 +64,7 @@ export abstract class BaseResourceExtractor<T> {
       [`${prefix}System`]: this.getFriendlyNameForSystem(coding.system),
       [`${prefix}Code`]: coding.code,
       [`${prefix}Display`]: coding.display,
+      [`${prefix}Preferred`]: this.isPreferredCoding(coding),
     };
   }
 
@@ -95,18 +103,9 @@ export abstract class BaseResourceExtractor<T> {
     return {
       [`${prefix}`]: this.convertCodeableConcept(codeableConcept),
       [`${prefix}Text`]: codeableConcept.text,
-      ...this.getCodingFields(
-        codeableConcept.coding?.[0],
-        `${prefix}Coding1`
-      ),
-      ...this.getCodingFields(
-        codeableConcept.coding?.[1],
-        `${prefix}Coding2`
-      ),
-      ...this.getCodingFields(
-        codeableConcept.coding?.[2],
-        `${prefix}Coding3`
-      ),
+      ...this.getCodingFields(codeableConcept.coding?.[0], `${prefix}Coding1`),
+      ...this.getCodingFields(codeableConcept.coding?.[1], `${prefix}Coding2`),
+      ...this.getCodingFields(codeableConcept.coding?.[2], `${prefix}Coding3`),
     };
   }
 
@@ -201,7 +200,8 @@ export abstract class BaseResourceExtractor<T> {
   ): Record<string, ExtractorValueType> {
     if (!identifier) return {};
     return {
-      [`${prefix}System`]: identifier.id || this.getFriendlyNameForSystem(identifier.system),
+      [`${prefix}System`]:
+        identifier.id || this.getFriendlyNameForSystem(identifier.system),
       [`${prefix}Value`]: identifier.value,
       [`${prefix}Type`]: this.convertCodeableConcept(identifier.type),
       [`${prefix}Use`]: identifier.use,
@@ -286,12 +286,26 @@ export abstract class BaseResourceExtractor<T> {
       : `${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`;
   }
 
+  getExtensionByUrl(
+    extensions: TExtension[] | undefined,
+    url: string
+  ): TExtension | undefined {
+    if (!extensions) return undefined;
+    const extension = extensions.find(ext => ext.url === url);
+    if (!extension) return undefined;
+    // if there is a nested extension, return the first one
+    if (extension.extension) {
+      return extension.extension[0];
+    }
+    return extension;
+  }
+
   getExtensionValueByUrl(
     extensions: TExtension[] | undefined,
     url: string
   ): ExtractorValueType {
     if (!extensions) return undefined;
-    const extension = extensions.find(ext => ext.url === url);
+    const extension = this.getExtensionByUrl(extensions, url);
     if (!extension) return undefined;
     // if there is a nested extension, return the value of the first one
     if (extension.extension) {

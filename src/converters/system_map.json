@@ -30,5 +30,7 @@
   "http://hl7.org/fhir/sid/gs1": "GS1",
   "http://hl7.org/fhir/sid/uuid": "UUID",
   "http://hl7.org/fhir/sid/oid": "OID",
-  "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation": "HL7"
+  "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation": "HL7",
+  "https://fhir.icanbwell.com/4_0_0/CodeSystem/server-behavior": "ServerBehavior",
+  "https://fhir.icanbwell.com/4_0_0/StructureDefinition/intelligence": "Intelligence"
 }
