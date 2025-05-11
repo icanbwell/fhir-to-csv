@@ -10,8 +10,9 @@ export class MedicationRequestExtractor extends BaseResourceExtractor<TMedicatio
       patientId: this.getReferenceId(medicationRequest.subject),
       status: medicationRequest.status,
       intent: medicationRequest.intent,
-      medication: this.convertCodeableConcept(
-        medicationRequest.medicationCodeableConcept
+      ...this.getCodeableConceptFields(
+        medicationRequest.medicationCodeableConcept,
+        'medication'
       ),
       dosageInstruction1: this.convertCodeableConcept(
         medicationRequest.dosageInstruction?.[0]

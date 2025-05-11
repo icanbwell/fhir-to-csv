@@ -9,7 +9,20 @@ export class ServiceRequestExtractor extends BaseResourceExtractor<TServiceReque
       id: serviceRequest.id,
       status: serviceRequest.status,
       intent: serviceRequest.intent,
-      code: this.convertCodeableConcept(serviceRequest.code),
+      ...this.getCodeableConceptFields(
+        serviceRequest.category?.[0],
+        'category1'
+      ),
+      category2: this.convertCodeableConcept(
+        serviceRequest.category?.[1]
+      ),
+      category3: this.convertCodeableConcept(
+        serviceRequest.category?.[2]
+      ),
+      ...this.getCodeableConceptFields(
+        serviceRequest.code,
+        'code'
+      ),
       subjectId: this.getReferenceId(serviceRequest.subject),
       requesterId: this.getReferenceId(serviceRequest.requester),
       performer1: this.convertReference(serviceRequest.performer?.[0]),

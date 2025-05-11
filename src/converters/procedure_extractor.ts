@@ -9,7 +9,14 @@ export class ProcedureExtractor extends BaseResourceExtractor<TProcedure> {
       id: procedure.id,
       patientId: this.getReferenceId(procedure.subject),
       status: procedure.status,
-      code: this.convertCodeableConcept(procedure.code),
+      ...this.getCodeableConceptFields(
+        procedure.category,
+        'category'
+      ),
+      ...this.getCodeableConceptFields(
+        procedure.code,
+        'code'
+      ),
       performed: this.convertDateTime(procedure.performedDateTime),
       reasonCode1: this.convertCodeableConcept(
         procedure.reasonCode?.[0]

@@ -13,7 +13,10 @@ export class EncounterExtractor extends BaseResourceExtractor<TEncounter> {
         encounter.class_,
         'classCode'
       ),
-      type1: this.convertCodeableConcept(encounter.type?.[0]),
+      ...this.getCodeableConceptFields(
+        encounter.type?.[0],
+        'type1'
+      ),
       type2: this.convertCodeableConcept(encounter.type?.[1]),
       type3: this.convertCodeableConcept(encounter.type?.[2]),
       type4: this.convertCodeableConcept(encounter.type?.[3]),

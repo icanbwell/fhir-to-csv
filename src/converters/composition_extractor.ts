@@ -7,9 +7,13 @@ export class CompositionExtractor extends BaseResourceExtractor<TComposition> {
     return {
       id: composition.id,
       status: composition.status,
-      type: this.convertCodeableConcept(composition.type),
-      category1: this.convertCodeableConcept(
-        composition.category?.[0]
+      ...this.getCodeableConceptFields(
+        composition.type,
+        'type'
+      ),
+      ...this.getCodeableConceptFields(
+        composition.category?.[0],
+        'category1'
       ),
       category2: this.convertCodeableConcept(
         composition.category?.[1]

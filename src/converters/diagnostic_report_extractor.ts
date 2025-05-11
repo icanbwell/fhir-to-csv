@@ -9,10 +9,13 @@ export class DiagnosticReportExtractor extends BaseResourceExtractor<TDiagnostic
       id: diagnosticReport.id,
       patientId: this.getReferenceId(diagnosticReport.subject),
       status: diagnosticReport.status,
-      category1: this.convertCodeableConcept(diagnosticReport.category?.[0]),
+      ...this.getCodeableConceptFields(
+        diagnosticReport.category?.[0],
+        'category1'
+      ),
       category2: this.convertCodeableConcept(diagnosticReport.category?.[1]),
       category3: this.convertCodeableConcept(diagnosticReport.category?.[2]),
-      code: this.convertCodeableConcept(diagnosticReport.code),
+      ...this.getCodeableConceptFields(diagnosticReport.code, 'code'),
       effective: this.convertDateTime(diagnosticReport.effectiveDateTime),
       issued: this.convertDateTime(diagnosticReport.issued),
       performer1: this.convertReference(diagnosticReport.performer?.[0]),

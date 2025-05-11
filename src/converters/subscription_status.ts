@@ -20,8 +20,10 @@ export class SubscriptionStatusExtractor extends BaseResourceExtractor<TSubscrip
       notificationEvent4TimeStamp: this.convertDateTime(subscriptionStatus.notificationEvent?.[3]?.timestamp),
       notificationEvent5: subscriptionStatus.notificationEvent?.[4]?.id,
       notificationEvent5TimeStamp: this.convertDateTime(subscriptionStatus.notificationEvent?.[4]?.timestamp),
-      error1: this.convertCodeableConcept(
-        subscriptionStatus.error?.[0]
+
+      ...this.getCodeableConceptFields(
+        subscriptionStatus.error?.[0],
+        'error1'
       ),
       error2: this.convertCodeableConcept(
         subscriptionStatus.error?.[1]

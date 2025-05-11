@@ -9,8 +9,10 @@ export class OrganizationExtractor extends BaseResourceExtractor<TOrganization> 
       id: organization.id,
       name: organization.name,
       active: organization.active,
-      type1: this.convertCodeableConcept(
-        organization.type?.[0]
+
+      ...this.getCodeableConceptFields(
+        organization.type?.[0],
+        'type1'
       ),
       type2: this.convertCodeableConcept(
         organization.type?.[1]

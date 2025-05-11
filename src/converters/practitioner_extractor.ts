@@ -47,8 +47,10 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
         practitioner.address?.[4],
         'address5'
       ),
-      qualification1: this.convertCodeableConcept(
-        practitioner.qualification?.[0]?.code
+
+      ...this.getCodeableConceptFields(
+        practitioner.qualification?.[0]?.code,
+        'qualification1'
       ),
       qualification1Issuer: this.convertReference(
         practitioner.qualification?.[0]?.issuer

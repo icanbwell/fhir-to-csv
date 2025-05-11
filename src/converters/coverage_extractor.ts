@@ -8,7 +8,10 @@ export class CoverageExtractor extends BaseResourceExtractor<TCoverage> {
     return {
       id: coverage.id,
       status: coverage.status,
-      type: this.convertCodeableConcept(coverage.type),
+      ...this.getCodeableConceptFields(
+        coverage.type,
+        'type'
+      ),
       subscriberId: coverage.subscriberId,
       beneficiaryId: this.getReferenceId(coverage.beneficiary),
       periodStart: this.convertDateTime(

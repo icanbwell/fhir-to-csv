@@ -7,7 +7,10 @@ export class MedicationAdministrationExtractor extends BaseResourceExtractor<TMe
     return {
       id: medicationAdministration.id,
       status: medicationAdministration.status,
-      medication: this.convertCodeableConcept(medicationAdministration.medicationCodeableConcept),
+      ...this.getCodeableConceptFields(
+        medicationAdministration.medicationCodeableConcept,
+        'medication'
+      ),
       subject: this.convertReference(medicationAdministration.subject),
       effectiveDateTime: this.convertDateTime(medicationAdministration.effectiveDateTime),
       performer1: this.convertReference(medicationAdministration.performer?.[0]?.actor),

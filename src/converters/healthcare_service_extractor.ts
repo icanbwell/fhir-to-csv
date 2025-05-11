@@ -8,8 +8,9 @@ export class HealthcareServiceExtractor extends BaseResourceExtractor<THealthcar
       id: healthcareService.id,
       active: healthcareService.active,
       name: healthcareService.name,
-      category1: this.convertCodeableConcept(
-        healthcareService.category?.[0]
+      ...this.getCodeableConceptFields(
+        healthcareService.category?.[0],
+        'category1'
       ),
       category2: this.convertCodeableConcept(
         healthcareService.category?.[1]
@@ -17,8 +18,10 @@ export class HealthcareServiceExtractor extends BaseResourceExtractor<THealthcar
       category3: this.convertCodeableConcept(
         healthcareService.category?.[2]
       ),
-      type1: this.convertCodeableConcept(
-        healthcareService.type?.[0]
+
+      ...this.getCodeableConceptFields(
+        healthcareService.type?.[0],
+        'type1'
       ),
       type2: this.convertCodeableConcept(
         healthcareService.type?.[1]
@@ -26,8 +29,10 @@ export class HealthcareServiceExtractor extends BaseResourceExtractor<THealthcar
       type3: this.convertCodeableConcept(
         healthcareService.type?.[2]
       ),
-      specialty1: this.convertCodeableConcept(
-        healthcareService.specialty?.[0]
+
+      ...this.getCodeableConceptFields(
+        healthcareService.specialty?.[0],
+        'specialty1'
       ),
       specialty2: this.convertCodeableConcept(
         healthcareService.specialty?.[1]

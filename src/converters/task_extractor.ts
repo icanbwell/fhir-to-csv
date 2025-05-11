@@ -10,7 +10,10 @@ export class TaskExtractor extends BaseResourceExtractor<TTask> {
       intent: task.intent,
       priority: task.priority,
       description: task.description,
-      code: this.convertCodeableConcept(task.code),
+      ...this.getCodeableConceptFields(
+        task.code,
+        'code'
+      ),
       focus: this.convertReference(task.focus),
       for: this.convertReference(task.for_),
       authoredOn: this.convertDateTime(task.authoredOn),

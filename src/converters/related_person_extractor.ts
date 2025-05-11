@@ -17,8 +17,10 @@ export class RelatedPersonExtractor extends BaseResourceExtractor<TRelatedPerson
         relatedPerson.name?.[2],
         'name3'
       ),
-      relationship1: this.convertCodeableConcept(
-        relatedPerson.relationship?.[0]
+
+      ...this.getCodeableConceptFields(
+        relatedPerson.relationship?.[0],
+        'relationship1'
       ),
       relationship2: this.convertCodeableConcept(
         relatedPerson.relationship?.[1]

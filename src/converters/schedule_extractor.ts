@@ -7,8 +7,10 @@ export class ScheduleExtractor extends BaseResourceExtractor<TSchedule> {
     return {
       id: schedule.id,
       active: schedule.active,
-      serviceCategory1: this.convertCodeableConcept(
-        schedule.serviceCategory?.[0]
+
+      ...this.getCodeableConceptFields(
+        schedule.serviceCategory?.[0],
+        'serviceCategory1'
       ),
       serviceCategory2: this.convertCodeableConcept(
         schedule.serviceCategory?.[1]
@@ -16,8 +18,10 @@ export class ScheduleExtractor extends BaseResourceExtractor<TSchedule> {
       serviceCategory3: this.convertCodeableConcept(
         schedule.serviceCategory?.[2]
       ),
-      serviceType1: this.convertCodeableConcept(
-        schedule.serviceType?.[0]
+
+      ...this.getCodeableConceptFields(
+        schedule.serviceType?.[0],
+        'serviceType1'
       ),
       serviceType2: this.convertCodeableConcept(
         schedule.serviceType?.[1]

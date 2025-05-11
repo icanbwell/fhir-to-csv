@@ -10,23 +10,31 @@ export class PractitionerRoleExtractor extends BaseResourceExtractor<TPractition
       practitionerId: this.getReferenceId(practitionerRole.practitioner),
       organizationId: this.getReferenceId(practitionerRole.organization),
       active: practitionerRole.active,
-      specialty1: this.convertCodeableConcept(
-        practitionerRole.specialty?.[0]
+
+      ...this.getCodeableConceptFields(
+        practitionerRole.specialty?.[0],
+        'specialty1'
       ),
-      specialty2: this.convertCodeableConcept(
-        practitionerRole.specialty?.[1]
+      ...this.getCodeableConceptFields(
+        practitionerRole.specialty?.[1],
+        'specialty2'
       ),
-      specialty3: this.convertCodeableConcept(
-        practitionerRole.specialty?.[2]
+      ...this.getCodeableConceptFields(
+        practitionerRole.specialty?.[2],
+        'specialty3'
       ),
-      specialty4: this.convertCodeableConcept(
-        practitionerRole.specialty?.[3]
+      ...this.getCodeableConceptFields(
+        practitionerRole.specialty?.[3],
+        'specialty4'
       ),
-      specialty5: this.convertCodeableConcept(
-        practitionerRole.specialty?.[4]
+      ...this.getCodeableConceptFields(
+        practitionerRole.specialty?.[4],
+        'specialty5'
       ),
-      code1: this.convertCodeableConcept(
-        practitionerRole.code?.[0]
+
+      ...this.getCodeableConceptFields(
+        practitionerRole.code?.[0],
+        'code1'
       ),
       code2: this.convertCodeableConcept(
         practitionerRole.code?.[1]

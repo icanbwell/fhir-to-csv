@@ -10,8 +10,10 @@ export class SlotExtractor extends BaseResourceExtractor<TSlot> {
       start: this.convertDateTime(slot.start),
       end: this.convertDateTime(slot.end),
       schedule: this.convertReference(slot.schedule),
-      serviceCategory1: this.convertCodeableConcept(
-        slot.serviceCategory?.[0]
+
+      ...this.getCodeableConceptFields(
+        slot.serviceCategory?.[0],
+        'serviceCategory1'
       ),
       serviceCategory2: this.convertCodeableConcept(
         slot.serviceCategory?.[1]
@@ -19,8 +21,10 @@ export class SlotExtractor extends BaseResourceExtractor<TSlot> {
       serviceCategory3: this.convertCodeableConcept(
         slot.serviceCategory?.[2]
       ),
-      serviceType1: this.convertCodeableConcept(
-        slot.serviceType?.[0]
+
+      ...this.getCodeableConceptFields(
+        slot.serviceType?.[0],
+        'serviceType1'
       ),
       serviceType2: this.convertCodeableConcept(
         slot.serviceType?.[1]
@@ -28,8 +32,10 @@ export class SlotExtractor extends BaseResourceExtractor<TSlot> {
       serviceType3: this.convertCodeableConcept(
         slot.serviceType?.[2]
       ),
-      specialty1: this.convertCodeableConcept(
-        slot.specialty?.[0]
+
+      ...this.getCodeableConceptFields(
+        slot.specialty?.[0],
+        'specialty1'
       ),
       specialty2: this.convertCodeableConcept(
         slot.specialty?.[1]

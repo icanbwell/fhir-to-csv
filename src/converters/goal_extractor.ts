@@ -8,8 +8,10 @@ export class GoalExtractor extends BaseResourceExtractor<TGoal> {
       patientId: this.getReferenceId(goal.subject),
       lifecycleStatus: goal.lifecycleStatus,
       description: goal.description?.text,
-      target1: this.convertCodeableConcept(
-        goal.target?.[0]?.detailCodeableConcept
+
+      ...this.getCodeableConceptFields(
+        goal.target?.[0]?.detailCodeableConcept,
+        'target1'
       ),
       target2: this.convertCodeableConcept(
         goal.target?.[0]?.detailQuantity

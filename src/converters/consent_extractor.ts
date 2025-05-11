@@ -7,8 +7,14 @@ export class ConsentExtractor extends BaseResourceExtractor<TConsent> {
     return {
       id: consent.id,
       status: consent.status,
-      scope: this.convertCodeableConcept(consent.scope),
-      category1: this.convertCodeableConcept(consent.category?.[0]),
+      ...this.getCodeableConceptFields(
+        consent.scope,
+        'scope'
+      ),
+      ...this.getCodeableConceptFields(
+        consent.category?.[0],
+        'category1'
+      ),
       category2: this.convertCodeableConcept(consent.category?.[1]),
       category3: this.convertCodeableConcept(consent.category?.[2]),
       patient: this.convertReference(consent.patient),

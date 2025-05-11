@@ -7,7 +7,10 @@ export class CommunicationExtractor extends BaseResourceExtractor<TCommunication
     return {
       id: communication.id,
       status: communication.status,
-      category1: this.convertCodeableConcept(communication.category?.[0]),
+      ...this.getCodeableConceptFields(
+        communication.category?.[0],
+        'category1'
+      ),
       category2: this.convertCodeableConcept(communication.category?.[1]),
       category3: this.convertCodeableConcept(communication.category?.[2]),
       priority: communication.priority,

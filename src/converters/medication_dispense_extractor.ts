@@ -8,7 +8,10 @@ export class MedicationDispenseExtractor extends BaseResourceExtractor<TMedicati
     return {
       id: medicationDispense.id,
       status: medicationDispense.status,
-      medicationCodeableConcept: this.convertCodeableConcept(medicationDispense.medicationCodeableConcept),
+      ...this.getCodeableConceptFields(
+        medicationDispense.medicationCodeableConcept,
+        'medication'
+      ),
       subjectId: this.getReferenceId(medicationDispense.subject),
       performer1: this.convertReference(medicationDispense.performer?.[0]?.actor),
       performer2: this.convertReference(medicationDispense.performer?.[1]?.actor),

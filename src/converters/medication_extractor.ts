@@ -7,7 +7,10 @@ export class MedicationExtractor extends BaseResourceExtractor<TMedication> {
   ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: medication.id,
-      code: this.convertCodeableConcept(medication.code),
+      ...this.getCodeableConceptFields(
+        medication.code,
+        'code'
+      ),
       status: medication.status,
       manufacturerId: this.getReferenceId(medication.manufacturer),
       form: this.convertCodeableConcept(medication.form),

@@ -8,12 +8,16 @@ export class ConditionExtractor extends BaseResourceExtractor<TCondition> {
     return {
       id: condition.id,
       patientId: this.getReferenceId(condition.subject),
-      clinicalStatus: this.convertCodeableConcept(condition.clinicalStatus),
+      ...this.getCodeableConceptFields(
+        condition.clinicalStatus,
+        'clinicalStatus'
+      ),
       verificationStatus: this.convertCodeableConcept(
         condition.verificationStatus
       ),
-      category1: this.convertCodeableConcept(
-        condition.category?.[0]
+      ...this.getCodeableConceptFields(
+        condition.category?.[0],
+        'category1'
       ),
       category2: this.convertCodeableConcept(
         condition.category?.[1]
@@ -22,7 +26,10 @@ export class ConditionExtractor extends BaseResourceExtractor<TCondition> {
         condition.category?.[2]
       ),
       severity: this.convertCodeableConcept(condition.severity),
-      code: this.convertCodeableConcept(condition.code),
+      ...this.getCodeableConceptFields(
+        condition.code,
+        'code'
+      ),
       bodySite1: this.convertCodeableConcept(
         condition.bodySite?.[0]
       ),

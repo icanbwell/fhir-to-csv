@@ -9,8 +9,10 @@ export class MedicationStatementExtractor extends BaseResourceExtractor<TMedicat
       id: medicationStatement.id,
       patientId: this.getReferenceId(medicationStatement.subject),
       status: medicationStatement.status,
-      medication: this.convertCodeableConcept(
-        medicationStatement.medicationCodeableConcept
+
+      ...this.getCodeableConceptFields(
+        medicationStatement.medicationCodeableConcept,
+        'medication'
       ),
       effective: this.convertDateTime(medicationStatement.effectiveDateTime),
       reasonCode1: this.convertCodeableConcept(

@@ -13,7 +13,10 @@ export class AppointmentExtractor extends BaseResourceExtractor<TAppointment> {
         )?.actor
       ),
       status: appointment.status,
-      type: this.convertCodeableConcept(appointment.appointmentType),
+      ...this.getCodeableConceptFields(
+        appointment.appointmentType,
+        'appointmentType'
+      ),
       reasonCode1: this.convertCodeableConcept(appointment.reasonCode?.[0]),
       reasonCode2: this.convertCodeableConcept(appointment.reasonCode?.[1]),
       reasonCode3: this.convertCodeableConcept(appointment.reasonCode?.[2]),

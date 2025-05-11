@@ -87,6 +87,29 @@ export abstract class BaseResourceExtractor<T> {
     return undefined;
   }
 
+  getCodeableConceptFields(
+    codeableConcept: TCodeableConcept | undefined,
+    prefix: string
+  ): Record<string, ExtractorValueType> {
+    if (!codeableConcept) return {};
+    return {
+      [`${prefix}`]: this.convertCodeableConcept(codeableConcept),
+      [`${prefix}Text`]: codeableConcept.text,
+      ...this.getCodingFields(
+        codeableConcept.coding?.[0],
+        `${prefix}Coding1`
+      ),
+      ...this.getCodingFields(
+        codeableConcept.coding?.[1],
+        `${prefix}Coding2`
+      ),
+      ...this.getCodingFields(
+        codeableConcept.coding?.[2],
+        `${prefix}Coding3`
+      ),
+    };
+  }
+
   convertReference(reference: TReference | undefined): ExtractorValueType {
     return reference ? `${reference.reference}` : reference;
   }

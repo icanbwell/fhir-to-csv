@@ -6,7 +6,10 @@ export class ExplanationOfBenefitExtractor extends BaseResourceExtractor<TExplan
     return {
       id: eob.id,
       status: eob.status,
-      type: this.convertCodeableConcept(eob.type),
+      ...this.getCodeableConceptFields(
+        eob.type,
+        'type'
+      ),
       patient: this.convertReference(eob.patient),
       created: this.convertDateTime(eob.created),
       insurer: this.convertReference(eob.insurer),
@@ -14,8 +17,10 @@ export class ExplanationOfBenefitExtractor extends BaseResourceExtractor<TExplan
       priority: this.convertCodeableConcept(eob.priority),
       paymentAmount: eob.payment?.amount?.value,
       paymentCurrency: eob.payment?.amount?.currency,
-      diagnosis1: this.convertCodeableConcept(
-        eob.diagnosis?.[0]?.diagnosisCodeableConcept
+
+      ...this.getCodeableConceptFields(
+        eob.diagnosis?.[0]?.diagnosisCodeableConcept,
+        'diagnosis1'
       ),
       diagnosis2: this.convertCodeableConcept(
         eob.diagnosis?.[1]?.diagnosisCodeableConcept
@@ -29,8 +34,10 @@ export class ExplanationOfBenefitExtractor extends BaseResourceExtractor<TExplan
       diagnosis5: this.convertCodeableConcept(
         eob.diagnosis?.[4]?.diagnosisCodeableConcept
       ),
-      procedure1: this.convertCodeableConcept(
-        eob.procedure?.[0]?.procedureCodeableConcept
+
+      ...this.getCodeableConceptFields(
+        eob.procedure?.[0]?.procedureCodeableConcept,
+        'procedure1'
       ),
       procedure2: this.convertCodeableConcept(
         eob.procedure?.[1]?.procedureCodeableConcept
@@ -44,9 +51,11 @@ export class ExplanationOfBenefitExtractor extends BaseResourceExtractor<TExplan
       procedure5: this.convertCodeableConcept(
         eob.procedure?.[4]?.procedureCodeableConcept
       ),
+
       item1Sequence: eob.item?.[0]?.sequence,
-      item1Service: this.convertCodeableConcept(
-        eob.item?.[0]?.productOrService
+      ...this.getCodeableConceptFields(
+        eob.item?.[0]?.productOrService,
+        'item1Service'
       ),
       item1Net: eob.item?.[0]?.net?.value,
       item1NetCurrency: eob.item?.[0]?.net?.currency,

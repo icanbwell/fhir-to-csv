@@ -8,8 +8,9 @@ export class AllergyIntoleranceExtractor extends BaseResourceExtractor<TAllergyI
     return {
       id: allergyIntolerance.id,
       patientId: this.getReferenceId(allergyIntolerance.patient),
-      clinicalStatus: this.convertCodeableConcept(
-        allergyIntolerance.clinicalStatus
+      ...this.getCodeableConceptFields(
+        allergyIntolerance.clinicalStatus,
+        'clinicalStatus'
       ),
       verificationStatus: this.convertCodeableConcept(
         allergyIntolerance.verificationStatus
@@ -19,7 +20,10 @@ export class AllergyIntoleranceExtractor extends BaseResourceExtractor<TAllergyI
       category2: allergyIntolerance.category?.[1],
       category3: allergyIntolerance.category?.[2],
       criticality: allergyIntolerance.criticality,
-      code: this.convertCodeableConcept(allergyIntolerance.code),
+      ...this.getCodeableConceptFields(
+        allergyIntolerance.code,
+        'code1'
+      ),
       reaction1: this.convertCodeableConcept(
         allergyIntolerance.reaction?.[0]?.manifestation?.[0]
       ),

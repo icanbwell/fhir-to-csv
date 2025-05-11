@@ -10,7 +10,10 @@ export class LocationExtractor extends BaseResourceExtractor<TLocation> {
       name: location.name,
       status: location.status,
       operationalStatus: this.convertCoding(location.operationalStatus),
-      type1: this.convertCodeableConcept(location.type?.[0]),
+      ...this.getCodeableConceptFields(
+        location.type?.[0],
+        'type1'
+      ),
       type2: this.convertCodeableConcept(location.type?.[1]),
       type3: this.convertCodeableConcept(location.type?.[2]),
       ...this.getAddressFields(

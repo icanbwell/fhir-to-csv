@@ -6,7 +6,10 @@ export class DeviceExtractor extends BaseResourceExtractor<TDevice> {
     return {
       id: device.id,
       patientId: this.getReferenceId(device.patient),
-      type: this.convertCodeableConcept(device.type),
+      ...this.getCodeableConceptFields(
+        device.type,
+        'type'
+      ),
       manufacturer: device.manufacturer,
       modelNumber: device.modelNumber,
       status: device.status,

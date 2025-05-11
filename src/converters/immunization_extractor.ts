@@ -9,7 +9,10 @@ export class ImmunizationExtractor extends BaseResourceExtractor<TImmunization> 
       id: immunization.id,
       patientId: this.getReferenceId(immunization.patient),
       status: immunization.status,
-      vaccineCode: this.convertCodeableConcept(immunization.vaccineCode),
+      ...this.getCodeableConceptFields(
+        immunization.vaccineCode,
+        'vaccineCode'
+      ),
       occurrence: this.convertDateTime(immunization.occurrenceDateTime),
       performer1: this.convertReference(immunization.performer?.[0]?.actor),
       performer2: this.convertReference(
