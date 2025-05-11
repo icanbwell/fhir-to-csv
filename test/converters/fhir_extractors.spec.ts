@@ -13,10 +13,116 @@ ExtractorRegistrar.registerAll();
 const mockPatient = {
   resourceType: 'Patient',
   id: 'patient-1',
+  meta: {
+    versionId: '1',
+    lastUpdated: '2023-01-01T10:00:00Z',
+    source: '#source',
+    profile: [
+      'http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient',
+    ],
+    security: [
+      {
+        system: 'https://www.icanbwell.com/owner',
+        code: 'foo',
+      },
+      {
+        system: 'https://www.icanbwell.com/access',
+        code: 'foo',
+      },
+      {
+        system: 'https://www.icanbwell.com/sourceAssigningAuthority',
+        code: 'foo',
+      },
+      {
+        system: 'https://www.icanbwell.com/access',
+        code: 'bar',
+      },
+      {
+        system: 'https://www.icanbwell.com/access',
+        code: 'bar2',
+      },
+      {
+        system: 'https://www.icanbwell.com/vendor',
+        code: 'booboo',
+      },
+      {
+        system: 'https://www.icanbwell.com/connectionType',
+        code: 'proa',
+      },
+    ],
+    tag: [
+      {
+        system: 'https://fhir.icanbwell.com/4_0_0/CodeSystem/server-behavior',
+        code: 'unregistered',
+        display: 'registration-status',
+      },
+      {
+        system: 'https://www.icanbwell.com/uuid',
+        code: '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
+      },
+    ],
+  },
+  identifier: [
+    {
+      type: {
+        coding: [
+          {
+            system:
+              'https://fhir.icanbwell.com/4_0_0/CodeSystem/vs-identifier-type',
+            code: 'fhir-master-person',
+          },
+        ],
+      },
+      system: 'http://www.icanbwell.com/master-person-fhir-id',
+    },
+    {
+      id: 'sourceId',
+      system: 'https://www.icanbwell.com/sourceId',
+      value: '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
+    },
+    {
+      id: 'uuid',
+      system: 'https://www.icanbwell.com/uuid',
+      value: '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
+    },
+    {
+      use: 'usual',
+      type: {
+        coding: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0203',
+            code: 'MB',
+          },
+        ],
+        text: 'Member Number',
+      },
+      system: 'https://www.healthpartners.com/polnum',
+      value: '1000000',
+    },
+    {
+      use: 'usual',
+      type: {
+        coding: [
+          {
+            system: 'http://terminology.hl7.org/CodeSystem/v2-0203',
+            code: 'SS',
+          },
+        ],
+        text: 'Social Security Number',
+      },
+      system: 'http://hl7.org/fhir/sid/us-ssn',
+      value: '111-11-1111',
+    },
+  ],
   name: [
     {
       given: ['John'],
       family: 'Doe',
+    },
+    {
+      text: 'FIRST M LAST',
+      family: 'LAST',
+      given: ['FIRST', 'M', 'LAST'],
     },
   ],
   birthDate: '1980-01-01',
@@ -129,11 +235,11 @@ describe('FHIR Resource Extractors', () => {
         patientId: 'patient-1',
         status: 'final',
         category: undefined,
-        code: '8302-2',
-        codeDisplay: 'Body Height',
-        valueQuantity: 175,
-        valueString: undefined,
-        effectiveDatetime: '2023-01-01T10:00:00Z',
+        code1: '8302-2 (Body Height)',
+        code1Code: '8302-2',
+        code1Display: 'Body Height',
+        value: '175 cm',
+        effective: '2023-01-01T10:00:00Z',
       });
     });
   });

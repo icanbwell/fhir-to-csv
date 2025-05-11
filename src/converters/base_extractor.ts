@@ -24,9 +24,28 @@ export abstract class BaseResourceExtractor<T> {
     if (coding.display && !coding.code) {
       return coding.display;
     }
-    return coding.display
-      ? `${coding.code} ${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`
-      : `${coding.code} ${this.getFriendlyNameForSystem(coding.system)}`;
+    if (coding.system && coding.code && coding.display) {
+      return `${coding.code} ${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`;
+    }
+    if (coding.system && coding.code) {
+      return `${coding.code} ${this.getFriendlyNameForSystem(coding.system)}`;
+    }
+    if (coding.system && coding.display) {
+      return `${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`;
+    }
+    if (coding.code && coding.display) {
+      return `${coding.code} (${coding.display})`;
+    }
+    if (coding.code) {
+      return coding.code;
+    }
+    if (coding.display) {
+      return coding.display;
+    }
+    if (coding.system) {
+      return this.getFriendlyNameForSystem(coding.system);
+    }
+    return undefined;
   }
 
   getFriendlyNameForSystem(system: string | undefined): string | undefined {
@@ -72,9 +91,27 @@ export abstract class BaseResourceExtractor<T> {
   }
 
   convertQuantity(quantity: TQuantity | undefined): ExtractorValueType {
-    return quantity
-      ? `${quantity.value ?? '[No value]'} ${quantity.unit ?? '[No unit]'} (${this.getFriendlyNameForSystem(quantity.system)})`
-      : quantity;
+    if (!quantity) return quantity;
+    // if there is a display name but no code, return the display name
+    if (quantity.value && !quantity.unit) {
+      return quantity.value;
+    }
+    if (quantity.value && quantity.unit && quantity.system) {
+      return `${quantity.value} ${quantity.unit} (${this.getFriendlyNameForSystem(quantity.system)})`;
+    }
+    if (quantity.value && quantity.unit) {
+      return `${quantity.value} ${quantity.unit}`;
+    }
+    if (quantity.system) {
+      return `${this.getFriendlyNameForSystem(quantity.system)}`;
+    }
+    if (quantity.unit) {
+      return `${quantity.unit}`;
+    }
+    if (quantity.value) {
+      return `${quantity.value}`;
+    }
+    return undefined;
   }
 
   convertAddress(address: TAddress | undefined): ExtractorValueType {

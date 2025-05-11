@@ -18,7 +18,28 @@ export class ObservationExtractor extends BaseResourceExtractor<TObservation> {
       category3: this.convertCodeableConcept(
         observation.category?.[2]
       ),
-      code: this.convertCodeableConcept(observation.code),
+
+      code1: this.convertCoding(observation.code?.coding?.[0]),
+      code1System: observation.code?.coding?.[0]?.system,
+      code1Code: observation.code?.coding?.[0]?.code,
+      code1Display: observation.code?.coding?.[0]?.display,
+      code2: this.convertCoding(observation.code?.coding?.[1]),
+      code2System: observation.code?.coding?.[1]?.system,
+      code2Code: observation.code?.coding?.[1]?.code,
+      code2Display: observation.code?.coding?.[1]?.display,
+      code3: this.convertCoding(observation.code?.coding?.[2]),
+      code3System: observation.code?.coding?.[2]?.system,
+      code3Code: observation.code?.coding?.[2]?.code,
+      code3Display: observation.code?.coding?.[2]?.display,
+      code4: this.convertCoding(observation.code?.coding?.[3]),
+      code4System: observation.code?.coding?.[3]?.system,
+      code4Code: observation.code?.coding?.[3]?.code,
+      code4Display: observation.code?.coding?.[3]?.display,
+      code5: this.convertCoding(observation.code?.coding?.[4]),
+      code5System: observation.code?.coding?.[4]?.system,
+      code5Code: observation.code?.coding?.[4]?.code,
+      code5Display: observation.code?.coding?.[4]?.display,
+
       value: this.convertQuantity(
         observation.valueQuantity) || observation.valueString,
       interpretation1: this.convertCodeableConcept(

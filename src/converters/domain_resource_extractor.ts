@@ -5,6 +5,7 @@ export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResour
   async extract(resource: TDomainResource): Promise<Record<string, ExtractorValueType>> {
     return {
       id: resource.id,
+      versionId: resource.meta?.versionId,
       lastUpdated: resource.meta?.lastUpdated?.toString(),
       sourceAssigningAuthority: resource.meta?.security?.find(
         security =>
