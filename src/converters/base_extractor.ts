@@ -195,6 +195,19 @@ export abstract class BaseResourceExtractor<T> {
       : identifier;
   }
 
+  getIdentifierFields(
+    identifier: TIdentifier | undefined,
+    prefix: string
+  ): Record<string, ExtractorValueType> {
+    if (!identifier) return {};
+    return {
+      [`${prefix}System`]: identifier.id || this.getFriendlyNameForSystem(identifier.system),
+      [`${prefix}Value`]: identifier.value,
+      [`${prefix}Type`]: this.convertCodeableConcept(identifier.type),
+      [`${prefix}Use`]: identifier.use,
+    };
+  }
+
   convertHumanName(humanName: THumanName | undefined): ExtractorValueType {
     if (!humanName) return humanName;
     if (humanName.text) {

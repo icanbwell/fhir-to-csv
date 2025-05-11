@@ -90,21 +90,26 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
       ),
       active: practitioner.active,
 
-      identifier1: this.convertIdentifier(
-        practitioner.identifier?.[0]
+      ...this.getIdentifierFields(
+        practitioner.identifier?.[0],
+        'identifier1'
       ),
-      identifier2: this.convertIdentifier(
-        practitioner.identifier?.[1]
+      ...this.getIdentifierFields(
+        practitioner.identifier?.[1],
+        'identifier2'
       ),
-      identifier3: this.convertIdentifier(
-        practitioner.identifier?.[2]
+      ...this.getIdentifierFields(
+        practitioner.identifier?.[2],
+        'identifier3'
       ),
-      identifier4: this.convertIdentifier(
-        practitioner.identifier?.[3]
+      ...this.getIdentifierFields(
+        practitioner.identifier?.[3],
+        'identifier4'
       ),
-      identifier5: this.convertIdentifier(
-        practitioner.identifier?.[4]
-      ),
+      ...this.getIdentifierFields(
+        practitioner.identifier?.[4],
+        'identifier5'
+      )
     };
   }
 }

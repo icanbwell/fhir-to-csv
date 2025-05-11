@@ -20,21 +20,27 @@ export class OrganizationExtractor extends BaseResourceExtractor<TOrganization> 
       type3: this.convertCodeableConcept(
         organization.type?.[2]
       ),
-      identifier1: this.convertIdentifier(
-        organization.identifier?.[0]
+      ...this.getIdentifierFields(
+        organization.identifier?.[0],
+        'identifier1'
       ),
-      identifier2: this.convertIdentifier(
-        organization.identifier?.[1]
+      ...this.getIdentifierFields(
+        organization.identifier?.[1],
+        'identifier2'
       ),
-      identifier3: this.convertIdentifier(
-        organization.identifier?.[2]
+      ...this.getIdentifierFields(
+        organization.identifier?.[2],
+        'identifier3'
       ),
-      identifier4: this.convertIdentifier(
-        organization.identifier?.[3]
+      ...this.getIdentifierFields(
+        organization.identifier?.[3],
+        'identifier4'
       ),
-      identifier5: this.convertIdentifier(
-        organization.identifier?.[4]
+      ...this.getIdentifierFields(
+        organization.identifier?.[4],
+        'identifier5'
       ),
+
       ...this.getAddressFields(
         organization.address?.[0],
         'address1'

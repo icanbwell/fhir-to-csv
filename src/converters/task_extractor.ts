@@ -19,11 +19,28 @@ export class TaskExtractor extends BaseResourceExtractor<TTask> {
       authoredOn: this.convertDateTime(task.authoredOn),
       lastModified: this.convertDateTime(task.lastModified),
       requester: this.convertReference(task.requester),
-      identifier1: this.convertIdentifier(task.identifier?.[0]),
-      identifier2: this.convertIdentifier(task.identifier?.[1]),
-      identifier3: this.convertIdentifier(task.identifier?.[2]),
-      identifier4: this.convertIdentifier(task.identifier?.[3]),
-      identifier5: this.convertIdentifier(task.identifier?.[4]),
+
+      ...this.getIdentifierFields(
+        task.identifier?.[0],
+        'identifier1'
+      ),
+      ...this.getIdentifierFields(
+        task.identifier?.[1],
+        'identifier2'
+      ),
+      ...this.getIdentifierFields(
+        task.identifier?.[2],
+        'identifier3'
+      ),
+      ...this.getIdentifierFields(
+        task.identifier?.[3],
+        'identifier4'
+      ),
+      ...this.getIdentifierFields(
+        task.identifier?.[4],
+        'identifier5'
+      ),
+
       instantiatesCanonical: task.instantiatesCanonical,
     };
   }

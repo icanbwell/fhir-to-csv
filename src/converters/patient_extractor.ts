@@ -7,11 +7,28 @@ export class PatientExtractor extends BaseResourceExtractor<TPatient> {
   ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: patient.id,
-      identifier1: this.convertIdentifier(patient.identifier?.[0]),
-      identifier2: this.convertIdentifier(patient.identifier?.[1]),
-      identifier3: this.convertIdentifier(patient.identifier?.[2]),
-      identifier4: this.convertIdentifier(patient.identifier?.[3]),
-      identifier5: this.convertIdentifier(patient.identifier?.[4]),
+
+      ...this.getIdentifierFields(
+        patient.identifier?.[0],
+        'identifier1'
+      ),
+      ...this.getIdentifierFields(
+        patient.identifier?.[1],
+        'identifier2'
+      ),
+      ...this.getIdentifierFields(
+        patient.identifier?.[2],
+        'identifier3'
+      ),
+      ...this.getIdentifierFields(
+        patient.identifier?.[3],
+        'identifier4'
+      ),
+      ...this.getIdentifierFields(
+        patient.identifier?.[4],
+        'identifier5'
+      ),
+
       ...this.getHumanNameFields(
         patient.name?.[0],
         'name1'
