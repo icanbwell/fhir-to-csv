@@ -132,6 +132,7 @@ export class FHIRBundleConverter {
       const worksheet = xlsx.utils.json_to_sheet(resources);
       xlsx.utils.book_append_sheet(workbook, worksheet, resourceType);
     }
+    // https://docs.sheetjs.com/docs/api/write-options/#writing-options
     return xlsx.write(workbook, {
       type: 'buffer',
       bookType: 'xlsx',
