@@ -41,6 +41,9 @@ export abstract class BaseResourceExtractor<T> {
       'http://hl7.org/fhir/sid/icd-11-pcs': 'ICD-11-PCS',
       'http://hl7.org/fhir/sid/cvx': 'CVX',
     };
+    if (system.startsWith('https://www.icanbwell.com/')) {
+      return system.replace('https://www.icanbwell.com/', '');
+    }
     return systemMap[system] || system;
   }
 
@@ -101,7 +104,7 @@ export abstract class BaseResourceExtractor<T> {
 
   convertIdentifier(identifier: TIdentifier | undefined): ExtractorValueType {
     return identifier
-      ? `${(identifier.id || this, this.getFriendlyNameForSystem(identifier.system))} | ${identifier.value}`
+      ? `${(identifier.id || this.getFriendlyNameForSystem(identifier.system))} | ${identifier.value}`
       : identifier;
   }
 
@@ -111,19 +114,10 @@ export abstract class BaseResourceExtractor<T> {
       : humanName;
   }
 
-  convertContactPoint(
-    contactPoint: TContactPoint | undefined
+  getEmail(
+    contactPoints: TContactPoint[] | undefined,
+    index: number
   ): ExtractorValueType {
-    if (!contactPoint) return contactPoint;
-    if (contactPoint.use) {
-      return contactPoint.value;
-    }
-    return contactPoint.use
-      ? `${this.getFriendlyNameForSystem(contactPoint.system)} | ${contactPoint.value} (${contactPoint.use})`
-      : `${this.getFriendlyNameForSystem(contactPoint.system)} | ${contactPoint.value}`;
-  }
-
-  getEmail(contactPoints: TContactPoint[] | undefined, index: number): ExtractorValueType {
     if (!contactPoints) return undefined;
     const emails = contactPoints.filter(
       contactPoint => contactPoint.system === 'email'
@@ -133,7 +127,10 @@ export abstract class BaseResourceExtractor<T> {
     return email.system === 'email' ? email.value : undefined;
   }
 
-  getPhone(contactPoints: TContactPoint[] | undefined, index: number): ExtractorValueType {
+  getPhone(
+    contactPoints: TContactPoint[] | undefined,
+    index: number
+  ): ExtractorValueType {
     if (!contactPoints) return undefined;
     const emails = contactPoints.filter(
       contactPoint => contactPoint.system === 'phone'
@@ -153,9 +150,10 @@ export abstract class BaseResourceExtractor<T> {
 
   convertExtension(extension: TExtension | undefined): ExtractorValueType {
     if (!extension) return extension;
-    if (!extension.url) return undefined;
+    const url = this.getFriendlyNameForSystem(extension.url);
+    if (!url) return undefined;
     return extension
-      ? `${extension.url} | ${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
+      ? `${url} | ${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
       : extension;
   }
 
