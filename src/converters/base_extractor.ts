@@ -259,7 +259,7 @@ export abstract class BaseResourceExtractor<T> {
     return dosage
       ? `${dosage.doseQuantity?.value ?? '[No value]'} ${dosage.doseQuantity?.unit ?? '[No unit]'}` +
           ` (${dosage.rateRatio?.numerator?.value ?? '[No value]'} ${dosage.rateRatio?.numerator?.unit ?? '[No unit]'}` +
-          ` / ${dosage.rateRatio?.denominator?.value ?? 'No value]'} ${dosage.rateRatio?.denominator?.unit ?? '[No unit]'})`
+          ` / ${dosage.rateRatio?.denominator?.value ?? '[No value]'} ${dosage.rateRatio?.denominator?.unit ?? '[No unit]'})`
       : dosage;
   }
 
