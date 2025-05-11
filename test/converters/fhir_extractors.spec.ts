@@ -6,6 +6,7 @@ import { TBundle } from '../../src/types/resources/Bundle';
 import { TPatient } from '../../src/types/resources/Patient';
 import { TResource } from '../../src/types/resources/Resource';
 import * as fs from 'node:fs';
+import { ExtractorRegistrar } from '../../src/registry/register';
 
 const mockPatient = {
   resourceType: 'Patient',
@@ -384,6 +385,7 @@ describe('FHIR Resource Extractors', () => {
 
   describe('ExtractorRegistry', () => {
     it('should register and retrieve extractors', async () => {
+      ExtractorRegistrar.registerAll()
       // Ensure extractors are registered
       const patientExtractor = ExtractorRegistry.getExtractor('Patient');
       const observationExtractor =
