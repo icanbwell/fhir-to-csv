@@ -10,6 +10,8 @@ import { THumanName } from '../types/partials/HumanName';
 import { TContactPoint } from '../types/partials/ContactPoint';
 import { TDosageDoseAndRate } from '../types/partials/DosageDoseAndRate';
 import { TExtension } from '../types/partials/Extension';
+import systemMap1 from './system_map.json';
+const systemMap: Record<string, string> = systemMap1;
 
 export type ExtractorValueType = string | number | Date | undefined | boolean;
 
@@ -29,23 +31,6 @@ export abstract class BaseResourceExtractor<T> {
 
   getFriendlyNameForSystem(system: string | undefined): string | undefined {
     if (!system) return system;
-    const systemMap: Record<string, string> = {
-      'http://loinc.org': 'Loinc',
-      'http://snomed.info/sct': 'Snomed',
-      'http://hl7.org/fhir/v2/0203': 'HL7',
-      'http://hl7.org/fhir/v3/NullFlavor': 'HL7',
-      'http://terminology.hl7.org/CodeSystem/v3-NullFlavor': 'HL7',
-      'http://www.ama-assn.org/go/cpt': 'CPT',
-      'http://www.nlm.nih.gov/research/umls/rxnorm': 'RxNorm',
-      'http://hl7.org/fhir/sid/icd-10-cm': 'ICD-10-CM',
-      'http://hl7.org/fhir/sid/icd-10': 'ICD-10',
-      'http://hl7.org/fhir/sid/icd-9-cm': 'ICD-9-CM',
-      'http://hl7.org/fhir/sid/icd-9': 'ICD-9',
-      'http://hl7.org/fhir/sid/icd-11': 'ICD-11',
-      'http://hl7.org/fhir/sid/icd-11-cm': 'ICD-11-CM',
-      'http://hl7.org/fhir/sid/icd-11-pcs': 'ICD-11-PCS',
-      'http://hl7.org/fhir/sid/cvx': 'CVX',
-    };
     if (system.startsWith('https://www.icanbwell.com/')) {
       return system.replace('https://www.icanbwell.com/', '');
     }
