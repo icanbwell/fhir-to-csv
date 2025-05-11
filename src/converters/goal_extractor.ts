@@ -8,8 +8,18 @@ export class GoalExtractor extends BaseResourceExtractor<TGoal> {
       patientId: this.getReferenceId(goal.subject),
       lifecycleStatus: goal.lifecycleStatus,
       description: goal.description?.text,
-      target: this.convertCodeableConcept(goal.target?.[0]?.measure),
-      dueDate: this.convertDateTime(goal.target?.[0]?.dueDate),
+      target1: this.convertCodeableConcept(
+        goal.target?.[0]?.detailCodeableConcept
+      ),
+      target2: this.convertCodeableConcept(
+        goal.target?.[0]?.detailQuantity
+      ),
+      target3: this.convertCodeableConcept(
+        goal.target?.[0]?.detailRange
+      ),
+      dueDate1: this.convertDateTime(goal.target?.[0]?.dueDate),
+      dueDate2: this.convertDateTime(goal.target?.[1]?.dueDate),
+      dueDate3: this.convertDateTime(goal.target?.[2]?.dueDate),
     };
   }
 }

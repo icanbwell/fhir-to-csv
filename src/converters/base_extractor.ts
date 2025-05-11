@@ -17,9 +17,10 @@ export abstract class BaseResourceExtractor<T> {
   abstract extract(resource: T): Promise<Record<string, ExtractorValueType>>;
 
   convertCoding(coding: TCoding | undefined): ExtractorValueType {
-    return coding
+    if (!coding) return coding;
+    return coding.display
       ? `${coding.code} ${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`
-      : coding;
+      : `${coding.code} ${this.getFriendlyNameForSystem(coding.system)}`;
   }
 
   getFriendlyNameForSystem(system: string | undefined): string | undefined {
@@ -57,9 +58,10 @@ export abstract class BaseResourceExtractor<T> {
     // combine all codings into a single string
     if (codeableConcept.coding) {
       return codeableConcept.coding
-        .map(
-          coding =>
-            `${coding.code} ${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`
+        .map(coding =>
+          coding.display
+            ? `${this.getFriendlyNameForSystem(coding.system)}:${coding.code} (${coding.display})`
+            : `${this.getFriendlyNameForSystem(coding.system)}:${coding.code}`
         )
         .join('|');
     }
@@ -92,7 +94,7 @@ export abstract class BaseResourceExtractor<T> {
 
   convertAddress(address: TAddress | undefined): ExtractorValueType {
     return address
-      ? `${address.line?.join(', ')} ${address.city}, ${address.state} ${address.postalCode} (${address.country})`
+      ? `${address.line?.join(', ')} ${address.city ?? ''}, ${address.state ?? ''} ${address.postalCode ?? ''} (${address.country ?? ''})`
       : address;
   }
 
@@ -104,14 +106,15 @@ export abstract class BaseResourceExtractor<T> {
 
   convertIdentifier(identifier: TIdentifier | undefined): ExtractorValueType {
     return identifier
-      ? `${(identifier.id || this.getFriendlyNameForSystem(identifier.system))} | ${identifier.value}`
+      ? `${identifier.id || this.getFriendlyNameForSystem(identifier.system)} | ${identifier.value}`
       : identifier;
   }
 
   convertHumanName(humanName: THumanName | undefined): ExtractorValueType {
-    return humanName
+    if (!humanName) return humanName;
+    return humanName.use
       ? `${humanName.given?.join(' ')} ${humanName.family} (${humanName.use})`
-      : humanName;
+      : `${humanName.given?.join(' ')} ${humanName.family}`;
   }
 
   getEmail(
@@ -144,14 +147,14 @@ export abstract class BaseResourceExtractor<T> {
     dosage: TDosageDoseAndRate | undefined
   ): ExtractorValueType {
     return dosage
-      ? `${dosage.doseQuantity?.value} ${dosage.doseQuantity?.unit} (${dosage.rateRatio?.numerator?.value} ${dosage.rateRatio?.numerator?.unit} / ${dosage.rateRatio?.denominator?.value} ${dosage.rateRatio?.denominator?.unit})`
+      ? `${dosage.doseQuantity?.value ?? 'N/A'} ${dosage.doseQuantity?.unit ?? 'N/A'} (${dosage.rateRatio?.numerator?.value ?? 'N/A'} ${dosage.rateRatio?.numerator?.unit ?? 'N/A'} / ${dosage.rateRatio?.denominator?.value ?? 'N/A'} ${dosage.rateRatio?.denominator?.unit ?? 'N/A'})`
       : dosage;
   }
 
   convertExtension(extension: TExtension | undefined): ExtractorValueType {
     if (!extension) return extension;
     const url = this.getFriendlyNameForSystem(extension.url);
-    if (!url) return undefined;
+    if (!url) return 'No URL';
     return extension
       ? `${url} | ${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
       : extension;
@@ -164,9 +167,7 @@ export abstract class BaseResourceExtractor<T> {
     if (!extensions) return undefined;
     const extension = extensions.find(ext => ext.url === url);
     if (!extension) return undefined;
-    return extension.url === url
-      ? `${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
-      : undefined;
+    return `${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`;
   }
 }
 

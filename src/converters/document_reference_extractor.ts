@@ -9,7 +9,7 @@ export class DocumentReferenceExtractor extends BaseResourceExtractor<TDocumentR
       id: documentReference.id,
       status: documentReference.status,
       type: this.convertCodeableConcept(documentReference.type),
-      categoryCode: this.convertCodeableConcept(
+      category1: this.convertCodeableConcept(
         documentReference.category?.[0]
       ),
       category2: this.convertCodeableConcept(
