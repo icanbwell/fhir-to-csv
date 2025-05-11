@@ -26,9 +26,11 @@ import { CoverageExtractor } from './coverage_extractor';
 import { Extractor } from './base_extractor';
 import { TResource } from '../types/resources/Resource';
 import { DomainResourceExtractor } from './domain_resource_extractor';
+import { AppointmentExtractor } from './appointment_extractor';
 
 const extractorMap = {
   DomainResource: DomainResourceExtractor,
+  Appointment: AppointmentExtractor,
   Patient: PatientExtractor,
   Observation: ObservationExtractor,
   Condition: ConditionExtractor,

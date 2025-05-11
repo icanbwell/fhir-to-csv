@@ -2,18 +2,31 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TDocumentReference } from '../types/resources/DocumentReference';
 
 export class DocumentReferenceExtractor extends BaseResourceExtractor<TDocumentReference> {
-  async extract(docRef: TDocumentReference): Promise<Record<string, ExtractorValueType>> {
+  async extract(
+    documentReference: TDocumentReference
+  ): Promise<Record<string, ExtractorValueType>> {
     return {
-      id: docRef.id,
-      patientId: docRef.subject?.reference?.split('/')?.pop(),
-      status: docRef.status,
-      type: docRef.type?.coding?.[0]?.code,
-      typeDisplay: docRef.type?.coding?.[0]?.display,
-      category: docRef.category?.[0]?.coding?.[0]?.code,
-      date: docRef.date?.toString(),
-      contentUrl: docRef.content?.[0]?.attachment?.url,
-      contentTitle: docRef.content?.[0]?.attachment?.title,
-      context: docRef.context?.encounter?.[0]?.reference,
+      id: documentReference.id,
+      status: documentReference.status,
+      type: this.convertCodeableConcept(documentReference.type),
+      categoryCode: this.convertCodeableConcept(
+        documentReference.category?.[0]
+      ),
+      category2: this.convertCodeableConcept(
+        documentReference.category?.[1]
+      ),
+      category3: this.convertCodeableConcept(
+        documentReference.category?.[2]
+      ),
+      subject: this.convertReference(documentReference.subject),
+      subjectId: this.getReferenceId(documentReference.subject),
+      date: this.convertDateTime(documentReference.date),
+      author1: this.getReferenceId(documentReference.author?.[0]),
+      author2: this.getReferenceId(documentReference.author?.[1]),
+      author3: this.getReferenceId(documentReference.author?.[2]),
+      content1: documentReference.content?.[0]?.attachment?.url,
+      content2: documentReference.content?.[1]?.attachment?.url,
+      content3: documentReference.content?.[2]?.attachment?.url,
     };
   }
 }

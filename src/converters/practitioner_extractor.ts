@@ -7,34 +7,79 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
   ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: practitioner.id,
-      nameGiven: practitioner.name?.[0]?.given?.[0],
-      nameFamily: practitioner.name?.[0]?.family,
-      namePrefix: practitioner.name?.[0]?.prefix?.[0],
+      name1: this.convertHumanName(practitioner.name?.[0]),
+      name2: this.convertHumanName(practitioner.name?.[1]),
+      name3: this.convertHumanName(practitioner.name?.[2]),
+      name4: this.convertHumanName(practitioner.name?.[3]),
+      name5: this.convertHumanName(practitioner.name?.[4]),
       gender: practitioner.gender,
-      birthDate: practitioner.birthDate?.toString(),
-      qualifications: practitioner.qualification?.map(qual => ({
-        code: qual.code?.coding?.[0]?.code,
-        display: qual.code?.coding?.[0]?.display,
-        issuer: qual.issuer?.display,
-      })),
-      communicationLanguages: practitioner.communication?.map(
-        lang => lang.coding?.[0]?.code
+      birthDate: this.convertDateTime(practitioner.birthDate),
+      telecom1: this.convertContactPoint(practitioner.telecom?.[0]),
+      telecom2: this.convertContactPoint(practitioner.telecom?.[1]),
+      telecom3: this.convertContactPoint(practitioner.telecom?.[2]),
+      telecom4: this.convertContactPoint(practitioner.telecom?.[3]),
+      telecom5: this.convertContactPoint(practitioner.telecom?.[4]),
+      address1: this.convertAddress(practitioner.address?.[0]),
+      address2: this.convertAddress(practitioner.address?.[1]),
+      address3: this.convertAddress(practitioner.address?.[2]),
+      address4: this.convertAddress(practitioner.address?.[3]),
+      address5: this.convertAddress(practitioner.address?.[4]),
+      qualification1: this.convertCodeableConcept(
+        practitioner.qualification?.[0]?.code
       ),
-      name: {
-        given: practitioner.name?.[0]?.given?.[0],
-        family: practitioner.name?.[0]?.family,
-        prefix: practitioner.name?.[0]?.prefix?.[0],
-      },
-      identifier: practitioner.identifier?.map(id => ({
-        system: id.system,
-        value: id.value,
-      })),
+      qualification1Issuer: this.convertReference(
+        practitioner.qualification?.[0]?.issuer
+      ),
+      qualification2: this.convertCodeableConcept(
+        practitioner.qualification?.[1]?.code
+      ),
+      qualification2Issuer: this.convertReference(
+        practitioner.qualification?.[1]?.issuer
+      ),
+      qualification3: this.convertCodeableConcept(
+        practitioner.qualification?.[2]?.code
+      ),
+      qualification3Issuer: this.convertReference(
+        practitioner.qualification?.[2]?.issuer
+      ),
+      qualification4: this.convertCodeableConcept(
+        practitioner.qualification?.[3]?.code
+      ),
+      qualification4Issuer: this.convertReference(
+        practitioner.qualification?.[3]?.issuer
+      ),
+      qualification5: this.convertCodeableConcept(
+        practitioner.qualification?.[4]?.code
+      ),
+      qualification5Issuer: this.convertReference(
+        practitioner.qualification?.[4]?.issuer
+      ),
+      communication1: this.convertCodeableConcept(
+        practitioner.communication?.[0]
+      ),
+      communication2: this.convertCodeableConcept(
+        practitioner.communication?.[1]
+      ),
+      communication3: this.convertCodeableConcept(
+        practitioner.communication?.[2]
+      ),
       active: practitioner.active,
-      telecom: practitioner.telecom?.map(contact => ({
-        system: contact.system,
-        value: contact.value,
-        use: contact.use,
-      })),
+
+      identifier1: this.convertIdentifier(
+        practitioner.identifier?.[0]
+      ),
+      identifier2: this.convertIdentifier(
+        practitioner.identifier?.[1]
+      ),
+      identifier3: this.convertIdentifier(
+        practitioner.identifier?.[2]
+      ),
+      identifier4: this.convertIdentifier(
+        practitioner.identifier?.[3]
+      ),
+      identifier5: this.convertIdentifier(
+        practitioner.identifier?.[4]
+      ),
     };
   }
 }

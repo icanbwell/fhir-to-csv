@@ -2,20 +2,36 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TObservation } from '../types/resources/Observation';
 
 export class ObservationExtractor extends BaseResourceExtractor<TObservation> {
-  async extract(observation: TObservation): Promise<Record<string, ExtractorValueType>> {
+  async extract(
+    observation: TObservation
+  ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: observation.id,
-      patientId: observation.subject?.reference?.split('/')[1],
+      patientId: this.getReferenceId(observation.subject),
       status: observation.status,
-      category: observation.category?.[0]?.coding?.[0]?.display,
-      code: observation.code?.coding?.[0]?.code,
-      codeDisplay: observation.code?.coding?.[0]?.display,
-      valueQuantity: observation.valueQuantity?.value,
-      valueString: observation.valueString,
-      effectiveDatetime: observation.effectiveDateTime,
-      interpretation: observation.interpretation?.[0]?.coding?.[0]?.display,
-      bodySite: observation.bodySite?.text,
-      performer: observation.performer?.[0]?.reference,
+      category1: this.convertCodeableConcept(
+        observation.category?.[0]
+      ),
+      category2: this.convertCodeableConcept(
+        observation.category?.[1]
+      ),
+      category3: this.convertCodeableConcept(
+        observation.category?.[2]
+      ),
+      code: this.convertCodeableConcept(observation.code),
+      value: this.convertQuantity(
+        observation.valueQuantity) || observation.valueString,
+      interpretation1: this.convertCodeableConcept(
+        observation.interpretation?.[0]
+      ),
+      interpretation2: this.convertCodeableConcept(
+        observation.interpretation?.[1]
+      ),
+      interpretation3: this.convertCodeableConcept(
+        observation.interpretation?.[2]
+      ),
+      effective: this.convertDateTime(observation.effectiveDateTime),
+      issued: this.convertDateTime(observation.issued),
     };
   }
 }

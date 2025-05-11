@@ -2,19 +2,21 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TLocation } from '../types/resources/Location';
 
 export class LocationExtractor extends BaseResourceExtractor<TLocation> {
-  async extract(location: TLocation): Promise<Record<string, ExtractorValueType>> {
+  async extract(
+    location: TLocation
+  ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: location.id,
       name: location.name,
       status: location.status,
       operationalStatus: this.convertCoding(location.operationalStatus),
-      typeCode: location.type?.[0]?.coding?.[0]?.code,
-      typeDisplay: location.type?.[0]?.coding?.[0]?.display,
-      addressLine: location.address?.line?.[0],
-      addressCity: location.address?.city,
-      addressState: location.address?.state,
-      addressPostalCode: location.address?.postalCode,
-      managingOrganizationId: this.convertReference(location.managingOrganization)
+      type1: this.convertCodeableConcept(location.type?.[0]),
+      type2: this.convertCodeableConcept(location.type?.[1]),
+      type3: this.convertCodeableConcept(location.type?.[2]),
+      address: this.convertAddress(location.address),
+      managingOrganizationId: this.convertReference(
+        location.managingOrganization
+      ),
     };
   }
 }

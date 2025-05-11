@@ -2,23 +2,33 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TCareTeam } from '../types/resources/CareTeam';
 
 export class CareTeamExtractor extends BaseResourceExtractor<TCareTeam> {
-  async extract(careTeam: TCareTeam): Promise<Record<string, ExtractorValueType>> {
+  async extract(
+    careTeam: TCareTeam
+  ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: careTeam.id,
-      patientId: careTeam.subject?.reference?.split('/')?.pop(),
+      patientId: this.getReferenceId(careTeam.subject),
       status: careTeam.status,
-      category: careTeam.category?.[0]?.coding?.[0]?.code,
-      categoryDisplay: careTeam.category?.[0]?.coding?.[0]?.display,
+      category1: this.convertCodeableConcept(
+        careTeam.category?.[0]
+      ),
+      category2: this.convertCodeableConcept(
+        careTeam.category?.[1]
+      ),
+      category3: this.convertCodeableConcept(
+        careTeam.category?.[2]
+      ),
       name: careTeam.name,
-      participants: careTeam.participant?.map(participant => ({
-        memberId: participant.member?.reference?.split('/')?.pop(),
-        roleCode: participant.role?.[0].coding?.[0]?.code,
-        roleDisplay: participant.role?.[0].coding?.[0]?.display,
-        periodStart: participant.period?.start?.toString(),
-        periodEnd: participant.period?.end?.toString(),
-      })),
-      reasonCode: careTeam.reasonCode?.[0]?.coding?.[0]?.display,
-      managingOrganization: careTeam.managingOrganization?.[0]?.display,
+      period: this.convertPeriod(careTeam.period),
+      participant1: this.convertReference(
+        careTeam.participant?.[0]?.member
+      ),
+      participant2: this.convertReference(
+        careTeam.participant?.[1]?.member
+      ),
+      participant3: this.convertReference(
+        careTeam.participant?.[2]?.member
+      ),
     };
   }
 }

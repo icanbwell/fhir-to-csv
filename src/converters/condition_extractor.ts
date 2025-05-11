@@ -2,20 +2,39 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TCondition } from '../types/resources/Condition';
 
 export class ConditionExtractor extends BaseResourceExtractor<TCondition> {
-  async extract(condition: TCondition): Promise<Record<string, ExtractorValueType>> {
+  async extract(
+    condition: TCondition
+  ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: condition.id,
-      patientId: condition.subject?.reference?.split('/')[1],
-      clinicalStatus: condition.clinicalStatus?.coding?.[0]?.display,
-      verificationStatus: condition.verificationStatus?.coding?.[0]?.display,
-      category: condition.category?.[0]?.coding?.[0]?.display,
-      code: condition.code?.coding?.[0]?.code,
-      codeDisplay: condition.code?.coding?.[0]?.display,
-      onsetDateTime: condition.onsetDateTime,
-      recordedDate: condition.recordedDate?.toString(),
-      abatementDateTime: condition.abatementDateTime,
-      severity: condition.severity?.coding?.[0]?.display,
-      bodySite: condition.bodySite?.[0]?.coding?.[0]?.display,
+      patientId: this.getReferenceId(condition.subject),
+      clinicalStatus: this.convertCodeableConcept(condition.clinicalStatus),
+      verificationStatus: this.convertCodeableConcept(
+        condition.verificationStatus
+      ),
+      category1: this.convertCodeableConcept(
+        condition.category?.[0]
+      ),
+      category2: this.convertCodeableConcept(
+        condition.category?.[1]
+      ),
+      category3: this.convertCodeableConcept(
+        condition.category?.[2]
+      ),
+      severity: this.convertCodeableConcept(condition.severity),
+      code: this.convertCodeableConcept(condition.code),
+      bodySite1: this.convertCodeableConcept(
+        condition.bodySite?.[0]
+      ),
+      bodySite2: this.convertCodeableConcept(
+        condition.bodySite?.[1]
+      ),
+      bodySite3: this.convertCodeableConcept(
+        condition.bodySite?.[2]
+      ),
+      onset: this.convertDateTime(condition.onsetDateTime),
+      abatement: this.convertDateTime(condition.abatementDateTime),
+      recordedDate: this.convertDateTime(condition.recordedDate),
     };
   }
 }

@@ -10,7 +10,15 @@ export class CarePlanExtractor extends BaseResourceExtractor<TCarePlan> {
       patientId: this.convertReference(carePlan.subject),
       status: carePlan.status,
       intent: carePlan.intent,
-      category: this.convertCodeableConcepts(carePlan.category),
+      category1: this.convertCodeableConcept(
+        carePlan.category?.[0]
+      ),
+      category2: this.convertCodeableConcept(
+        carePlan.category?.[1]
+      ),
+      category3: this.convertCodeableConcept(
+        carePlan.category?.[2]
+      ),
       title: carePlan.title,
       description: carePlan.description,
       period: this.convertPeriod(carePlan.period),

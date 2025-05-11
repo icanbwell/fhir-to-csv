@@ -7,41 +7,78 @@ export class PractitionerRoleExtractor extends BaseResourceExtractor<TPractition
   ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: practitionerRole.id,
-      practitionerId: practitionerRole.practitioner?.reference
-        ?.split('/')
-        ?.pop(),
-      organizationId: practitionerRole.organization?.reference
-        ?.split('/')
-        ?.pop(),
+      practitionerId: this.getReferenceId(practitionerRole.practitioner),
+      organizationId: this.getReferenceId(practitionerRole.organization),
       active: practitionerRole.active,
-      specialtyCodes: practitionerRole.specialty?.map(
-        specialty => specialty.coding?.[0]?.code
+      specialty1: this.convertCodeableConcept(
+        practitionerRole.specialty?.[0]
       ),
-      specialtyDisplays: practitionerRole.specialty?.map(
-        specialty => specialty.coding?.[0]?.display
+      specialty2: this.convertCodeableConcept(
+        practitionerRole.specialty?.[1]
       ),
-      roleCodes: practitionerRole.code?.map(role => role.coding?.[0]?.code),
-      roleDisplays: practitionerRole.code?.map(
-        role => role.coding?.[0]?.display
+      specialty3: this.convertCodeableConcept(
+        practitionerRole.specialty?.[2]
       ),
-      code: practitionerRole.code?.map(code => code.coding?.[0]?.display),
-      specialty: practitionerRole.specialty?.map(
-        specialty => specialty.coding?.[0]?.display
+      specialty4: this.convertCodeableConcept(
+        practitionerRole.specialty?.[3]
       ),
-      location: practitionerRole.location?.map(location => location.reference),
-      healthcareService: practitionerRole.healthcareService?.map(
-        service => service.reference
+      specialty5: this.convertCodeableConcept(
+        practitionerRole.specialty?.[4]
       ),
-      telecom: practitionerRole.telecom?.map(contact => ({
-        system: contact.system,
-        value: contact.value,
-        use: contact.use,
-      })),
-      availableTime: practitionerRole.availableTime?.map(time => ({
-        daysOfWeek: time.daysOfWeek,
-        availableStartTime: time.availableStartTime,
-        availableEndTime: time.availableEndTime,
-      })),
+      code1: this.convertCodeableConcept(
+        practitionerRole.code?.[0]
+      ),
+      code2: this.convertCodeableConcept(
+        practitionerRole.code?.[1]
+      ),
+      code3: this.convertCodeableConcept(
+        practitionerRole.code?.[2]
+      ),
+      code4: this.convertCodeableConcept(
+        practitionerRole.code?.[3]
+      ),
+      code5: this.convertCodeableConcept(
+        practitionerRole.code?.[4]
+      ),
+      location1: this.convertReference(
+        practitionerRole.location?.[0]
+      ),
+      location2: this.convertReference(
+        practitionerRole.location?.[1]
+      ),
+      location3: this.convertReference(
+        practitionerRole.location?.[2]
+      ),
+      location4: this.convertReference(
+        practitionerRole.location?.[3]
+      ),
+      location5: this.convertReference(
+        practitionerRole.location?.[4]
+      ),
+      healthcareService1: this.convertReference(
+        practitionerRole.healthcareService?.[0]
+      ),
+      healthcareService2: this.convertReference(
+        practitionerRole.healthcareService?.[1]
+      ),
+      healthcareService3: this.convertReference(
+        practitionerRole.healthcareService?.[2]
+      ),
+      healthcareService4: this.convertReference(
+        practitionerRole.healthcareService?.[3]
+      ),
+      healthcareService5: this.convertReference(
+        practitionerRole.healthcareService?.[4]
+      ),
+      telecom1: this.convertContactPoint(
+        practitionerRole.telecom?.[0]
+      ),
+      telecom2: this.convertContactPoint(
+        practitionerRole.telecom?.[1]
+      ),
+      telecom3: this.convertContactPoint(
+        practitionerRole.telecom?.[2]
+      )
     };
   }
 }

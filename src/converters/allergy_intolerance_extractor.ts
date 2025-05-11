@@ -15,11 +15,19 @@ export class AllergyIntoleranceExtractor extends BaseResourceExtractor<TAllergyI
         allergyIntolerance.verificationStatus
       ),
       type: allergyIntolerance.type,
-      category: allergyIntolerance.category?.join('|'),
+      category1: allergyIntolerance.category?.[0],
+      category2: allergyIntolerance.category?.[1],
+      category3: allergyIntolerance.category?.[2],
       criticality: allergyIntolerance.criticality,
       code: this.convertCodeableConcept(allergyIntolerance.code),
-      reaction: this.convertCodeableConcepts(
-        allergyIntolerance.reaction?.[0]?.manifestation
+      reaction1: this.convertCodeableConcept(
+        allergyIntolerance.reaction?.[0]?.manifestation?.[0]
+      ),
+      reaction2: this.convertCodeableConcept(
+        allergyIntolerance.reaction?.[0]?.manifestation?.[1]
+      ),
+      reaction3: this.convertCodeableConcept(
+        allergyIntolerance.reaction?.[0]?.manifestation?.[2]
       ),
       onset: this.convertDateTime(allergyIntolerance.onsetDateTime),
       recordedDate: this.convertDateTime(allergyIntolerance.recordedDate),

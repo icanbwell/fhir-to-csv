@@ -2,6 +2,12 @@ import { TCoding } from '../types/partials/Coding';
 import { TReference } from '../types/partials/Reference';
 import { TCodeableConcept } from '../types/partials/CodeableConcept';
 import { TPeriod } from '../types/partials/Period';
+import { TQuantity } from '../types/partials/Quantity';
+import { TAddress } from '../types/partials/Address';
+import { TRatio } from '../types/partials/Ratio';
+import { TIdentifier } from '../types/partials/Identifier';
+import { THumanName } from '../types/partials/HumanName';
+import { TContactPoint } from '../types/partials/ContactPoint';
 
 export type ExtractorValueType = string | number | Date | undefined | boolean;
 
@@ -9,30 +15,39 @@ export abstract class BaseResourceExtractor<T> {
   abstract extract(resource: T): Promise<Record<string, ExtractorValueType>>;
 
   convertCoding(coding: TCoding | undefined): ExtractorValueType {
-    return coding ? `${coding.code} ${coding.system} (${coding.display})`: coding;
+    return coding
+      ? `${coding.code} ${coding.system} (${coding.display})`
+      : coding;
   }
 
-  convertCodings(codings: TCoding[] | undefined): ExtractorValueType {
-    return codings
-      ? codings.map(coding => `${coding.code} ${coding.system} (${coding.display})`).join(', ')
-      : codings;
-  }
+  // convertCodings(codings: TCoding[] | undefined): ExtractorValueType {
+  //   return codings
+  //     ? codings
+  //         .map(coding => `${coding.code} ${coding.system} (${coding.display})`)
+  //         .join(', ')
+  //     : codings;
+  // }
 
   convertCodeableConcept(
     codeableConcept: TCodeableConcept | undefined
   ): ExtractorValueType {
-    return codeableConcept ?
-      `${codeableConcept.coding?.[0]?.code} ${codeableConcept.coding?.[0]?.system} (${codeableConcept.coding?.[0]?.display})` :
-      codeableConcept;
+    return codeableConcept
+      ? `${codeableConcept.coding?.[0]?.code} ${codeableConcept.coding?.[0]?.system} (${codeableConcept.coding?.[0]?.display})`
+      : codeableConcept;
   }
 
-  convertCodeableConcepts(
-    codeableConcepts: TCodeableConcept[] | undefined
-  ): ExtractorValueType {
-    return codeableConcepts
-      ? codeableConcepts.map(cc => `${cc.coding?.[0]?.code} ${cc.coding?.[0]?.system} (${cc.coding?.[0]?.display})`).join(', ')
-      : codeableConcepts;
-  }
+  // convertCodeableConcepts(
+  //   codeableConcepts: TCodeableConcept[] | undefined
+  // ): ExtractorValueType {
+  //   return codeableConcepts
+  //     ? codeableConcepts
+  //         .map(
+  //           cc =>
+  //             `${cc.coding?.[0]?.code} ${cc.coding?.[0]?.system} (${cc.coding?.[0]?.display})`
+  //         )
+  //         .join(', ')
+  //     : codeableConcepts;
+  // }
 
   convertReference(reference: TReference | undefined): ExtractorValueType {
     return reference ? `${reference.reference} (${reference.type})` : reference;
@@ -46,12 +61,54 @@ export abstract class BaseResourceExtractor<T> {
     return dateTime ? dateTime.toString() : dateTime;
   }
 
-  convertPeriod(
-    period: TPeriod | undefined
-  ): ExtractorValueType {
+  convertPeriod(period: TPeriod | undefined): ExtractorValueType {
     return period
       ? `${period.start?.toString()} - ${period.end?.toString()}`
       : period;
+  }
+
+  convertQuantity(quantity: TQuantity | undefined): ExtractorValueType {
+    return quantity
+      ? `${quantity.value} ${quantity.unit} (${quantity.system})`
+      : quantity;
+  }
+
+  convertAddress(address: TAddress | undefined): ExtractorValueType {
+    return address
+      ? `${address.line?.join(', ')} ${address.city}, ${address.state} ${address.postalCode} (${address.country})`
+      : address;
+  }
+
+  convertRatio(ration: TRatio | undefined): ExtractorValueType {
+    return ration
+      ? `${ration.numerator?.value} ${ration.numerator?.unit} / ${ration.denominator?.value} ${ration.denominator?.unit}`
+      : ration;
+  }
+
+  convertIdentifier(identifier: TIdentifier | undefined): ExtractorValueType {
+    return identifier
+      ? `${identifier.system} | ${identifier.value}`
+      : identifier;
+  }
+
+  convertHumanName(humanName: THumanName | undefined): ExtractorValueType {
+    return humanName
+      ? `${humanName.given?.join(' ')} ${humanName.family} (${humanName.use})`
+      : humanName;
+  }
+
+  convertContactPoint(
+    contactPoint: TContactPoint | undefined
+  ): ExtractorValueType {
+    return contactPoint
+      ? `${contactPoint.system} | ${contactPoint.value} (${contactPoint.use})`
+      : contactPoint;
+  }
+
+  convertBooleanOrDateTime(
+    value: boolean | Date | string | undefined
+  ): ExtractorValueType {
+    return value ? value.toString() : value;
   }
 }
 
