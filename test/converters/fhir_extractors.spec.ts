@@ -320,25 +320,27 @@ describe('FHIR Resource Extractors', () => {
         code1: 'Loinc=718-7 (Hemoglobin [Mass/volume] in Blood)',
         code1Code: '718-7',
         code1Display: 'Hemoglobin [Mass/volume] in Blood',
-        code1System: 'http://loinc.org',
+        code1System: 'Loinc',
         code2: 'Loinc=718-7 (Hemoglobin)',
         code2Code: '718-7',
         code2Display: 'Hemoglobin',
-        code2System: 'http://loinc.org',
+        code2System: 'Loinc',
         code3: 'Loinc=718-7 (in Blood)',
         code3Code: '718-7',
         code3Display: 'in Blood',
-        code3System: 'http://loinc.org',
+        code3System: 'Loinc',
         code4: 'Loinc=718-7 (Hemoglobin [Mass/volume] in Blood)',
         code4Code: '718-7',
         code4Display: 'Hemoglobin [Mass/volume] in Blood',
-        code4System: 'http://loinc.org',
+        code4System: 'Loinc',
         id: 'obs-1',
         interpretation1: 'HL7=L (Low)',
         issued: '2023-01-01T10:00:00Z',
         patientId: 'patient-1',
         status: 'final',
-        value: '7.2 g/dl (UCUM)',
+        value: 7.2,
+        valueSystem: 'UCUM',
+        valueUnit: 'g/dl',
       });
     });
   });
@@ -389,10 +391,10 @@ describe('FHIR Resource Extractors', () => {
       );
 
       expect(extractedData['Observation'][0]).toEqual(
-        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category1,category2,category3,code1,code1System,code1Code,code1Display,code2,code2System,code2Code,code2Display,code3,code3System,code3Code,code3Display,code4,code4System,code4Code,code4Display,code5,code5System,code5Code,code5Display,value,interpretation1,interpretation2,interpretation3,effective,issued'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category1,category2,category3,code1,code1System,code1Code,code1Display,code2,code2System,code2Code,code2Display,code3,code3System,code3Code,code3Display,code4,code4System,code4Code,code4Display,code5,code5System,code5Code,code5Display,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued'
       );
       expect(extractedData['Observation'][1]).toEqual(
-        'obs-1,,,,,,,,,,,,,,,patient-1,final,,,,Loinc=718-7 (Hemoglobin [Mass/volume] in Blood),http://loinc.org,718-7,Hemoglobin [Mass/volume] in Blood,Loinc=718-7 (Hemoglobin),http://loinc.org,718-7,Hemoglobin,Loinc=718-7 (in Blood),http://loinc.org,718-7,in Blood,Loinc=718-7 (Hemoglobin [Mass/volume] in Blood),http://loinc.org,718-7,Hemoglobin [Mass/volume] in Blood,,,,,7.2 g/dl (UCUM),HL7=L (Low),,,,2023-01-01T10:00:00Z'
+        'obs-1,,,,,,,,,,,,,,,patient-1,final,,,,Loinc=718-7 (Hemoglobin [Mass/volume] in Blood),Loinc,718-7,Hemoglobin [Mass/volume] in Blood,Loinc=718-7 (Hemoglobin),Loinc,718-7,Hemoglobin,Loinc=718-7 (in Blood),Loinc,718-7,in Blood,Loinc=718-7 (Hemoglobin [Mass/volume] in Blood),Loinc,718-7,Hemoglobin [Mass/volume] in Blood,,,,,7.2,g/dl,UCUM,HL7=L (Low),,,,2023-01-01T10:00:00Z'
       );
     });
 
@@ -638,9 +640,11 @@ describe('Full Bundle Extractors', () => {
       );
 
       expect(extractedData['Observation'][0]).toEqual(
-        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category1,category2,category3,code1,code1System,code1Code,code1Display,code2,code2System,code2Code,code2Display,code3,code3System,code3Code,code3Display,code4,code4System,code4Code,code4Display,code5,code5System,code5Code,code5Display,value,interpretation1,interpretation2,interpretation3,effective,issued'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category1,category2,category3,code1,code1System,code1Code,code1Display,code2,code2System,code2Code,code2Display,code3,code3System,code3Code,code3Display,code4,code4System,code4Code,code4Display,code5,code5System,code5Code,code5Display,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued'
       );
-      expect(extractedData['Observation'][1]).toEqual("456,,,,,,,,,,,,,,,123,final,,,,,,,,,,,,,,,,,,,,,,,,,,,,,");
+      expect(extractedData['Observation'][1]).toEqual(
+        "456,,,,,,,,,,,,,,,123,final,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
+      );
     });
 
     it('should convert bundle to Zipped CSV data', async () => {

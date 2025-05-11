@@ -18,6 +18,9 @@ export class ImmunizationExtractor extends BaseResourceExtractor<TImmunization> 
       site: this.convertCodeableConcept(immunization.site),
       route: this.convertCodeableConcept(immunization.route),
       doseQuantity: this.convertQuantity(immunization.doseQuantity),
+      doseQuantityValue: immunization.doseQuantity?.value,
+      doseQuantityUnit: immunization.doseQuantity?.unit,
+      doseQuantitySystem: immunization.doseQuantity?.system,
     };
   }
 }
