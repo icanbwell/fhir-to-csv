@@ -45,6 +45,9 @@ import { ConsentExtractor } from './converters/consent_extractor';
 import { InsurancePlanExtractor } from './converters/insurance_plan_extractor';
 import { MeasureExtractor } from './converters/measure_extractor';
 import { MeasureReportExtractor } from './converters/measure_report_extractor';
+import { SubscriptionExtractor } from './converters/subscription_extractor';
+import { SubscriptionStatusExtractor } from './converters/subscription_status';
+import { SubscriptionTopicExtractor } from './converters/subscription_topic_extractor';
 
 const extractorMap = {
   AllergyIntolerance: AllergyIntoleranceExtractor,
@@ -90,6 +93,9 @@ const extractorMap = {
   ServiceRequest: ServiceRequestExtractor,
   Slot: SlotExtractor,
   Specimen: SpecimenExtractor,
+  Subscription: SubscriptionExtractor,
+  SubscriptionStatus: SubscriptionStatusExtractor,
+  SubscriptionTopic: SubscriptionTopicExtractor,
   Task: TaskExtractor
 };
 
