@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TPractitioner } from '../types/resources/Practitioner';
 
 export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> {
-  async extract(
+  extract(
     practitioner: TPractitioner
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: practitioner.id,
       ...this.getIdentifierFields(practitioner.identifier?.[0], 'identifier1'),

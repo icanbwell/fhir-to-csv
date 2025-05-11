@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TSubscriptionTopic } from '../types/resources/SubscriptionTopic';
 
 export class SubscriptionTopicExtractor extends BaseResourceExtractor<TSubscriptionTopic> {
-  async extract(subscriptionTopic: TSubscriptionTopic): Promise<Record<string, ExtractorValueType>> {
+  extract(subscriptionTopic: TSubscriptionTopic): Record<string, ExtractorValueType> {
     return {
       id: subscriptionTopic.id,
       url: subscriptionTopic.url,

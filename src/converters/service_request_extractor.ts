@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TServiceRequest } from '../types/resources/ServiceRequest';
 
 export class ServiceRequestExtractor extends BaseResourceExtractor<TServiceRequest> {
-  async extract(
+  extract(
     serviceRequest: TServiceRequest
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: serviceRequest.id,
       status: serviceRequest.status,

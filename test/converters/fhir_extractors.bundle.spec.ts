@@ -213,7 +213,7 @@ const bundle = {
 
 // Performance Test
 describe('Extractor Performance', () => {
-  it('should handle large number of resources efficiently', async () => {
+  it('should handle large number of resources efficiently', () => {
     // Generate a large bundle with multiple resource types
     const largeBundle: TBundle = {
       entry: Array.from({ length: 1000 }, (_, i) => ({
@@ -226,7 +226,7 @@ describe('Extractor Performance', () => {
     };
 
     const startTime = performance.now();
-    const extractedData = await new FHIRBundleConverter().convertToDictionaries(
+    const extractedData = new FHIRBundleConverter().convertToDictionaries(
       largeBundle
     );
     const endTime = performance.now();
@@ -242,8 +242,8 @@ describe('Full Bundle Extractors', () => {
   describe('FHIRBundleConverter', () => {
     const converter = new FHIRBundleConverter();
 
-    it('should convert bundle to CSV-compatible data', async () => {
-      const extractedData = await converter.convertToDictionaries(bundle);
+    it('should convert bundle to CSV-compatible data', () => {
+      const extractedData = converter.convertToDictionaries(bundle);
 
       expect(Object.keys(extractedData)).toContain('Patient');
       expect(Object.keys(extractedData)).toContain('Observation');
@@ -252,11 +252,11 @@ describe('Full Bundle Extractors', () => {
       expect(extractedData['Observation'].length).toBe(2);
     });
 
-    it('should convert bundle to CSV data', async () => {
+    it('should convert bundle to CSV data', () => {
       const extractedDictionaries =
-        await converter.convertToDictionaries(bundle);
+        converter.convertToDictionaries(bundle);
       const extractedData: Record<string, string[]> =
-        await converter.convertToCSV(extractedDictionaries);
+        converter.convertToCSV(extractedDictionaries);
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0].split(',')).toEqual([
@@ -722,10 +722,10 @@ describe('Full Bundle Extractors', () => {
       ]);
     });
 
-    it('should convert bundle to Zipped CSV data', async () => {
+    it('should convert bundle to Zipped CSV data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
-        await converter.convertToCSVZipped(
-          await converter.convertToDictionaries(bundle)
+        converter.convertToCSVZipped(
+          converter.convertToDictionaries(bundle)
         );
 
       // get folder containing this test
@@ -745,10 +745,10 @@ describe('Full Bundle Extractors', () => {
       writeStream.end();
     });
 
-    it('should convert bundle to Excel data', async () => {
+    it('should convert bundle to Excel data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
-        await converter.convertToExcel(
-          await converter.convertToDictionaries(bundle)
+        converter.convertToExcel(
+          converter.convertToDictionaries(bundle)
         );
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
@@ -767,9 +767,9 @@ describe('Full Bundle Extractors', () => {
       writeStream.end();
     });
 
-    it('should handle empty bundle', async () => {
+    it('should handle empty bundle', () => {
       const emptyBundle: TBundle = { entry: [], type: 'collection' };
-      const extractedData = await converter.convertToDictionaries(emptyBundle);
+      const extractedData = converter.convertToDictionaries(emptyBundle);
 
       expect(Object.keys(extractedData).length).toBe(0);
     });

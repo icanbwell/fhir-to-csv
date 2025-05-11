@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TConsent } from '../types/resources/Consent';
 
 export class ConsentExtractor extends BaseResourceExtractor<TConsent> {
-  async extract(consent: TConsent): Promise<Record<string, ExtractorValueType>> {
+  extract(consent: TConsent): Record<string, ExtractorValueType> {
     return {
       id: consent.id,
       status: consent.status,

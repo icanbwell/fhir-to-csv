@@ -2,7 +2,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TExplanationOfBenefit } from '../types/resources/ExplanationOfBenefit';
 
 export class ExplanationOfBenefitExtractor extends BaseResourceExtractor<TExplanationOfBenefit> {
-  async extract(eob: TExplanationOfBenefit): Promise<Record<string, ExtractorValueType>> {
+  extract(eob: TExplanationOfBenefit): Record<string, ExtractorValueType> {
     return {
       id: eob.id,
       status: eob.status,

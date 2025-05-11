@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TMeasureReport } from '../types/resources/MeasureReport';
 
 export class MeasureReportExtractor extends BaseResourceExtractor<TMeasureReport> {
-  async extract(measureReport: TMeasureReport): Promise<Record<string, ExtractorValueType>> {
+  extract(measureReport: TMeasureReport): Record<string, ExtractorValueType> {
     return {
       id: measureReport.id,
       status: measureReport.status,

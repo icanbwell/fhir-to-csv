@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TOrganization } from '../types/resources/Organization';
 
 export class OrganizationExtractor extends BaseResourceExtractor<TOrganization> {
-  async extract(
+  extract(
     organization: TOrganization
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: organization.id,
       name: organization.name,

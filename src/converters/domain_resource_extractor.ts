@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TDomainResource } from '../types/resources/DomainResource';
 
 export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResource> {
-  async extract(
+  extract(
     resource: TDomainResource
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: resource.id,
       versionId: resource.meta?.versionId,

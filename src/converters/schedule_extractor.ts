@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TSchedule } from '../types/resources/Schedule';
 
 export class ScheduleExtractor extends BaseResourceExtractor<TSchedule> {
-  async extract(schedule: TSchedule): Promise<Record<string, ExtractorValueType>> {
+  extract(schedule: TSchedule): Record<string, ExtractorValueType> {
     return {
       id: schedule.id,
       active: schedule.active,

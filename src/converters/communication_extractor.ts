@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TCommunication } from '../types/resources/Communication';
 
 export class CommunicationExtractor extends BaseResourceExtractor<TCommunication> {
-  async extract(communication: TCommunication): Promise<Record<string, ExtractorValueType>> {
+  extract(communication: TCommunication): Record<string, ExtractorValueType> {
     return {
       id: communication.id,
       status: communication.status,

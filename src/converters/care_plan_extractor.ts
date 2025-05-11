@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TCarePlan } from '../types/resources/CarePlan';
 
 export class CarePlanExtractor extends BaseResourceExtractor<TCarePlan> {
-  async extract(
+  extract(
     carePlan: TCarePlan
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: carePlan.id,
       patientId: this.convertReference(carePlan.subject),

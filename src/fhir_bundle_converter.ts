@@ -2,17 +2,16 @@ import { TBundle } from './types/resources/Bundle';
 import { TResource } from './types/resources/Resource';
 import { ExtractorRegistry } from './registry/extractor_registry';
 import xlsx from 'xlsx';
-import JSZip from 'jszip';
+import { strToU8, zipSync } from 'fflate';
 import { ExtractorRegistrar } from './registry/register';
 // @ts-expect-error The @types for xlsx do not include the zahl payload
 import XLSX_ZAHL_PAYLOAD from 'xlsx/dist/xlsx.zahl';
 
 export class FHIRBundleConverter {
-  async convertToDictionaries(
+  convertToDictionaries(
     bundle: TBundle
-  ): Promise<Record<string, Record<string, any[]>[]>> {
-
-    ExtractorRegistrar.registerAll()
+  ): Record<string, Record<string, any[]>[]> {
+    ExtractorRegistrar.registerAll();
 
     const extractedData: Record<string, Record<string, any[]>[]> = {};
     const errorLog: Record<string, string[]> = {};
@@ -30,21 +29,20 @@ export class FHIRBundleConverter {
       ) {
         try {
           // get the domain resource extractor to get common fields
-          const domainExtractor = ExtractorRegistry.getExtractor(
-            'DomainResource'
-          );
+          const domainExtractor =
+            ExtractorRegistry.getExtractor('DomainResource');
           const domainResource: Record<string, any> =
-            await domainExtractor.extract(resource);
+            domainExtractor.extract(resource);
           // Attempt to get extractor
           const extractor = ExtractorRegistry.getExtractor(resourceType);
           const extractedResource: Record<string, any> =
-            await extractor.extract(resource);
+            extractor.extract(resource);
 
           // Merge common fields with specific resource fields
-          const fullExtractedResource:  Record<string, any> = {
+          const fullExtractedResource: Record<string, any> = {
             ...domainResource,
             ...extractedResource,
-          }
+          };
 
           // Initialize array for resource type if not exists
           if (!extractedData[resourceType]) {
@@ -75,9 +73,9 @@ export class FHIRBundleConverter {
   }
 
   // Convert extracted data to CSV format
-  async convertToCSV(
+  convertToCSV(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): Promise<Record<string, string[]>> {
+  ): Record<string, string[]> {
     const csvRowsByResourceType: Record<string, string[]> = {};
 
     // iterate over each resource type
@@ -106,29 +104,32 @@ export class FHIRBundleConverter {
     return csvRowsByResourceType;
   }
 
-  async convertToCSVZipped(
+  convertToCSVZipped(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): Promise<Buffer<ArrayBufferLike>> {
-    const csvRowsByResourceType = await this.convertToCSV(extractedData);
-    const zip = new JSZip();
+  ): Buffer<ArrayBufferLike> {
+    // Synchronous CSV conversion
+    const csvRowsByResourceType = this.convertToCSV(extractedData);
 
-    // Add each CSV to the zip file
+    // Prepare files for zipping
+    const zipFiles: Record<string, Uint8Array> = {};
+
+    // Convert CSV content to Uint8Array for each resource type
     for (const [resourceType, csvRows] of Object.entries(
       csvRowsByResourceType
     )) {
       const csvContent = csvRows.join('\n');
-      zip.file(`${resourceType}.csv`, csvContent);
+      zipFiles[`${resourceType}.csv`] = strToU8(csvContent);
     }
 
-    return await zip.generateAsync({
-      type: 'nodebuffer',
-    });
+    const zippedData: Uint8Array = zipSync(zipFiles);
+
+    return Buffer.from(zippedData);
   }
 
   // Convert extracted data to Excel format using xlsx package
-  async convertToExcel(
+  convertToExcel(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): Promise<Buffer<ArrayBufferLike>> {
+  ): Buffer<ArrayBufferLike> {
     const workbook = xlsx.utils.book_new();
     for (const [resourceType, resources] of Object.entries(extractedData)) {
       const worksheet = xlsx.utils.json_to_sheet(resources);
@@ -139,14 +140,14 @@ export class FHIRBundleConverter {
     return xlsx.write(workbook, {
       type: 'buffer',
       bookType: 'xlsx',
-      compression: true
+      compression: true,
     });
   }
 
   // Convert extracted data to Excel format using xlsx package
-  async convertToAppleNumbers(
+  convertToAppleNumbers(
     extractedData: Record<string, Record<string, any[]>[]>
-  ): Promise<Buffer<ArrayBufferLike>> {
+  ): Buffer<ArrayBufferLike> {
     const workbook = xlsx.utils.book_new();
     for (const [resourceType, resources] of Object.entries(extractedData)) {
       const worksheet = xlsx.utils.json_to_sheet(resources);
@@ -155,7 +156,7 @@ export class FHIRBundleConverter {
     // https://docs.sheetjs.com/docs/api/write-options/#writing-options
     return xlsx.write(workbook, {
       type: 'buffer',
-      bookType: "numbers",
+      bookType: 'numbers',
       compression: true,
       numbers: XLSX_ZAHL_PAYLOAD,
     });

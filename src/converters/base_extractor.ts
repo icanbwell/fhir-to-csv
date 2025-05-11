@@ -16,7 +16,7 @@ const systemMap: Record<string, string> = systemMap1;
 export type ExtractorValueType = string | number | Date | undefined | boolean;
 
 export abstract class BaseResourceExtractor<T> {
-  abstract extract(resource: T): Promise<Record<string, ExtractorValueType>>;
+  abstract extract(resource: T): Record<string, ExtractorValueType>;
 
   isPreferredCoding(coding: TCoding | undefined): boolean {
     if (!coding || !coding.extension) return false;

@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TDocumentReference } from '../types/resources/DocumentReference';
 
 export class DocumentReferenceExtractor extends BaseResourceExtractor<TDocumentReference> {
-  async extract(
+  extract(
     documentReference: TDocumentReference
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: documentReference.id,
       status: documentReference.status,

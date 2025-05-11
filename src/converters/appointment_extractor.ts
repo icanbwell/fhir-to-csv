@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TAppointment } from '../types/resources/Appointment';
 
 export class AppointmentExtractor extends BaseResourceExtractor<TAppointment> {
-  async extract(
+  extract(
     appointment: TAppointment
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: appointment.id,
       patientId: this.getReferenceId(

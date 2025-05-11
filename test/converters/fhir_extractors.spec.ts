@@ -289,8 +289,8 @@ describe('FHIR Resource Extractors', () => {
   describe('PatientExtractor', () => {
     const extractor = new PatientExtractor();
 
-    it('should extract patient data correctly', async () => {
-      const extractedPatient = await extractor.extract(mockPatient);
+    it('should extract patient data correctly', () => {
+      const extractedPatient = extractor.extract(mockPatient);
 
       expect(extractedPatient).toEqual({
         address1City: 'Testville',
@@ -331,13 +331,13 @@ describe('FHIR Resource Extractors', () => {
       });
     });
 
-    it('should handle missing optional fields', async () => {
+    it('should handle missing optional fields', () => {
       const incompletePatient: TPatient = { ...mockPatient };
       delete incompletePatient.name;
       delete incompletePatient.address;
       delete incompletePatient.telecom;
 
-      const extractedPatient = await extractor.extract(incompletePatient);
+      const extractedPatient = extractor.extract(incompletePatient);
 
       expect(extractedPatient.nameGiven).toBeUndefined();
       expect(extractedPatient.addressLine).toBeUndefined();
@@ -348,8 +348,8 @@ describe('FHIR Resource Extractors', () => {
   describe('ObservationExtractor', () => {
     const extractor = new ObservationExtractor();
 
-    it('should extract observation data correctly', async () => {
-      const extractedObservation = await extractor.extract(mockObservation);
+    it('should extract observation data correctly', () => {
+      const extractedObservation = extractor.extract(mockObservation);
 
       expect(extractedObservation).toEqual({
         code1Code: '718-7',
@@ -384,7 +384,7 @@ describe('FHIR Resource Extractors', () => {
   });
 
   describe('ExtractorRegistry', () => {
-    it('should register and retrieve extractors', async () => {
+    it('should register and retrieve extractors', () => {
       ExtractorRegistrar.registerAll()
       // Ensure extractors are registered
       const patientExtractor = ExtractorRegistry.getExtractor('Patient');
@@ -395,7 +395,7 @@ describe('FHIR Resource Extractors', () => {
       expect(observationExtractor).toBeTruthy();
     });
 
-    it('should throw error for unknown resource type', async () => {
+    it('should throw error for unknown resource type', () => {
       expect(() => {
         ExtractorRegistry.getExtractor('UnknownResource');
       }).toThrow('No extractor found for resource type: UnknownResource');
@@ -405,8 +405,8 @@ describe('FHIR Resource Extractors', () => {
   describe('FHIRBundleConverter', () => {
     const converter = new FHIRBundleConverter();
 
-    it('should convert bundle to CSV-compatible data', async () => {
-      const extractedData = await converter.convertToDictionaries(mockBundle);
+    it('should convert bundle to CSV-compatible data', () => {
+      const extractedData = converter.convertToDictionaries(mockBundle);
 
       expect(Object.keys(extractedData)).toContain('Patient');
       expect(Object.keys(extractedData)).toContain('Observation');
@@ -415,11 +415,11 @@ describe('FHIR Resource Extractors', () => {
       expect(extractedData['Observation'].length).toBe(1);
     });
 
-    it('should convert bundle to CSV data', async () => {
+    it('should convert bundle to CSV data', () => {
       const extractedDictionaries =
-        await converter.convertToDictionaries(mockBundle);
+        converter.convertToDictionaries(mockBundle);
       const extractedData: Record<string, string[]> =
-        await converter.convertToCSV(extractedDictionaries);
+        converter.convertToCSV(extractedDictionaries);
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0].split(',')).toEqual([
@@ -887,10 +887,10 @@ describe('FHIR Resource Extractors', () => {
       ]);
     });
 
-    it('should convert bundle to Zipped CSV data', async () => {
+    it('should convert bundle to Zipped CSV data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
-        await converter.convertToCSVZipped(
-          await converter.convertToDictionaries(mockBundle)
+        converter.convertToCSVZipped(
+          converter.convertToDictionaries(mockBundle)
         );
 
       // get folder containing this test
@@ -910,10 +910,10 @@ describe('FHIR Resource Extractors', () => {
       writeStream.end();
     });
 
-    it('should convert bundle to Excel data', async () => {
+    it('should convert bundle to Excel data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
-        await converter.convertToExcel(
-          await converter.convertToDictionaries(mockBundle)
+        converter.convertToExcel(
+          converter.convertToDictionaries(mockBundle)
         );
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
@@ -932,9 +932,9 @@ describe('FHIR Resource Extractors', () => {
       writeStream.end();
     });
 
-    it('should handle empty bundle', async () => {
+    it('should handle empty bundle', () => {
       const emptyBundle: TBundle = { entry: [], type: 'collection' };
-      const extractedData = await converter.convertToDictionaries(emptyBundle);
+      const extractedData = converter.convertToDictionaries(emptyBundle);
 
       expect(Object.keys(extractedData).length).toBe(0);
     });
@@ -987,9 +987,9 @@ describe('Additional Resource Extractors', () => {
 
   extractorTestCases.forEach(testCase => {
     describe(`${testCase.resourceType} Extractor`, () => {
-      it(`should extract ${testCase.resourceType} data correctly`, async () => {
+      it(`should extract ${testCase.resourceType} data correctly`, () => {
         const extractor = ExtractorRegistry.getExtractor(testCase.resourceType);
-        const extractedResource = await extractor.extract(
+        const extractedResource = extractor.extract(
           testCase.mockResource
         );
 
@@ -1004,7 +1004,7 @@ describe('Additional Resource Extractors', () => {
 
 // Error Handling Test
 describe('Extractor Error Handling', () => {
-  it('should handle malformed resources gracefully', async () => {
+  it('should handle malformed resources gracefully', () => {
     const malformedResources: (TResource | null | undefined)[] = [
       { resourceType: 'Patient' }, // Completely empty
       null,
@@ -1018,8 +1018,8 @@ describe('Extractor Error Handling', () => {
         for (const resourceType of extractors) {
           const extractor = ExtractorRegistry.getExtractor(resourceType);
 
-          expect(async () => {
-            await extractor.extract(resource);
+          expect(() => {
+            extractor.extract(resource);
           }).not.toThrow(); // Should not throw, but return an object with undefined/null values
         }
       }

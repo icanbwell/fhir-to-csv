@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TLocation } from '../types/resources/Location';
 
 export class LocationExtractor extends BaseResourceExtractor<TLocation> {
-  async extract(
+  extract(
     location: TLocation
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: location.id,
       name: location.name,

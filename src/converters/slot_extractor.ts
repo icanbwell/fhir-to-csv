@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TSlot } from '../types/resources/Slot';
 
 export class SlotExtractor extends BaseResourceExtractor<TSlot> {
-  async extract(slot: TSlot): Promise<Record<string, ExtractorValueType>> {
+  extract(slot: TSlot): Record<string, ExtractorValueType> {
     return {
       id: slot.id,
       status: slot.status,

@@ -3,9 +3,9 @@ import { TQuestionnaire } from '../types/resources/Questionnaire';
 import { TQuestionnaireItem } from '../types/partials/QuestionnaireItem';
 
 export class QuestionnaireExtractor extends BaseResourceExtractor<TQuestionnaire> {
-  async extract(
+  extract(
     questionnaire: TQuestionnaire
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: questionnaire.id,
       url: questionnaire.url,

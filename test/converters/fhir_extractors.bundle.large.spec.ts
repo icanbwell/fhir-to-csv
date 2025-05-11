@@ -20,10 +20,10 @@ describe('Full Bundle Extractors', () => {
       fs.mkdirSync(tempFolder);
     }
 
-    it('should convert bundle to Zipped CSV file', async () => {
+    it('should convert bundle to Zipped CSV file', () => {
       const extractedData: Buffer<ArrayBufferLike> =
-        await converter.convertToCSVZipped(
-          await converter.convertToDictionaries(bundle)
+        converter.convertToCSVZipped(
+          converter.convertToDictionaries(bundle)
         );
 
       // write extractedData NodeJs.ReadableStream to file
@@ -32,10 +32,10 @@ describe('Full Bundle Extractors', () => {
       writeStream.end();
     });
 
-    it('should convert bundle to Excel file', async () => {
+    it('should convert bundle to Excel file', () => {
       const extractedData: Buffer<ArrayBufferLike> =
-        await converter.convertToExcel(
-          await converter.convertToDictionaries(bundle)
+        converter.convertToExcel(
+          converter.convertToDictionaries(bundle)
         );
 
       // write buffer to file
@@ -43,10 +43,10 @@ describe('Full Bundle Extractors', () => {
       writeStream.write(extractedData);
       writeStream.end();
     });
-    it('should convert bundle to Numbers file', async () => {
+    it('should convert bundle to Numbers file', () => {
       const extractedData: Buffer<ArrayBufferLike> =
-        await converter.convertToAppleNumbers(
-          await converter.convertToDictionaries(bundle)
+        converter.convertToAppleNumbers(
+          converter.convertToDictionaries(bundle)
         );
 
       // write buffer to file

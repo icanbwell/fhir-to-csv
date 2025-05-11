@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { THealthcareService } from '../types/resources/HealthcareService';
 
 export class HealthcareServiceExtractor extends BaseResourceExtractor<THealthcareService> {
-  async extract(healthcareService: THealthcareService): Promise<Record<string, ExtractorValueType>> {
+  extract(healthcareService: THealthcareService): Record<string, ExtractorValueType> {
     return {
       id: healthcareService.id,
       active: healthcareService.active,

@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TSubscriptionStatus } from '../types/resources/SubscriptionStatus';
 
 export class SubscriptionStatusExtractor extends BaseResourceExtractor<TSubscriptionStatus> {
-  async extract(subscriptionStatus: TSubscriptionStatus): Promise<Record<string, ExtractorValueType>> {
+  extract(subscriptionStatus: TSubscriptionStatus): Record<string, ExtractorValueType> {
     return {
       id: subscriptionStatus.id,
       status: subscriptionStatus.status,

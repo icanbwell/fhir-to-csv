@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TTask } from '../types/resources/Task';
 
 export class TaskExtractor extends BaseResourceExtractor<TTask> {
-  async extract(task: TTask): Promise<Record<string, ExtractorValueType>> {
+  extract(task: TTask): Record<string, ExtractorValueType> {
     return {
       id: task.id,
       status: task.status,

@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TMedication } from '../types/resources/Medication';
 
 export class MedicationExtractor extends BaseResourceExtractor<TMedication> {
-  async extract(
+  extract(
     medication: TMedication
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: medication.id,
       ...this.getCodeableConceptFields(

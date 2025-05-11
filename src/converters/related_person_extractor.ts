@@ -2,7 +2,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TRelatedPerson } from '../types/resources/RelatedPerson';
 
 export class RelatedPersonExtractor extends BaseResourceExtractor<TRelatedPerson> {
-  async extract(relatedPerson: TRelatedPerson): Promise<Record<string, ExtractorValueType>> {
+  extract(relatedPerson: TRelatedPerson): Record<string, ExtractorValueType> {
     return {
       id: relatedPerson.id,
       ...this.getHumanNameFields(

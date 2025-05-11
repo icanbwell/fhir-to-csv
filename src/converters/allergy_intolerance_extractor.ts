@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TAllergyIntolerance } from '../types/resources/AllergyIntolerance';
 
 export class AllergyIntoleranceExtractor extends BaseResourceExtractor<TAllergyIntolerance> {
-  async extract(
+  extract(
     allergyIntolerance: TAllergyIntolerance
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: allergyIntolerance.id,
       patientId: this.getReferenceId(allergyIntolerance.patient),

@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TObservation } from '../types/resources/Observation';
 
 export class ObservationExtractor extends BaseResourceExtractor<TObservation> {
-  async extract(
+  extract(
     observation: TObservation
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: observation.id,
       patientId: this.getReferenceId(observation.subject),

@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TComposition } from '../types/resources/Composition';
 
 export class CompositionExtractor extends BaseResourceExtractor<TComposition> {
-  async extract(composition: TComposition): Promise<Record<string, ExtractorValueType>> {
+  extract(composition: TComposition): Record<string, ExtractorValueType> {
     return {
       id: composition.id,
       status: composition.status,

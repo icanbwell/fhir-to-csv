@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TCoverage } from '../types/resources/Coverage';
 
 export class CoverageExtractor extends BaseResourceExtractor<TCoverage> {
-  async extract(
+  extract(
     coverage: TCoverage
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: coverage.id,
       patientId: this.getReferenceId(coverage.beneficiary),

@@ -3,7 +3,7 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TInsurancePlan } from '../types/resources/InsurancePlan';
 
 export class InsurancePlanExtractor extends BaseResourceExtractor<TInsurancePlan> {
-  async extract(insurancePlan: TInsurancePlan): Promise<Record<string, ExtractorValueType>> {
+  extract(insurancePlan: TInsurancePlan): Record<string, ExtractorValueType> {
     return {
       id: insurancePlan.id,
       name: insurancePlan.name,

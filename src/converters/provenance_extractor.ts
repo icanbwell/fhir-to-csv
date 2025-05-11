@@ -2,9 +2,9 @@ import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TProvenance } from '../types/resources/Provenance';
 
 export class ProvenanceExtractor extends BaseResourceExtractor<TProvenance> {
-  async extract(
+  extract(
     provenance: TProvenance
-  ): Promise<Record<string, ExtractorValueType>> {
+  ): Record<string, ExtractorValueType> {
     return {
       id: provenance.id,
       recorded: this.convertDateTime(provenance.recorded),
