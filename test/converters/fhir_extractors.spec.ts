@@ -4,7 +4,7 @@ import { ExtractorRegistry } from '../../src/converters/extractor_registry';
 import { FHIRBundleConverter } from '../../src/converters/fhir_bundle_converter';
 import { TBundle } from '../../src/types/resources/Bundle';
 import { TPatient } from '../../src/types/resources/Patient';
-import { ExtractorRegistrar } from '../../src/converters/register';
+import { ExtractorRegistrar } from '../../src/register';
 import { TResource } from '../../src/types/resources/Resource';
 import * as fs from 'node:fs';
 

@@ -8,6 +8,7 @@ import { TRatio } from '../types/partials/Ratio';
 import { TIdentifier } from '../types/partials/Identifier';
 import { THumanName } from '../types/partials/HumanName';
 import { TContactPoint } from '../types/partials/ContactPoint';
+import { TDosageDoseAndRate } from '../types/partials/DosageDoseAndRate';
 
 export type ExtractorValueType = string | number | Date | undefined | boolean;
 
@@ -105,10 +106,12 @@ export abstract class BaseResourceExtractor<T> {
       : contactPoint;
   }
 
-  convertBooleanOrDateTime(
-    value: boolean | Date | string | undefined
-  ): ExtractorValueType {
-    return value ? value.toString() : value;
+  convertDosageAndRate(
+    dosage: TDosageDoseAndRate | undefined
+  ) : ExtractorValueType {
+    return dosage
+      ? `${dosage.doseQuantity?.value} ${dosage.doseQuantity?.unit} (${dosage.rateRatio?.numerator?.value} ${dosage.rateRatio?.numerator?.unit} / ${dosage.rateRatio?.denominator?.value} ${dosage.rateRatio?.denominator?.unit})`
+      : dosage;
   }
 }
 
