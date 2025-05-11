@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TDiagnosticReport } from '../types/resources/DiagnosticReport';
 
 export class DiagnosticReportExtractor extends BaseResourceExtractor<TDiagnosticReport> {
-  async extract(report: TDiagnosticReport): Promise<Record<string, any>> {
+  async extract(report: TDiagnosticReport): Promise<Record<string, ExtractorValueType>> {
     return {
       id: report.id,
       patientId: report.subject?.reference?.split('/')?.pop(),
@@ -14,6 +14,8 @@ export class DiagnosticReportExtractor extends BaseResourceExtractor<TDiagnostic
       issued: report.issued?.toString(),
       conclusion: report.conclusion,
       presentedForm: report.presentedForm?.[0]?.url,
+      performer: report.performer?.[0]?.reference,
+      resultsInterpreter: report.resultsInterpreter?.[0]?.reference,
     };
   }
 }

@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TPatient } from '../types/resources/Patient';
 
 export class PatientExtractor extends BaseResourceExtractor<TPatient> {
-  async extract(patient: TPatient): Promise<Record<string, any>> {
+  async extract(patient: TPatient): Promise<Record<string, ExtractorValueType>> {
     return {
       sourceId: patient.identifier?.find(
         id => id.system === 'https://www.icanbwell.com/sourceId'

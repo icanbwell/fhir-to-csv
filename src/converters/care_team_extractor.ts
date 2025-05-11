@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TCareTeam } from '../types/resources/CareTeam';
 
 export class CareTeamExtractor extends BaseResourceExtractor<TCareTeam> {
-  async extract(careTeam: TCareTeam): Promise<Record<string, any>> {
+  async extract(careTeam: TCareTeam): Promise<Record<string, ExtractorValueType>> {
     return {
       id: careTeam.id,
       patientId: careTeam.subject?.reference?.split('/')?.pop(),

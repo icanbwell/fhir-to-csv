@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TDocumentReference } from '../types/resources/DocumentReference';
 
 export class DocumentReferenceExtractor extends BaseResourceExtractor<TDocumentReference> {
-  async extract(docRef: TDocumentReference): Promise<Record<string, any>> {
+  async extract(docRef: TDocumentReference): Promise<Record<string, ExtractorValueType>> {
     return {
       id: docRef.id,
       patientId: docRef.subject?.reference?.split('/')?.pop(),

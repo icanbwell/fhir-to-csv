@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TMedication } from '../types/resources/Medication';
 
 export class MedicationExtractor extends BaseResourceExtractor<TMedication> {
-  async extract(medication: TMedication): Promise<Record<string, any>> {
+  async extract(medication: TMedication): Promise<Record<string, ExtractorValueType>> {
     return {
       id: medication.id,
       code: medication.code?.coding?.[0]?.code,
@@ -13,6 +13,11 @@ export class MedicationExtractor extends BaseResourceExtractor<TMedication> {
       ingredientCodes: medication.ingredient?.map(
         ing => ing.itemCodeableConcept?.coding?.[0]?.code
       ),
+      amount: medication.amount?.numerator?.value,
+      batch: {
+        lotNumber: medication.batch?.lotNumber,
+        expirationDate: medication.batch?.expirationDate?.toString(),
+      },
     };
   }
 }

@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TProcedure } from '../types/resources/Procedure';
 
 export class ProcedureExtractor extends BaseResourceExtractor<TProcedure> {
-  async extract(procedure: TProcedure): Promise<Record<string, any>> {
+  async extract(procedure: TProcedure): Promise<Record<string, ExtractorValueType>> {
     return {
       id: procedure.id,
       patientId: procedure.subject?.reference?.split('/')?.pop(),
@@ -14,6 +14,9 @@ export class ProcedureExtractor extends BaseResourceExtractor<TProcedure> {
       performedPeriodEnd: procedure.performedPeriod?.end?.toString(),
       reasonCode: procedure.reasonCode?.[0]?.coding?.[0]?.display,
       outcome: procedure.outcome?.coding?.[0]?.display,
+      performer: procedure.performer?.[0]?.actor?.reference,
+      category: procedure.category?.coding?.[0]?.display,
+      bodySite: procedure.bodySite?.[0]?.coding?.[0]?.display,
     };
   }
 }

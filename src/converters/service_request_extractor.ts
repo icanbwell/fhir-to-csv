@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TServiceRequest } from '../types/resources/ServiceRequest';
 
 export class ServiceRequestExtractor extends BaseResourceExtractor<TServiceRequest> {
-  async extract(serviceRequest: TServiceRequest): Promise<Record<string, any>> {
+  async extract(serviceRequest: TServiceRequest): Promise<Record<string, ExtractorValueType>> {
     return {
       id: serviceRequest.id,
       patientId: serviceRequest.subject?.reference?.split('/')?.pop(),

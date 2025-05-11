@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TCoverage } from '../types/resources/Coverage';
 
 export class CoverageExtractor extends BaseResourceExtractor<TCoverage> {
-  async extract(coverage: TCoverage): Promise<Record<string, any>> {
+  async extract(coverage: TCoverage): Promise<Record<string, ExtractorValueType>> {
     return {
       id: coverage.id,
       status: coverage.status,
@@ -20,6 +20,7 @@ export class CoverageExtractor extends BaseResourceExtractor<TCoverage> {
         type: cls.type?.coding?.[0]?.code,
         value: cls.value,
       })),
+      identifier: coverage.identifier?.[0]?.value,
     };
   }
 }

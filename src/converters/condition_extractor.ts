@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TCondition } from '../types/resources/Condition';
 
 export class ConditionExtractor extends BaseResourceExtractor<TCondition> {
-  async extract(condition: TCondition): Promise<Record<string, any>> {
+  async extract(condition: TCondition): Promise<Record<string, ExtractorValueType>> {
     return {
       id: condition.id,
       patientId: condition.subject?.reference?.split('/')[1],
@@ -12,8 +12,10 @@ export class ConditionExtractor extends BaseResourceExtractor<TCondition> {
       code: condition.code?.coding?.[0]?.code,
       codeDisplay: condition.code?.coding?.[0]?.display,
       onsetDateTime: condition.onsetDateTime,
+      recordedDate: condition.recordedDate?.toString(),
       abatementDateTime: condition.abatementDateTime,
       severity: condition.severity?.coding?.[0]?.display,
+      bodySite: condition.bodySite?.[0]?.coding?.[0]?.display,
     };
   }
 }

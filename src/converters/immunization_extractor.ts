@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TImmunization } from '../types/resources/Immunization';
 
 export class ImmunizationExtractor extends BaseResourceExtractor<TImmunization> {
-  async extract(immunization: TImmunization): Promise<Record<string, any>> {
+  async extract(immunization: TImmunization): Promise<Record<string, ExtractorValueType>> {
     return {
       id: immunization.id,
       patientId: immunization.patient?.reference?.split('/')?.pop(),
@@ -13,6 +13,9 @@ export class ImmunizationExtractor extends BaseResourceExtractor<TImmunization> 
       lotNumber: immunization.lotNumber,
       manufacturer: immunization.manufacturer?.display,
       performer: immunization.performer?.[0]?.actor?.display,
+      primarySource: immunization.primarySource,
+      doseQuantity: immunization.doseQuantity?.value,
+      route: immunization.route?.coding?.[0]?.display,
     };
   }
 }

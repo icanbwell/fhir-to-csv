@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TObservation } from '../types/resources/Observation';
 
 export class ObservationExtractor extends BaseResourceExtractor<TObservation> {
-  async extract(observation: TObservation): Promise<Record<string, any>> {
+  async extract(observation: TObservation): Promise<Record<string, ExtractorValueType>> {
     return {
       id: observation.id,
       patientId: observation.subject?.reference?.split('/')[1],
@@ -13,8 +13,9 @@ export class ObservationExtractor extends BaseResourceExtractor<TObservation> {
       valueQuantity: observation.valueQuantity?.value,
       valueString: observation.valueString,
       effectiveDatetime: observation.effectiveDateTime,
-      interpretation: observation.interpretation?.[0]?.text,
+      interpretation: observation.interpretation?.[0]?.coding?.[0]?.display,
       bodySite: observation.bodySite?.text,
+      performer: observation.performer?.[0]?.reference,
     };
   }
 }

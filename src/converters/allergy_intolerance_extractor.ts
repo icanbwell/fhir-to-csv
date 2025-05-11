@@ -1,23 +1,28 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TAllergyIntolerance } from '../types/resources/AllergyIntolerance';
 
 export class AllergyIntoleranceExtractor extends BaseResourceExtractor<TAllergyIntolerance> {
   async extract(
     allergyIntolerance: TAllergyIntolerance
-  ): Promise<Record<string, any>> {
+  ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: allergyIntolerance.id,
-      patientId: allergyIntolerance.patient?.reference?.split('/')?.pop(),
-      clinicalStatus: allergyIntolerance.clinicalStatus?.coding?.[0]?.code,
-      verificationStatus:
-        allergyIntolerance.verificationStatus?.coding?.[0]?.code,
+      patientId: this.getReferenceId(allergyIntolerance.patient),
+      clinicalStatus: this.convertCodeableConcept(
+        allergyIntolerance.clinicalStatus
+      ),
+      verificationStatus: this.convertCodeableConcept(
+        allergyIntolerance.verificationStatus
+      ),
       type: allergyIntolerance.type,
-      category: allergyIntolerance.category?.[0],
+      category: allergyIntolerance.category?.join('|'),
       criticality: allergyIntolerance.criticality,
-      code: allergyIntolerance.code?.coding?.[0]?.code,
-      codeDisplay: allergyIntolerance.code?.coding?.[0]?.display,
-      reaction: allergy.reaction?.[0]?.manifestation?.[0]?.coding?.[0]?.display,
-      criticality: allergy.criticality,
+      code: this.convertCodeableConcept(allergyIntolerance.code),
+      reaction: this.convertCodeableConcepts(
+        allergyIntolerance.reaction?.[0]?.manifestation
+      ),
+      onset: this.convertDateTime(allergyIntolerance.onsetDateTime),
+      recordedDate: this.convertDateTime(allergyIntolerance.recordedDate),
     };
   }
 }

@@ -1,8 +1,10 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TPractitioner } from '../types/resources/Practitioner';
 
 export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> {
-  async extract(practitioner: TPractitioner): Promise<Record<string, any>> {
+  async extract(
+    practitioner: TPractitioner
+  ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: practitioner.id,
       nameGiven: practitioner.name?.[0]?.given?.[0],
@@ -18,6 +20,21 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
       communicationLanguages: practitioner.communication?.map(
         lang => lang.coding?.[0]?.code
       ),
+      name: {
+        given: practitioner.name?.[0]?.given?.[0],
+        family: practitioner.name?.[0]?.family,
+        prefix: practitioner.name?.[0]?.prefix?.[0],
+      },
+      identifier: practitioner.identifier?.map(id => ({
+        system: id.system,
+        value: id.value,
+      })),
+      active: practitioner.active,
+      telecom: practitioner.telecom?.map(contact => ({
+        system: contact.system,
+        value: contact.value,
+        use: contact.use,
+      })),
     };
   }
 }

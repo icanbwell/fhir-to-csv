@@ -1,8 +1,8 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TEncounter } from '../types/resources/Encounter';
 
 export class EncounterExtractor extends BaseResourceExtractor<TEncounter> {
-  async extract(encounter: TEncounter): Promise<Record<string, any>> {
+  async extract(encounter: TEncounter): Promise<Record<string, ExtractorValueType>> {
     return {
       id: encounter.id,
       patientId: encounter.subject?.reference?.split('/')?.pop(),
@@ -12,6 +12,8 @@ export class EncounterExtractor extends BaseResourceExtractor<TEncounter> {
       periodStart: encounter.period?.start?.toString(),
       periodEnd: encounter.period?.end?.toString(),
       reasonCode: encounter.reasonCode?.[0]?.coding?.[0]?.code,
+      serviceProvider: encounter.serviceProvider?.reference,
+      participant: encounter.participant?.[0]?.individual?.reference,
     };
   }
 }
