@@ -40,7 +40,6 @@ export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResour
       tag2: resource.meta?.tag?.[1]?.code,
       tag3: resource.meta?.tag?.[2]?.code,
       extensions: resource.extension?.length,
-      extension1: this.convertExtension(resource.extension?.[0]),
       ...this.getExtensionFields(
         resource.extension?.[0],
         'extension1'

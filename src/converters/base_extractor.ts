@@ -59,12 +59,11 @@ export abstract class BaseResourceExtractor<T> {
     coding: TCoding | undefined,
     prefix: string
   ): Record<string, ExtractorValueType> {
-    if (!coding) return {};
     return {
-      [`${prefix}System`]: this.getFriendlyNameForSystem(coding.system),
-      [`${prefix}Code`]: coding.code,
-      [`${prefix}Display`]: coding.display,
-      [`${prefix}Preferred`]: this.isPreferredCoding(coding),
+      [`${prefix}System`]: coding ? this.getFriendlyNameForSystem(coding.system): undefined,
+      [`${prefix}Code`]: coding?.code,
+      [`${prefix}Display`]: coding?.display,
+      [`${prefix}Preferred`]: coding ? this.isPreferredCoding(coding): undefined,
     };
   }
 
@@ -99,13 +98,12 @@ export abstract class BaseResourceExtractor<T> {
     codeableConcept: TCodeableConcept | undefined,
     prefix: string
   ): Record<string, ExtractorValueType> {
-    if (!codeableConcept) return {};
     return {
-      [`${prefix}`]: this.convertCodeableConcept(codeableConcept),
-      [`${prefix}Text`]: codeableConcept.text,
-      ...this.getCodingFields(codeableConcept.coding?.[0], `${prefix}Coding1`),
-      ...this.getCodingFields(codeableConcept.coding?.[1], `${prefix}Coding2`),
-      ...this.getCodingFields(codeableConcept.coding?.[2], `${prefix}Coding3`),
+      [`${prefix}`]: codeableConcept ? this.convertCodeableConcept(codeableConcept): undefined,
+      [`${prefix}Text`]: codeableConcept?.text,
+      ...this.getCodingFields(codeableConcept?.coding?.[0], `${prefix}Coding1`),
+      ...this.getCodingFields(codeableConcept?.coding?.[1], `${prefix}Coding2`),
+      ...this.getCodingFields(codeableConcept?.coding?.[2], `${prefix}Coding3`),
     };
   }
 
@@ -149,12 +147,11 @@ export abstract class BaseResourceExtractor<T> {
     quantity: TQuantity | undefined,
     prefix: string
   ): Record<string, ExtractorValueType> {
-    if (!quantity) return {};
     return {
-      [`${prefix}Value`]: quantity.value,
-      [`${prefix}Unit`]: quantity.unit,
-      [`${prefix}System`]: quantity.system,
-      [`${prefix}Code`]: quantity.code,
+      [`${prefix}Value`]: quantity?.value,
+      [`${prefix}Unit`]: quantity?.unit,
+      [`${prefix}System`]: quantity?.system,
+      [`${prefix}Code`]: quantity?.code,
     };
   }
 
@@ -169,15 +166,14 @@ export abstract class BaseResourceExtractor<T> {
     address: TAddress | undefined,
     prefix: string
   ): Record<string, ExtractorValueType> {
-    if (!address) return {};
     return {
-      [`${prefix}Line`]: address.line?.join(', '),
-      [`${prefix}City`]: address.city,
-      [`${prefix}State`]: address.state,
-      [`${prefix}PostalCode`]: address.postalCode,
-      [`${prefix}Country`]: address.country,
-      [`${prefix}Use`]: address.use,
-      [`${prefix}Text`]: address.text,
+      [`${prefix}Line`]: address?.line?.join(', '),
+      [`${prefix}City`]: address?.city,
+      [`${prefix}State`]: address?.state,
+      [`${prefix}PostalCode`]: address?.postalCode,
+      [`${prefix}Country`]: address?.country,
+      [`${prefix}Use`]: address?.use,
+      [`${prefix}Text`]: address?.text,
     };
   }
 
@@ -198,13 +194,12 @@ export abstract class BaseResourceExtractor<T> {
     identifier: TIdentifier | undefined,
     prefix: string
   ): Record<string, ExtractorValueType> {
-    if (!identifier) return {};
     return {
       [`${prefix}System`]:
-        identifier.id || this.getFriendlyNameForSystem(identifier.system),
-      [`${prefix}Value`]: identifier.value,
-      [`${prefix}Type`]: this.convertCodeableConcept(identifier.type),
-      [`${prefix}Use`]: identifier.use,
+        identifier?.id || this.getFriendlyNameForSystem(identifier?.system),
+      [`${prefix}Value`]: identifier?.value,
+      [`${prefix}Type`]: this.convertCodeableConcept(identifier?.type),
+      [`${prefix}Use`]: identifier?.use,
     };
   }
 
@@ -222,14 +217,13 @@ export abstract class BaseResourceExtractor<T> {
     humanName: THumanName | undefined,
     prefix: string
   ): Record<string, ExtractorValueType> {
-    if (!humanName) return {};
     return {
-      [`${prefix}Use`]: humanName.use,
-      [`${prefix}Text`]: humanName.text,
-      [`${prefix}Family`]: humanName.family,
-      [`${prefix}Given`]: humanName.given?.join(', '),
-      [`${prefix}Prefix`]: humanName.prefix?.join(', '),
-      [`${prefix}Suffix`]: humanName.suffix?.join(', '),
+      [`${prefix}Use`]: humanName?.use,
+      [`${prefix}Text`]: humanName?.text,
+      [`${prefix}Family`]: humanName?.family,
+      [`${prefix}Given`]: humanName?.given?.join(', '),
+      [`${prefix}Prefix`]: humanName?.prefix?.join(', '),
+      [`${prefix}Suffix`]: humanName?.suffix?.join(', '),
     };
   }
 
@@ -312,11 +306,10 @@ export abstract class BaseResourceExtractor<T> {
     extension: TExtension | undefined,
     prefix: string
   ): Record<string, ExtractorValueType> {
-    if (!extension) return {};
     return {
-      [`${prefix}Id`]: extension.id,
-      [`${prefix}Url`]: this.getFriendlyNameForSystem(extension.url),
-      [`${prefix}Value`]: this.getExtensionValue(extension),
+      [`${prefix}Id`]: extension?.id,
+      [`${prefix}Url`]: extension ? this.getFriendlyNameForSystem(extension?.url): undefined,
+      [`${prefix}Value`]: extension ? this.getExtensionValue(extension): undefined,
     };
   }
 
