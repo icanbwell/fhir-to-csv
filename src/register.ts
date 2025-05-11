@@ -28,6 +28,8 @@ import { TResource } from './types/resources/Resource';
 import { DomainResourceExtractor } from './converters/domain_resource_extractor';
 import { AppointmentExtractor } from './converters/appointment_extractor';
 import { MedicationDispenseExtractor } from './converters/medication_dispense_extractor';
+import { QuestionnaireResponseExtractor } from './converters/questionnaire_response_extractor';
+import { QuestionnaireExtractor } from './converters/questionnaire_extractor';
 
 const extractorMap = {
   DomainResource: DomainResourceExtractor,
@@ -56,6 +58,8 @@ const extractorMap = {
   Provenance: ProvenanceExtractor,
   CareTeam: CareTeamExtractor,
   Coverage: CoverageExtractor,
+  QuestionnaireResponse: QuestionnaireResponseExtractor,
+  Questionnaire: QuestionnaireExtractor
 };
 
 // add a register function
