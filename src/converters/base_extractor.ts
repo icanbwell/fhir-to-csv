@@ -9,6 +9,7 @@ import { TIdentifier } from '../types/partials/Identifier';
 import { THumanName } from '../types/partials/HumanName';
 import { TContactPoint } from '../types/partials/ContactPoint';
 import { TDosageDoseAndRate } from '../types/partials/DosageDoseAndRate';
+import { TExtension } from '../types/partials/Extension';
 
 export type ExtractorValueType = string | number | Date | undefined | boolean;
 
@@ -124,6 +125,16 @@ export abstract class BaseResourceExtractor<T> {
     return dosage
       ? `${dosage.doseQuantity?.value} ${dosage.doseQuantity?.unit} (${dosage.rateRatio?.numerator?.value} ${dosage.rateRatio?.numerator?.unit} / ${dosage.rateRatio?.denominator?.value} ${dosage.rateRatio?.denominator?.unit})`
       : dosage;
+  }
+
+  convertExtension(
+    extension: TExtension | undefined
+  ): ExtractorValueType {
+    if (!extension) return extension;
+    if (!extension.url) return undefined;
+    return extension
+      ? `${extension.url} | ${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
+      : extension;
   }
 }
 

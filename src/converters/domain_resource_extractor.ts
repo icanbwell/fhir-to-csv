@@ -12,8 +12,16 @@ export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResour
           'https://www.icanbwell.com/sourceAssigningAuthority'
       )?.code,
       source: resource.meta?.source,
-      profile: resource.meta?.profile?.join(', '),
-      tag: resource.meta?.tag?.map(tag => tag.display).join(', '),
+      profile1: resource.meta?.profile?.[0],
+      tag1: resource.meta?.tag?.[0]?.code,
+      tag2: resource.meta?.tag?.[1]?.code,
+      tag3: resource.meta?.tag?.[2]?.code,
+      extensions: resource.extension?.length,
+      extension1: this.convertExtension(resource.extension?.[0]),
+      extension2: this.convertExtension(resource.extension?.[1]),
+      extension3: this.convertExtension(resource.extension?.[2]),
+      extension4: this.convertExtension(resource.extension?.[3]),
+      extension5: this.convertExtension(resource.extension?.[4]),
     };
   }
 }
