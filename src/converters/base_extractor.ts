@@ -18,6 +18,10 @@ export abstract class BaseResourceExtractor<T> {
 
   convertCoding(coding: TCoding | undefined): ExtractorValueType {
     if (!coding) return coding;
+    // if there is a display name but no code, return the display name
+    if (coding.display && !coding.code) {
+      return coding.display;
+    }
     return coding.display
       ? `${coding.code} ${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`
       : `${coding.code} ${this.getFriendlyNameForSystem(coding.system)}`;
@@ -58,11 +62,7 @@ export abstract class BaseResourceExtractor<T> {
     // combine all codings into a single string
     if (codeableConcept.coding) {
       return codeableConcept.coding
-        .map(coding =>
-          coding.display
-            ? `${this.getFriendlyNameForSystem(coding.system)}:${coding.code} (${coding.display})`
-            : `${this.getFriendlyNameForSystem(coding.system)}:${coding.code}`
-        )
+        .map(coding => this.convertCoding(coding))
         .join('|');
     }
     return undefined;
@@ -81,26 +81,28 @@ export abstract class BaseResourceExtractor<T> {
   }
 
   convertPeriod(period: TPeriod | undefined): ExtractorValueType {
-    return period
-      ? `${period.start?.toString()} - ${period.end?.toString()}`
-      : period;
+    return (period && (period.start || period.end))
+      ? `${period.start?.toString() ?? '[No start]'} - ${period.end?.toString() ?? '[No end]'}`
+      : undefined;
   }
 
   convertQuantity(quantity: TQuantity | undefined): ExtractorValueType {
     return quantity
-      ? `${quantity.value} ${quantity.unit} (${this.getFriendlyNameForSystem(quantity.system)})`
+      ? `${quantity.value ?? '[No value]'} ${quantity.unit ?? '[No unit]'} (${this.getFriendlyNameForSystem(quantity.system)})`
       : quantity;
   }
 
   convertAddress(address: TAddress | undefined): ExtractorValueType {
-    return address
-      ? `${address.line?.join(', ')} ${address.city ?? ''}, ${address.state ?? ''} ${address.postalCode ?? ''} (${address.country ?? ''})`
-      : address;
+    if (!address) return address;
+    return address.country
+      ? `${address.line?.join(', ')}, ${address.city ?? ''}, ${address.state ?? ''} ${address.postalCode ?? ''} (${address.country ?? ''})`
+      : `${address.line?.join(', ')}, ${address.city ?? ''}, ${address.state ?? ''} ${address.postalCode ?? ''}`;
   }
 
   convertRatio(ration: TRatio | undefined): ExtractorValueType {
     return ration
-      ? `${ration.numerator?.value} ${ration.numerator?.unit} / ${ration.denominator?.value} ${ration.denominator?.unit}`
+      ? `${ration.numerator?.value ?? '[No value]'} ${ration.numerator?.unit ?? '[No unit]'}`
+      +` / ${ration.denominator?.value ?? '[No value]'} ${ration.denominator?.unit ?? '[No unit]'}`
       : ration;
   }
 
@@ -127,7 +129,7 @@ export abstract class BaseResourceExtractor<T> {
     );
     const email = emails[index];
     if (!email) return undefined;
-    return email.system === 'email' ? email.value : undefined;
+    return email.value;
   }
 
   getPhone(
@@ -140,24 +142,34 @@ export abstract class BaseResourceExtractor<T> {
     );
     const email = emails[index];
     if (!email) return undefined;
-    return email.system === 'email' ? email.value : undefined;
+    return email.value;
   }
 
   convertDosageAndRate(
     dosage: TDosageDoseAndRate | undefined
   ): ExtractorValueType {
     return dosage
-      ? `${dosage.doseQuantity?.value ?? 'N/A'} ${dosage.doseQuantity?.unit ?? 'N/A'} (${dosage.rateRatio?.numerator?.value ?? 'N/A'} ${dosage.rateRatio?.numerator?.unit ?? 'N/A'} / ${dosage.rateRatio?.denominator?.value ?? 'N/A'} ${dosage.rateRatio?.denominator?.unit ?? 'N/A'})`
+      ? `${dosage.doseQuantity?.value ?? '[No value]'} ${dosage.doseQuantity?.unit ?? '[No unit]'}`
+      +` (${dosage.rateRatio?.numerator?.value ?? '[No value]'} ${dosage.rateRatio?.numerator?.unit ?? '[No unit]'}`
+      +` / ${dosage.rateRatio?.denominator?.value ?? 'No value]'} ${dosage.rateRatio?.denominator?.unit ?? '[No unit]'})`
       : dosage;
   }
 
   convertExtension(extension: TExtension | undefined): ExtractorValueType {
     if (!extension) return extension;
     const url = this.getFriendlyNameForSystem(extension.url);
-    if (!url) return 'No URL';
-    return extension
+    if (extension.valueCoding) {
+      return this.convertCoding(extension.valueCoding);
+    }
+    if (extension.valueCodeableConcept) {
+      return this.convertCodeableConcept(extension.valueCodeableConcept);
+    }
+    if (extension.valueReference) {
+      return this.convertReference(extension.valueReference);
+    }
+    return url
       ? `${url} | ${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
-      : extension;
+      : `${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`;
   }
 
   getExtensionValueByUrl(
@@ -167,6 +179,12 @@ export abstract class BaseResourceExtractor<T> {
     if (!extensions) return undefined;
     const extension = extensions.find(ext => ext.url === url);
     if (!extension) return undefined;
+    // if there is a nested extension, return the value of the first one
+    if (extension.extension) {
+      return extension.extension
+        .map(ext => this.convertExtension(ext))
+        .join('|');
+    }
     return `${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`;
   }
 }

@@ -36,9 +36,9 @@ const mockPatient = {
   ],
   extension: [
     {
+      url: 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race',
       extension: [
         {
-          url: 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race',
           valueCoding: {
             display: 'White',
           },
@@ -46,9 +46,9 @@ const mockPatient = {
       ],
     },
     {
+      url: 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity',
       extension: [
         {
-          url: 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity',
           valueCoding: {
             display: 'Not Hispanic or Latino',
           },
@@ -93,18 +93,14 @@ describe('FHIR Resource Extractors', () => {
       const extractedPatient = await extractor.extract(mockPatient);
 
       expect(extractedPatient).toEqual({
-        nameGiven: 'John',
-        nameFamily: 'Doe',
+        id: 'patient-1',
+        name1: 'John Doe',
         birthDate: '1980-01-01',
-        email: undefined,
         gender: 'male',
         race: 'White',
-        sourceId: undefined,
         ethnicity: 'Not Hispanic or Latino',
-        addressLine: '123 Test Street',
-        addressCity: 'Testville',
-        addressState: 'TS',
-        telecomPhone: '555-1234',
+        address1: '123 Test Street, Testville, TS ',
+        phone1: '555-1234',
       });
     });
 
@@ -432,16 +428,12 @@ describe('Full Bundle Extractors', () => {
       expect(extractedData['Patient'][0]).toEqual(
         'id,lastUpdated,sourceAssigningAuthority,source,sourceId,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,email,telecomPhone'
       );
-      expect(extractedData['Patient'][1]).toEqual(
-        '123,,,,,John,Doe,,,,,,,,,'
-      );
+      expect(extractedData['Patient'][1]).toEqual('123,,,,,John,Doe,,,,,,,,,');
 
       expect(extractedData['Observation'][0]).toEqual(
         'id,lastUpdated,sourceAssigningAuthority,source,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime'
       );
-      expect(extractedData['Observation'][1]).toEqual(
-        '456,,,,123,final,,,,,,'
-      );
+      expect(extractedData['Observation'][1]).toEqual('456,,,,123,final,,,,,,');
     });
 
     it('should convert bundle to Zipped CSV data', async () => {
