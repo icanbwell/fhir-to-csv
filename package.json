@@ -25,7 +25,7 @@
   "author": {
     "name": "Imran Qureshi",
     "email": "imranq2@users.noreply.github.com",
-    "url": "https://github.com/imranq2"
+    "url": "https://github.com/icanbwell/fhir-to-csv"
   },
   "engines": {
     "node": ">=20.0.0"
