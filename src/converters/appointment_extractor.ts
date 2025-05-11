@@ -10,7 +10,15 @@ export class AppointmentExtractor extends BaseResourceExtractor<TAppointment> {
       patientId: this.getReferenceId(appointment.participant?.[0]?.actor),
       status: appointment.status,
       type: this.convertCodeableConcept(appointment.appointmentType),
-      reasonCode: this.convertCodeableConcepts(appointment.reasonCode),
+      reasonCode1: this.convertCodeableConcept(
+        appointment.reasonCode?.[0]
+      ),
+      reasonCode2: this.convertCodeableConcept(
+        appointment.reasonCode?.[1]
+      ),
+      reasonCode3: this.convertCodeableConcept(
+        appointment.reasonCode?.[2]
+      ),
       start: this.convertDateTime(appointment.start),
       end: this.convertDateTime(appointment.end),
       participant1: this.convertReference(

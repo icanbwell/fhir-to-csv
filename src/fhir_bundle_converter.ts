@@ -1,6 +1,6 @@
-import { TBundle } from '../types/resources/Bundle';
-import { TResource } from '../types/resources/Resource';
-import { ExtractorRegistry } from './extractor_registry';
+import { TBundle } from './types/resources/Bundle';
+import { TResource } from './types/resources/Resource';
+import { ExtractorRegistry } from './registry/extractor_registry';
 import xlsx from 'xlsx';
 import JSZip from 'jszip';
 
