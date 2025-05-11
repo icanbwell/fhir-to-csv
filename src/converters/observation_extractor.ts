@@ -10,6 +10,19 @@ export class ObservationExtractor extends BaseResourceExtractor<TObservation> {
       patientId: this.getReferenceId(observation.subject),
       status: observation.status,
 
+      ...this.getIdentifierFields(
+        observation.identifier?.[0],
+        'identifier1'
+      ),
+      ...this.getIdentifierFields(
+        observation.identifier?.[1],
+        'identifier2'
+      ),
+      ...this.getIdentifierFields(
+        observation.identifier?.[2],
+        'identifier3'
+      ),
+
       ...this.getCodeableConceptFields(observation.category?.[0], 'category1'),
       category2: this.convertCodeableConcept(observation.category?.[1]),
       category3: this.convertCodeableConcept(observation.category?.[2]),

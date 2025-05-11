@@ -7,6 +7,21 @@ export class CoverageExtractor extends BaseResourceExtractor<TCoverage> {
   ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: coverage.id,
+      patientId: this.getReferenceId(coverage.beneficiary),
+
+      ...this.getIdentifierFields(
+        coverage.identifier?.[0],
+        'identifier1'
+      ),
+      ...this.getIdentifierFields(
+        coverage.identifier?.[1],
+        'identifier2'
+      ),
+      ...this.getIdentifierFields(
+        coverage.identifier?.[2],
+        'identifier3'
+      ),
+
       status: coverage.status,
       ...this.getCodeableConceptFields(
         coverage.type,

@@ -8,6 +8,20 @@ export class EncounterExtractor extends BaseResourceExtractor<TEncounter> {
     return {
       id: encounter.id,
       patientId: this.getReferenceId(encounter.subject),
+
+      ...this.getIdentifierFields(
+        encounter.identifier?.[0],
+        'identifier1'
+      ),
+      ...this.getIdentifierFields(
+        encounter.identifier?.[1],
+        'identifier2'
+      ),
+      ...this.getIdentifierFields(
+        encounter.identifier?.[2],
+        'identifier3'
+      ),
+
       status: encounter.status,
       ...this.getCodingFields(
         encounter.class_,

@@ -7,18 +7,15 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
   ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: practitioner.id,
-      ...this.getHumanNameFields(
-        practitioner.name?.[0],
-        'name1'
-      ),
-      ...this.getHumanNameFields(
-        practitioner.name?.[1],
-        'name2'
-      ),
-      ...this.getHumanNameFields(
-        practitioner.name?.[2],
-        'name3'
-      ),
+      ...this.getIdentifierFields(practitioner.identifier?.[0], 'identifier1'),
+      ...this.getIdentifierFields(practitioner.identifier?.[1], 'identifier2'),
+      ...this.getIdentifierFields(practitioner.identifier?.[2], 'identifier3'),
+      ...this.getIdentifierFields(practitioner.identifier?.[3], 'identifier4'),
+      ...this.getIdentifierFields(practitioner.identifier?.[4], 'identifier5'),
+
+      ...this.getHumanNameFields(practitioner.name?.[0], 'name1'),
+      ...this.getHumanNameFields(practitioner.name?.[1], 'name2'),
+      ...this.getHumanNameFields(practitioner.name?.[2], 'name3'),
       gender: practitioner.gender,
       birthDate: this.convertDateTime(practitioner.birthDate),
       email1: this.getEmail(practitioner.telecom, 0),
@@ -27,26 +24,11 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
       phone1: this.getPhone(practitioner.telecom, 0),
       phone2: this.getPhone(practitioner.telecom, 1),
       phone3: this.getPhone(practitioner.telecom, 2),
-      ...this.getAddressFields(
-        practitioner.address?.[0],
-        'address1'
-      ),
-      ...this.getAddressFields(
-        practitioner.address?.[1],
-        'address2'
-      ),
-      ...this.getAddressFields(
-        practitioner.address?.[2],
-        'address3'
-      ),
-      ...this.getAddressFields(
-        practitioner.address?.[3],
-        'address4'
-      ),
-      ...this.getAddressFields(
-        practitioner.address?.[4],
-        'address5'
-      ),
+      ...this.getAddressFields(practitioner.address?.[0], 'address1'),
+      ...this.getAddressFields(practitioner.address?.[1], 'address2'),
+      ...this.getAddressFields(practitioner.address?.[2], 'address3'),
+      ...this.getAddressFields(practitioner.address?.[3], 'address4'),
+      ...this.getAddressFields(practitioner.address?.[4], 'address5'),
 
       ...this.getCodeableConceptFields(
         practitioner.qualification?.[0]?.code,
@@ -89,27 +71,6 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
         practitioner.communication?.[2]
       ),
       active: practitioner.active,
-
-      ...this.getIdentifierFields(
-        practitioner.identifier?.[0],
-        'identifier1'
-      ),
-      ...this.getIdentifierFields(
-        practitioner.identifier?.[1],
-        'identifier2'
-      ),
-      ...this.getIdentifierFields(
-        practitioner.identifier?.[2],
-        'identifier3'
-      ),
-      ...this.getIdentifierFields(
-        practitioner.identifier?.[3],
-        'identifier4'
-      ),
-      ...this.getIdentifierFields(
-        practitioner.identifier?.[4],
-        'identifier5'
-      )
     };
   }
 }
