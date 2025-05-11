@@ -2,7 +2,9 @@ import { BaseResourceExtractor } from './base_extractor';
 import { TAllergyIntolerance } from '../types/resources/AllergyIntolerance';
 
 export class AllergyIntoleranceExtractor extends BaseResourceExtractor<TAllergyIntolerance> {
-  async extract(allergyIntolerance: TAllergyIntolerance): Promise<Record<string, any>> {
+  async extract(
+    allergyIntolerance: TAllergyIntolerance
+  ): Promise<Record<string, any>> {
     return {
       id: allergyIntolerance.id,
       patientId: allergyIntolerance.patient?.reference?.split('/')?.pop(),
@@ -14,6 +16,8 @@ export class AllergyIntoleranceExtractor extends BaseResourceExtractor<TAllergyI
       criticality: allergyIntolerance.criticality,
       code: allergyIntolerance.code?.coding?.[0]?.code,
       codeDisplay: allergyIntolerance.code?.coding?.[0]?.display,
+      reaction: allergy.reaction?.[0]?.manifestation?.[0]?.coding?.[0]?.display,
+      criticality: allergy.criticality,
     };
   }
 }

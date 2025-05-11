@@ -12,6 +12,7 @@ export class ImmunizationExtractor extends BaseResourceExtractor<TImmunization> 
       occurrenceDatetime: immunization.occurrenceDateTime?.toString(),
       lotNumber: immunization.lotNumber,
       manufacturer: immunization.manufacturer?.display,
+      performer: immunization.performer?.[0]?.actor?.display,
     };
   }
 }

@@ -8,9 +8,12 @@ export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResour
       lastUpdated: resource.meta?.lastUpdated?.toString(),
       sourceAssigningAuthority: resource.meta?.security?.find(
         security =>
-          security.system === 'https://www.icanbwell.com/sourceAssigningAuthority'
+          security.system ===
+          'https://www.icanbwell.com/sourceAssigningAuthority'
       )?.code,
-      source: resource.meta?.source
+      source: resource.meta?.source,
+      profile: resource.meta?.profile?.join(', '),
+      tag: resource.meta?.tag?.map(tag => tag.display).join(', '),
     };
   }
 }

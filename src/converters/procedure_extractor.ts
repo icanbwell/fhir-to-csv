@@ -12,6 +12,8 @@ export class ProcedureExtractor extends BaseResourceExtractor<TProcedure> {
       performedDatetime: procedure.performedDateTime?.toString(),
       performedPeriodStart: procedure.performedPeriod?.start?.toString(),
       performedPeriodEnd: procedure.performedPeriod?.end?.toString(),
+      reasonCode: procedure.reasonCode?.[0]?.coding?.[0]?.display,
+      outcome: procedure.outcome?.coding?.[0]?.display,
     };
   }
 }

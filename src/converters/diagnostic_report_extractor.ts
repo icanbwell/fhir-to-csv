@@ -13,6 +13,7 @@ export class DiagnosticReportExtractor extends BaseResourceExtractor<TDiagnostic
       effectiveDatetime: report.effectiveDateTime?.toString(),
       issued: report.issued?.toString(),
       conclusion: report.conclusion,
+      presentedForm: report.presentedForm?.[0]?.url,
     };
   }
 }

@@ -17,6 +17,7 @@ export class MedicationStatementExtractor extends BaseResourceExtractor<TMedicat
       effectivePeriodEnd: medicationStatement.effectivePeriod?.end?.toString(),
       // taken: medicationStatement.,
       reasonCode: medicationStatement.reasonCode?.[0]?.coding?.[0]?.code,
+      dosage: medicationStatement.dosage?.[0]?.text,
     };
   }
 }

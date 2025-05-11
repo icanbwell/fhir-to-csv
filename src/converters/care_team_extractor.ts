@@ -17,6 +17,8 @@ export class CareTeamExtractor extends BaseResourceExtractor<TCareTeam> {
         periodStart: participant.period?.start?.toString(),
         periodEnd: participant.period?.end?.toString(),
       })),
+      reasonCode: careTeam.reasonCode?.[0]?.coding?.[0]?.display,
+      managingOrganization: careTeam.managingOrganization?.[0]?.display,
     };
   }
 }

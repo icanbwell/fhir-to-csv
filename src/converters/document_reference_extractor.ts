@@ -13,6 +13,7 @@ export class DocumentReferenceExtractor extends BaseResourceExtractor<TDocumentR
       date: docRef.date?.toString(),
       contentUrl: docRef.content?.[0]?.attachment?.url,
       contentTitle: docRef.content?.[0]?.attachment?.title,
+      context: docRef.context?.encounter?.[0]?.reference,
     };
   }
 }

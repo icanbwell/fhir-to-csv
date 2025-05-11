@@ -20,6 +20,9 @@ export class PatientExtractor extends BaseResourceExtractor<TPatient> {
         ?.value,
       telecomPhone: patient.telecom?.find(contact => contact.system === 'phone')
         ?.value,
+      maritalStatus: patient.maritalStatus?.text,
+      language: patient.communication?.[0]?.language?.text,
+      deceased: patient.deceasedBoolean ?? patient.deceasedDateTime,
     };
   }
 }
