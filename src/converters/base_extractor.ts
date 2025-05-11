@@ -17,41 +17,53 @@ export abstract class BaseResourceExtractor<T> {
 
   convertCoding(coding: TCoding | undefined): ExtractorValueType {
     return coding
-      ? `${coding.code} ${coding.system} (${coding.display})`
+      ? `${coding.code} ${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`
       : coding;
   }
 
-  // convertCodings(codings: TCoding[] | undefined): ExtractorValueType {
-  //   return codings
-  //     ? codings
-  //         .map(coding => `${coding.code} ${coding.system} (${coding.display})`)
-  //         .join(', ')
-  //     : codings;
-  // }
+  getFriendlyNameForSystem(system: string | undefined): string | undefined {
+    if (!system) return system;
+    const systemMap: Record<string, string> = {
+      'http://loinc.org': 'Loinc',
+      'http://snomed.info/sct': 'Snomed',
+      'http://hl7.org/fhir/v2/0203': 'HL7',
+      'http://hl7.org/fhir/v3/NullFlavor': 'HL7',
+      'http://terminology.hl7.org/CodeSystem/v3-NullFlavor': 'HL7',
+      'http://www.ama-assn.org/go/cpt': 'CPT',
+      'http://www.nlm.nih.gov/research/umls/rxnorm': 'RxNorm',
+      'http://hl7.org/fhir/sid/icd-10-cm': 'ICD-10-CM',
+      'http://hl7.org/fhir/sid/icd-10': 'ICD-10',
+      'http://hl7.org/fhir/sid/icd-9-cm': 'ICD-9-CM',
+      'http://hl7.org/fhir/sid/icd-9': 'ICD-9',
+      'http://hl7.org/fhir/sid/icd-11': 'ICD-11',
+      'http://hl7.org/fhir/sid/icd-11-cm': 'ICD-11-CM',
+      'http://hl7.org/fhir/sid/icd-11-pcs': 'ICD-11-PCS',
+      'http://hl7.org/fhir/sid/cvx': 'CVX',
+    };
+    return systemMap[system] || system;
+  }
 
   convertCodeableConcept(
     codeableConcept: TCodeableConcept | undefined
   ): ExtractorValueType {
-    return codeableConcept
-      ? `${codeableConcept.coding?.[0]?.code} ${codeableConcept.coding?.[0]?.system} (${codeableConcept.coding?.[0]?.display})`
-      : codeableConcept;
+    if (!codeableConcept) return codeableConcept;
+    if (codeableConcept.text) {
+      return codeableConcept.text;
+    }
+    // combine all codings into a single string
+    if (codeableConcept.coding) {
+      return codeableConcept.coding
+        .map(
+          coding =>
+            `${coding.code} ${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`
+        )
+        .join('|');
+    }
+    return undefined;
   }
 
-  // convertCodeableConcepts(
-  //   codeableConcepts: TCodeableConcept[] | undefined
-  // ): ExtractorValueType {
-  //   return codeableConcepts
-  //     ? codeableConcepts
-  //         .map(
-  //           cc =>
-  //             `${cc.coding?.[0]?.code} ${cc.coding?.[0]?.system} (${cc.coding?.[0]?.display})`
-  //         )
-  //         .join(', ')
-  //     : codeableConcepts;
-  // }
-
   convertReference(reference: TReference | undefined): ExtractorValueType {
-    return reference ? `${reference.reference} (${reference.type})` : reference;
+    return reference ? `${reference.reference}` : reference;
   }
 
   getReferenceId(reference: TReference | undefined): ExtractorValueType {
@@ -70,7 +82,7 @@ export abstract class BaseResourceExtractor<T> {
 
   convertQuantity(quantity: TQuantity | undefined): ExtractorValueType {
     return quantity
-      ? `${quantity.value} ${quantity.unit} (${quantity.system})`
+      ? `${quantity.value} ${quantity.unit} (${this.getFriendlyNameForSystem(quantity.system)})`
       : quantity;
   }
 
@@ -88,7 +100,7 @@ export abstract class BaseResourceExtractor<T> {
 
   convertIdentifier(identifier: TIdentifier | undefined): ExtractorValueType {
     return identifier
-      ? `${identifier.system} | ${identifier.value}`
+      ? `${(identifier.id || this, this.getFriendlyNameForSystem(identifier.system))} | ${identifier.value}`
       : identifier;
   }
 
@@ -102,13 +114,13 @@ export abstract class BaseResourceExtractor<T> {
     contactPoint: TContactPoint | undefined
   ): ExtractorValueType {
     return contactPoint
-      ? `${contactPoint.system} | ${contactPoint.value} (${contactPoint.use})`
+      ? `${this.getFriendlyNameForSystem(contactPoint.system)} | ${contactPoint.value} (${contactPoint.use})`
       : contactPoint;
   }
 
   convertDosageAndRate(
     dosage: TDosageDoseAndRate | undefined
-  ) : ExtractorValueType {
+  ): ExtractorValueType {
     return dosage
       ? `${dosage.doseQuantity?.value} ${dosage.doseQuantity?.unit} (${dosage.rateRatio?.numerator?.value} ${dosage.rateRatio?.numerator?.unit} / ${dosage.rateRatio?.denominator?.value} ${dosage.rateRatio?.denominator?.unit})`
       : dosage;

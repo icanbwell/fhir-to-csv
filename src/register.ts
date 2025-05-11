@@ -34,12 +34,17 @@ import { RelatedPersonExtractor } from './converters/related_person_extractor';
 import { SpecimenExtractor } from './converters/specimen_extractor';
 import { ExplanationOfBenefitExtractor } from './converters/explanation_of_benefit';
 import { PersonExtractor } from './converters/person_extractor';
+import { CompositionExtractor } from './converters/composition_extractor';
+import { ScheduleExtractor } from './converters/schedule_extractor';
+import { SlotExtractor } from './converters/slot_extractor';
+import { TaskExtractor } from './converters/task_extractor';
 
 const extractorMap = {
   AllergyIntolerance: AllergyIntoleranceExtractor,
   Appointment: AppointmentExtractor,
   CarePlan: CarePlanExtractor,
   CareTeam: CareTeamExtractor,
+  Composition: CompositionExtractor,
   Condition: ConditionExtractor,
   Coverage: CoverageExtractor,
   Device: DeviceExtractor,
@@ -66,8 +71,11 @@ const extractorMap = {
   Questionnaire: QuestionnaireExtractor,
   QuestionnaireResponse: QuestionnaireResponseExtractor,
   RelatedPerson: RelatedPersonExtractor,
+  Schedule: ScheduleExtractor,
   ServiceRequest: ServiceRequestExtractor,
-  Specimen: SpecimenExtractor
+  Slot: SlotExtractor,
+  Specimen: SpecimenExtractor,
+  Task: TaskExtractor
 };
 
 // add a register function
