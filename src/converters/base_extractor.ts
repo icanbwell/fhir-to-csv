@@ -293,10 +293,6 @@ export abstract class BaseResourceExtractor<T> {
     if (!extensions) return undefined;
     const extension = extensions.find(ext => ext.url === url);
     if (!extension) return undefined;
-    // if there is a nested extension, return the first one
-    if (extension.extension) {
-      return extension.extension[0];
-    }
     return extension;
   }
 
