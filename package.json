@@ -47,7 +47,7 @@
   "homepage": "https://github.com/icanbwell/fhir-to-csv#readme",
   "dependencies": {
     "@json2csv/node": "^7.0.6",
-    "xlsx": "^0.18.5",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "jszip": "^3.10.1"
   },
   "devDependencies": {
