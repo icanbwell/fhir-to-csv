@@ -33,6 +33,7 @@ import { QuestionnaireExtractor } from './converters/questionnaire_extractor';
 import { RelatedPersonExtractor } from './converters/related_person_extractor';
 import { SpecimenExtractor } from './converters/specimen_extractor';
 import { ExplanationOfBenefitExtractor } from './converters/explanation_of_benefit';
+import { PersonExtractor } from './converters/person_extractor';
 
 const extractorMap = {
   AllergyIntolerance: AllergyIntoleranceExtractor,
@@ -57,6 +58,7 @@ const extractorMap = {
   Observation: ObservationExtractor,
   Organization: OrganizationExtractor,
   Patient: PatientExtractor,
+  Person: PersonExtractor,
   Practitioner: PractitionerExtractor,
   PractitionerRole: PractitionerRoleExtractor,
   Procedure: ProcedureExtractor,
