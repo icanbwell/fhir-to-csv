@@ -20,7 +20,7 @@ describe('Full Bundle Extractors', () => {
       fs.mkdirSync(tempFolder);
     }
 
-    it('should convert bundle to Zipped CSV data', async () => {
+    it('should convert bundle to Zipped CSV file', async () => {
       const extractedData: Buffer<ArrayBufferLike> =
         await converter.convertToCSVZipped(
           await converter.convertToDictionaries(bundle)
@@ -32,7 +32,7 @@ describe('Full Bundle Extractors', () => {
       writeStream.end();
     });
 
-    it('should convert bundle to Excel data', async () => {
+    it('should convert bundle to Excel file', async () => {
       const extractedData: Buffer<ArrayBufferLike> =
         await converter.convertToExcel(
           await converter.convertToDictionaries(bundle)
@@ -40,6 +40,17 @@ describe('Full Bundle Extractors', () => {
 
       // write buffer to file
       const writeStream = fs.createWriteStream(tempFolder + '/test_large.xlsx');
+      writeStream.write(extractedData);
+      writeStream.end();
+    });
+    it('should convert bundle to Numbers file', async () => {
+      const extractedData: Buffer<ArrayBufferLike> =
+        await converter.convertToAppleNumbers(
+          await converter.convertToDictionaries(bundle)
+        );
+
+      // write buffer to file
+      const writeStream = fs.createWriteStream(tempFolder + '/test_large.numbers');
       writeStream.write(extractedData);
       writeStream.end();
     });

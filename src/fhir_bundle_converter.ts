@@ -4,6 +4,8 @@ import { ExtractorRegistry } from './registry/extractor_registry';
 import xlsx from 'xlsx';
 import JSZip from 'jszip';
 import { ExtractorRegistrar } from './registry/register';
+// @ts-expect-error The @types for xlsx do not include the zahl payload
+import XLSX_ZAHL_PAYLOAD from 'xlsx/dist/xlsx.zahl';
 
 export class FHIRBundleConverter {
   async convertToDictionaries(
@@ -133,10 +135,29 @@ export class FHIRBundleConverter {
       xlsx.utils.book_append_sheet(workbook, worksheet, resourceType);
     }
     // https://docs.sheetjs.com/docs/api/write-options/#writing-options
+    // https://docs.sheetjs.com/docs/api/write-options/#supported-output-formats
     return xlsx.write(workbook, {
       type: 'buffer',
       bookType: 'xlsx',
       compression: true
+    });
+  }
+
+  // Convert extracted data to Excel format using xlsx package
+  async convertToAppleNumbers(
+    extractedData: Record<string, Record<string, any[]>[]>
+  ): Promise<Buffer<ArrayBufferLike>> {
+    const workbook = xlsx.utils.book_new();
+    for (const [resourceType, resources] of Object.entries(extractedData)) {
+      const worksheet = xlsx.utils.json_to_sheet(resources);
+      xlsx.utils.book_append_sheet(workbook, worksheet, resourceType);
+    }
+    // https://docs.sheetjs.com/docs/api/write-options/#writing-options
+    return xlsx.write(workbook, {
+      type: 'buffer',
+      bookType: "numbers",
+      compression: true,
+      numbers: XLSX_ZAHL_PAYLOAD,
     });
   }
 
