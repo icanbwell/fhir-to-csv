@@ -25,8 +25,10 @@ import { CareTeamExtractor } from './care_team_extractor';
 import { CoverageExtractor } from './coverage_extractor';
 import { Extractor } from './base_extractor';
 import { TResource } from '../types/resources/Resource';
+import { DomainResourceExtractor } from './domain_resource_extractor';
 
 const extractorMap = {
+  DomainResource: DomainResourceExtractor,
   Patient: PatientExtractor,
   Observation: ObservationExtractor,
   Condition: ConditionExtractor,

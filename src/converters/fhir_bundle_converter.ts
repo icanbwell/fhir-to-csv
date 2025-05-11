@@ -23,17 +23,29 @@ export class FHIRBundleConverter {
         ExtractorRegistry.has(resourceType)
       ) {
         try {
+          // get the domain resource extractor to get common fields
+          const domainExtractor = ExtractorRegistry.getExtractor(
+            'DomainResource'
+          );
+          const domainResource: Record<string, any> =
+            await domainExtractor.extract(resource);
           // Attempt to get extractor
           const extractor = ExtractorRegistry.getExtractor(resourceType);
           const extractedResource: Record<string, any> =
             await extractor.extract(resource);
+
+          // Merge common fields with specific resource fields
+          const fullExtractedResource:  Record<string, any> = {
+            ...domainResource,
+            ...extractedResource,
+          }
 
           // Initialize array for resource type if not exists
           if (!extractedData[resourceType]) {
             extractedData[resourceType] = [];
           }
 
-          extractedData[resourceType].push(extractedResource);
+          extractedData[resourceType].push(fullExtractedResource);
         } catch (error) {
           // Log errors for each resource type
           if (!errorLog[resourceType]) {

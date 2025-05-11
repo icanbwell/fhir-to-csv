@@ -91,12 +91,13 @@ describe('FHIR Resource Extractors', () => {
       const extractedPatient = await extractor.extract(mockPatient);
 
       expect(extractedPatient).toEqual({
-        id: 'patient-1',
         nameGiven: 'John',
         nameFamily: 'Doe',
         birthDate: '1980-01-01',
+        email: undefined,
         gender: 'male',
         race: 'White',
+        sourceId: undefined,
         ethnicity: 'Not Hispanic or Latino',
         addressLine: '123 Test Street',
         addressCity: 'Testville',
@@ -178,17 +179,17 @@ describe('FHIR Resource Extractors', () => {
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0]).toEqual(
-        'id,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,telecomPhone'
+        'id,lastUpdated,sourceAssigningAuthority,source,sourceId,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,email,telecomPhone'
       );
       expect(extractedData['Patient'][1]).toEqual(
-        'patient-1,John,Doe,1980-01-01,male,White,Not Hispanic or Latino,123 Test Street,Testville,TS,555-1234'
+        'patient-1,,,,,John,Doe,1980-01-01,male,White,Not Hispanic or Latino,123 Test Street,Testville,TS,,555-1234'
       );
 
       expect(extractedData['Observation'][0]).toEqual(
-        'id,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime'
+        'id,lastUpdated,sourceAssigningAuthority,source,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime'
       );
       expect(extractedData['Observation'][1]).toEqual(
-        'obs-1,patient-1,final,,8302-2,Body Height,175,,2023-01-01T10:00:00Z'
+        'obs-1,,,,patient-1,final,,8302-2,Body Height,175,,2023-01-01T10:00:00Z'
       );
     });
 
@@ -427,17 +428,17 @@ describe('Full Bundle Extractors', () => {
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0]).toEqual(
-        'id,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,telecomPhone'
+        'id,lastUpdated,sourceAssigningAuthority,source,sourceId,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,email,telecomPhone'
       );
       expect(extractedData['Patient'][1]).toEqual(
-        '123,John,Doe,,,,,,,,'
+        '123,,,,,John,Doe,,,,,,,,,'
       );
 
       expect(extractedData['Observation'][0]).toEqual(
-        'id,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime'
+        'id,lastUpdated,sourceAssigningAuthority,source,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime'
       );
       expect(extractedData['Observation'][1]).toEqual(
-        '456,123,final,,,,,,'
+        '456,,,,123,final,,,,,,'
       );
     });
 
