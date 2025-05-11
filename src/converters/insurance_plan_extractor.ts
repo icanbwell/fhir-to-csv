@@ -10,7 +10,12 @@ export class InsurancePlanExtractor extends BaseResourceExtractor<TInsurancePlan
       alias1: insurancePlan.alias?.[0],
       alias2: insurancePlan.alias?.[1],
       alias3: insurancePlan.alias?.[2],
-      period: this.convertPeriod(insurancePlan.period),
+      periodStart: this.convertDateTime(
+        insurancePlan.period?.start
+      ),
+      periodEnd: this.convertDateTime(
+        insurancePlan.period?.end
+      ),
       ownedBy: this.convertReference(insurancePlan.ownedBy),
       type1: this.convertCodeableConcept(
         insurancePlan.type?.[0]

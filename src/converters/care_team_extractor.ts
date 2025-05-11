@@ -19,7 +19,12 @@ export class CareTeamExtractor extends BaseResourceExtractor<TCareTeam> {
         careTeam.category?.[2]
       ),
       name: careTeam.name,
-      period: this.convertPeriod(careTeam.period),
+      periodStart: this.convertDateTime(
+        careTeam.period?.start
+      ),
+      periodEnd: this.convertDateTime(
+        careTeam.period?.end
+      ),
       participant1: this.convertReference(
         careTeam.participant?.[0]?.member
       ),

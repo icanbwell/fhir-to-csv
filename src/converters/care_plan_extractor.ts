@@ -21,7 +21,8 @@ export class CarePlanExtractor extends BaseResourceExtractor<TCarePlan> {
       ),
       title: carePlan.title,
       description: carePlan.description,
-      period: this.convertPeriod(carePlan.period),
+      periodStart: this.convertDateTime(carePlan.period?.start),
+      periodEnd: this.convertDateTime(carePlan.period?.end),
       activityCount: carePlan.activity?.length,
       activity1: this.convertCodeableConcept(
         carePlan.activity?.[0]?.detail?.code

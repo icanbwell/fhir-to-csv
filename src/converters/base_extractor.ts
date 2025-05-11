@@ -1,7 +1,6 @@
 import { TCoding } from '../types/partials/Coding';
 import { TReference } from '../types/partials/Reference';
 import { TCodeableConcept } from '../types/partials/CodeableConcept';
-import { TPeriod } from '../types/partials/Period';
 import { TQuantity } from '../types/partials/Quantity';
 import { TAddress } from '../types/partials/Address';
 import { TRatio } from '../types/partials/Ratio';
@@ -85,12 +84,6 @@ export abstract class BaseResourceExtractor<T> {
 
   convertDateTime(dateTime: Date | string | undefined): ExtractorValueType {
     return dateTime ? dateTime.toString() : dateTime;
-  }
-
-  convertPeriod(period: TPeriod | undefined): ExtractorValueType {
-    return (period && (period.start || period.end))
-      ? `${period.start?.toString() ?? '[No start]'} - ${period.end?.toString() ?? '[No end]'}`
-      : undefined;
   }
 
   convertQuantity(quantity: TQuantity | undefined): ExtractorValueType {

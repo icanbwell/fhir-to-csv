@@ -11,7 +11,12 @@ export class CoverageExtractor extends BaseResourceExtractor<TCoverage> {
       type: this.convertCodeableConcept(coverage.type),
       subscriberId: coverage.subscriberId,
       beneficiaryId: this.getReferenceId(coverage.beneficiary),
-      period: this.convertPeriod(coverage.period),
+      periodStart: this.convertDateTime(
+        coverage.period?.start
+      ),
+      periodEnd: this.convertDateTime(
+        coverage.period?.end
+      ),
       payor1: this.convertReference(
         coverage.payor?.[0]
       ),
