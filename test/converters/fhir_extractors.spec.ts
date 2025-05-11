@@ -170,20 +170,100 @@ const mockObservation = {
   status: 'final',
   subject: {
     reference: 'Patient/patient-1',
+    display: 'John Doe',
   },
   code: {
     coding: [
       {
-        code: '8302-2',
-        display: 'Body Height',
+        id: '51f12959-eab9-5413-98f8-d0ad613bd460',
+        system: 'http://loinc.org',
+        code: '718-7',
+        display: 'Hemoglobin [Mass/volume] in Blood',
+      },
+      {
+        id: '51f12959-eab9-5413-98f8-d0ad613bd460',
+        system: 'http://loinc.org',
+        code: '718-7',
+        display: 'Hemoglobin',
+      },
+      {
+        id: '51f12959-eab9-5413-98f8-d0ad613bd460',
+        system: 'http://loinc.org',
+        code: '718-7',
+        display: 'in Blood',
+      },
+      {
+        id: '51f12959-eab9-5413-98f8-d0ad613bd460',
+        system: 'http://loinc.org',
+        code: '718-7',
+        display: 'Hemoglobin [Mass/volume] in Blood',
       },
     ],
+    text: 'Hello',
   },
+  interpretation: [
+    {
+      coding: [
+        {
+          id: '724ce193-68e0-577c-af2c-bb30576762fe',
+          system:
+            'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation',
+          code: 'L',
+          display: 'Low',
+        },
+      ],
+    },
+  ],
   valueQuantity: {
-    value: 175,
-    unit: 'cm',
+    value: 7.2,
+    unit: 'g/dl',
+    system: 'http://unitsofmeasure.org',
+    code: 'g/dL',
   },
-  effectiveDateTime: '2023-01-01T10:00:00Z',
+  issued: '2023-01-01T10:00:00Z',
+  effectivePeriod: {
+    start: '2013-04-05T10:30:10+01:00',
+    end: '2013-04-05T10:30:10+01:00',
+  },
+  performer: [
+    {
+      extension: [
+        {
+          id: 'sourceId',
+          url: 'https://www.icanbwell.com/sourceId',
+          valueString: 'Practitioner/f005',
+        },
+        {
+          id: 'uuid',
+          url: 'https://www.icanbwell.com/uuid',
+          valueString: 'Practitioner/11809d4e-2f15-566e-bb7e-64af2a9cfb74',
+        },
+        {
+          id: 'sourceAssigningAuthority',
+          url: 'https://www.icanbwell.com/sourceAssigningAuthority',
+          valueString: 'bwell',
+        },
+      ],
+      reference: 'Practitioner/f005',
+      display: 'A. Langeveld',
+    },
+  ],
+  referenceRange: [
+    {
+      low: {
+        value: 7.5,
+        unit: 'g/dl',
+        system: 'http://unitsofmeasure.org',
+        code: 'g/dL',
+      },
+      high: {
+        value: 10,
+        unit: 'g/dl',
+        system: 'http://unitsofmeasure.org',
+        code: 'g/dL',
+      },
+    },
+  ],
 };
 
 const mockBundle: TBundle = {
@@ -200,7 +280,13 @@ describe('FHIR Resource Extractors', () => {
 
       expect(extractedPatient).toEqual({
         id: 'patient-1',
+        identifier1: 'master-person-fhir-id=undefined',
+        identifier2: 'sourceId=00000632-18eb-525e-9f74-e3c9a5cd9c7a',
+        identifier3: 'uuid=00000632-18eb-525e-9f74-e3c9a5cd9c7a',
+        identifier4: 'https://www.healthpartners.com/polnum=1000000',
+        identifier5: 'SSN=111-11-1111',
         name1: 'John Doe',
+        name2: 'FIRST M LAST',
         birthDate: '1980-01-01',
         gender: 'male',
         race: 'White',
@@ -283,14 +369,14 @@ describe('FHIR Resource Extractors', () => {
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0]).toEqual(
-        'id,lastUpdated,sourceAssigningAuthority,source,sourceId,nameGiven,nameFamily,birthDate,gender,race,ethnicity,addressLine,addressCity,addressState,email,telecomPhone'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,identifier1,identifier2,identifier3,identifier4,identifier5,name1,name2,name3,name4,name5,active,gender,birthSex,sex,race,ethnicity,birthDate,address1,address2,address3,address4,address5,email1,email2,email3,phone1,phone2,phone3,maritalStatus,communication1Language,communication1Preferred,communication2Language,communication2Preferred,communication3Language,communication3Preferred,deceased,deceasedDateTime'
       );
       expect(extractedData['Patient'][1]).toEqual(
-        'patient-1,,,,,John,Doe,1980-01-01,male,White,Not Hispanic or Latino,123 Test Street,Testville,TS,,555-1234'
+        'patient-1,1,2023-01-01T10:00:00Z,foo,#source,http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient,unregistered,00000632-18eb-525e-9f74-e3c9a5cd9c7a,,2,http://hl7.org/fhir/us/core/StructureDefinition/us-core-race=undefined,http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity=undefined,,,,master-person-fhir-id=undefined,sourceId=00000632-18eb-525e-9f74-e3c9a5cd9c7a,uuid=00000632-18eb-525e-9f74-e3c9a5cd9c7a,https://www.healthpartners.com/polnum=1000000,SSN=111-11-1111,John Doe,FIRST M LAST,,,,,male,,,White,Not Hispanic or Latino,1980-01-01,"123 Test Street, Testville, TS ",,,,,,,,555-1234,,,,,,,,,,,'
       );
 
       expect(extractedData['Observation'][0]).toEqual(
-        'id,lastUpdated,sourceAssigningAuthority,source,patientId,status,category,code,codeDisplay,valueQuantity,valueString,effectiveDatetime'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category1,category2,category3,code1,code1System,code1Code,code1Display,code2,code2System,code2Code,code2Display,code3,code3System,code3Code,code3Display,code4,code4System,code4Code,code4Display,code5,code5System,code5Code,code5Display,value,interpretation1,interpretation2,interpretation3,effective,issued'
       );
       expect(extractedData['Observation'][1]).toEqual(
         'obs-1,,,,patient-1,final,,8302-2,Body Height,175,,2023-01-01T10:00:00Z'

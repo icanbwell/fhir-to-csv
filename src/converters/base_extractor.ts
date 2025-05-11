@@ -25,13 +25,13 @@ export abstract class BaseResourceExtractor<T> {
       return coding.display;
     }
     if (coding.system && coding.code && coding.display) {
-      return `${coding.code} ${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`;
+      return `${this.getFriendlyNameForSystem(coding.system)}=${coding.code} (${coding.display})`;
     }
     if (coding.system && coding.code) {
-      return `${coding.code} ${this.getFriendlyNameForSystem(coding.system)}`;
+      return `${this.getFriendlyNameForSystem(coding.system)}=${coding.code}`;
     }
     if (coding.system && coding.display) {
-      return `${this.getFriendlyNameForSystem(coding.system)} (${coding.display})`;
+      return `${this.getFriendlyNameForSystem(coding.system)}=${coding.display}`;
     }
     if (coding.code && coding.display) {
       return `${coding.code} (${coding.display})`;
@@ -52,6 +52,9 @@ export abstract class BaseResourceExtractor<T> {
     if (!system) return system;
     if (system.startsWith('https://www.icanbwell.com/')) {
       return system.replace('https://www.icanbwell.com/', '');
+    }
+    if (system.startsWith('http://www.icanbwell.com/')) {
+      return system.replace('http://www.icanbwell.com/', '');
     }
     return systemMap[system] || system;
   }
@@ -130,12 +133,15 @@ export abstract class BaseResourceExtractor<T> {
 
   convertIdentifier(identifier: TIdentifier | undefined): ExtractorValueType {
     return identifier
-      ? `${identifier.id || this.getFriendlyNameForSystem(identifier.system)} | ${identifier.value}`
+      ? `${identifier.id || this.getFriendlyNameForSystem(identifier.system)}=${identifier.value}`
       : identifier;
   }
 
   convertHumanName(humanName: THumanName | undefined): ExtractorValueType {
     if (!humanName) return humanName;
+    if (humanName.text) {
+      return humanName.text;
+    }
     return humanName.use
       ? `${humanName.given?.join(' ')} ${humanName.family} (${humanName.use})`
       : `${humanName.given?.join(' ')} ${humanName.family}`;
@@ -190,7 +196,7 @@ export abstract class BaseResourceExtractor<T> {
       return this.convertReference(extension.valueReference);
     }
     return url
-      ? `${url} | ${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
+      ? `${url}=${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
       : `${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`;
   }
 

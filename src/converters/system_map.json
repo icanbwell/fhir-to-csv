@@ -13,5 +13,22 @@
   "http://hl7.org/fhir/sid/icd-11": "ICD-11",
   "http://hl7.org/fhir/sid/icd-11-cm": "ICD-11-CM",
   "http://hl7.org/fhir/sid/icd-11-pcs": "ICD-11-PCS",
-  "http://hl7.org/fhir/sid/cvx": "CVX"
+  "http://hl7.org/fhir/sid/cvx": "CVX",
+  "http://hl7.org/fhir/sid/us-ssn": "SSN",
+  "http://hl7.org/fhir/sid/ndc": "NDC",
+  "http://unitsofmeasure.org": "UCUM",
+  "http://hl7.org/fhir/sid/ucum": "UCUM",
+  "http://hl7.org/fhir/sid/iso-3166": "ISO-3166",
+  "http://hl7.org/fhir/sid/iso-4217": "ISO-4217",
+  "http://hl7.org/fhir/sid/iso-639-1": "ISO-639-1",
+  "http://hl7.org/fhir/sid/iso-639-2": "ISO-639-2",
+  "http://hl7.org/fhir/sid/iso-639-3": "ISO-639-3",
+  "http://hl7.org/fhir/sid/atc": "ATC",
+  "http://hl7.org/fhir/sid/npi": "NPI",
+  "http://hl7.org/fhir/sid/dea": "DEA",
+  "http://hl7.org/fhir/sid/dicom": "DICOM",
+  "http://hl7.org/fhir/sid/gs1": "GS1",
+  "http://hl7.org/fhir/sid/uuid": "UUID",
+  "http://hl7.org/fhir/sid/oid": "OID",
+  "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation": "HL7"
 }
