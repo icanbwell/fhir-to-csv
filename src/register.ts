@@ -30,6 +30,8 @@ import { AppointmentExtractor } from './converters/appointment_extractor';
 import { MedicationDispenseExtractor } from './converters/medication_dispense_extractor';
 import { QuestionnaireResponseExtractor } from './converters/questionnaire_response_extractor';
 import { QuestionnaireExtractor } from './converters/questionnaire_extractor';
+import { RelatedPersonExtractor } from './converters/related_person_extractor';
+import { SpecimenExtractor } from './converters/specimen_extractor';
 
 const extractorMap = {
   AllergyIntolerance: AllergyIntoleranceExtractor,
@@ -59,7 +61,9 @@ const extractorMap = {
   Provenance: ProvenanceExtractor,
   Questionnaire: QuestionnaireExtractor,
   QuestionnaireResponse: QuestionnaireResponseExtractor,
+  RelatedPerson: RelatedPersonExtractor,
   ServiceRequest: ServiceRequestExtractor,
+  Specimen: SpecimenExtractor
 };
 
 // add a register function
