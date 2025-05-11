@@ -406,7 +406,7 @@ describe('FHIR Resource Extractors', () => {
     const converter = new FHIRBundleConverter();
 
     it('should convert bundle to CSV-compatible data', () => {
-      const extractedData = converter.convertToDictionaries(mockBundle);
+      const extractedData = converter.convertBundleToDictionaries(mockBundle);
 
       expect(Object.keys(extractedData)).toContain('Patient');
       expect(Object.keys(extractedData)).toContain('Observation');
@@ -417,7 +417,7 @@ describe('FHIR Resource Extractors', () => {
 
     it('should convert bundle to CSV data', () => {
       const extractedDictionaries =
-        converter.convertToDictionaries(mockBundle);
+        converter.convertBundleToDictionaries(mockBundle);
       const extractedData: Record<string, string[]> =
         converter.convertToCSV(extractedDictionaries);
 
@@ -890,7 +890,7 @@ describe('FHIR Resource Extractors', () => {
     it('should convert bundle to Zipped CSV data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToCSVZipped(
-          converter.convertToDictionaries(mockBundle)
+          converter.convertBundleToDictionaries(mockBundle)
         );
 
       // get folder containing this test
@@ -913,7 +913,7 @@ describe('FHIR Resource Extractors', () => {
     it('should convert bundle to Excel data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToExcel(
-          converter.convertToDictionaries(mockBundle)
+          converter.convertBundleToDictionaries(mockBundle)
         );
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
@@ -934,7 +934,7 @@ describe('FHIR Resource Extractors', () => {
 
     it('should handle empty bundle', () => {
       const emptyBundle: TBundle = { entry: [], type: 'collection' };
-      const extractedData = converter.convertToDictionaries(emptyBundle);
+      const extractedData = converter.convertBundleToDictionaries(emptyBundle);
 
       expect(Object.keys(extractedData).length).toBe(0);
     });

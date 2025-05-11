@@ -23,7 +23,7 @@ describe('Full Bundle Extractors', () => {
     it('should convert bundle to Zipped CSV file', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToCSVZipped(
-          converter.convertToDictionaries(bundle)
+          converter.convertBundleToDictionaries(bundle)
         );
 
       // write extractedData NodeJs.ReadableStream to file
@@ -35,7 +35,7 @@ describe('Full Bundle Extractors', () => {
     it('should convert bundle to Excel file', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToExcel(
-          converter.convertToDictionaries(bundle)
+          converter.convertBundleToDictionaries(bundle)
         );
 
       // write buffer to file
@@ -46,7 +46,7 @@ describe('Full Bundle Extractors', () => {
     it('should convert bundle to Numbers file', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToAppleNumbers(
-          converter.convertToDictionaries(bundle)
+          converter.convertBundleToDictionaries(bundle)
         );
 
       // write buffer to file

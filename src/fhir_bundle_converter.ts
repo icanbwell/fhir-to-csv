@@ -1,23 +1,40 @@
 import { TBundle } from './types/resources/Bundle';
-import { TResource } from './types/resources/Resource';
 import { ExtractorRegistry } from './registry/extractor_registry';
 import xlsx from 'xlsx';
 import { strToU8, zipSync } from 'fflate';
 import { ExtractorRegistrar } from './registry/register';
 // @ts-expect-error The @types for xlsx do not include the zahl payload
 import XLSX_ZAHL_PAYLOAD from 'xlsx/dist/xlsx.zahl';
+import { TDomainResource } from './types/resources/DomainResource';
 
 export class FHIRBundleConverter {
-  convertToDictionaries(
+  convertBundleToDictionaries(
     bundle: TBundle
+  ): Record<string, Record<string, any[]>[]> {
+    ExtractorRegistrar.registerAll();
+
+    const resources: (TDomainResource | undefined)[] | undefined = bundle.entry?.map(
+      entry => entry.resource
+    )
+
+    if (resources == undefined) {
+      return {};
+    }
+
+    return this.convertResourcesToDictionaries(
+      resources.filter(r => r != undefined)
+    );
+  }
+
+  convertResourcesToDictionaries(
+    resources: TDomainResource[]
   ): Record<string, Record<string, any[]>[]> {
     ExtractorRegistrar.registerAll();
 
     const extractedData: Record<string, Record<string, any[]>[]> = {};
     const errorLog: Record<string, string[]> = {};
 
-    for (const entry of bundle.entry || []) {
-      const resource: TResource | undefined = entry.resource;
+    for (const resource of resources || []) {
       const resourceType: string | undefined = resource
         ? resource.resourceType
         : undefined;

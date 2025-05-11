@@ -226,7 +226,7 @@ describe('Extractor Performance', () => {
     };
 
     const startTime = performance.now();
-    const extractedData = new FHIRBundleConverter().convertToDictionaries(
+    const extractedData = new FHIRBundleConverter().convertBundleToDictionaries(
       largeBundle
     );
     const endTime = performance.now();
@@ -243,7 +243,7 @@ describe('Full Bundle Extractors', () => {
     const converter = new FHIRBundleConverter();
 
     it('should convert bundle to CSV-compatible data', () => {
-      const extractedData = converter.convertToDictionaries(bundle);
+      const extractedData = converter.convertBundleToDictionaries(bundle);
 
       expect(Object.keys(extractedData)).toContain('Patient');
       expect(Object.keys(extractedData)).toContain('Observation');
@@ -254,7 +254,7 @@ describe('Full Bundle Extractors', () => {
 
     it('should convert bundle to CSV data', () => {
       const extractedDictionaries =
-        converter.convertToDictionaries(bundle);
+        converter.convertBundleToDictionaries(bundle);
       const extractedData: Record<string, string[]> =
         converter.convertToCSV(extractedDictionaries);
 
@@ -725,7 +725,7 @@ describe('Full Bundle Extractors', () => {
     it('should convert bundle to Zipped CSV data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToCSVZipped(
-          converter.convertToDictionaries(bundle)
+          converter.convertBundleToDictionaries(bundle)
         );
 
       // get folder containing this test
@@ -748,7 +748,7 @@ describe('Full Bundle Extractors', () => {
     it('should convert bundle to Excel data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToExcel(
-          converter.convertToDictionaries(bundle)
+          converter.convertBundleToDictionaries(bundle)
         );
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
@@ -769,7 +769,7 @@ describe('Full Bundle Extractors', () => {
 
     it('should handle empty bundle', () => {
       const emptyBundle: TBundle = { entry: [], type: 'collection' };
-      const extractedData = converter.convertToDictionaries(emptyBundle);
+      const extractedData = converter.convertBundleToDictionaries(emptyBundle);
 
       expect(Object.keys(extractedData).length).toBe(0);
     });
