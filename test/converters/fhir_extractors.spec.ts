@@ -288,18 +288,6 @@ describe('FHIR Resource Extractors', () => {
       const extractedPatient = await extractor.extract(mockPatient);
 
       expect(extractedPatient).toEqual({
-        id: 'patient-1',
-        identifier1: 'master-person-fhir-id=undefined',
-        identifier2: 'sourceId=00000632-18eb-525e-9f74-e3c9a5cd9c7a',
-        identifier3: 'uuid=00000632-18eb-525e-9f74-e3c9a5cd9c7a',
-        identifier4: 'https://www.healthpartners.com/polnum=1000000',
-        identifier5: 'SSN=111-11-1111',
-        name1: 'John Doe',
-        name2: 'FIRST M LAST',
-        birthDate: '1980-01-01',
-        gender: 'male',
-        race: 'White',
-        ethnicity: 'Not Hispanic or Latino',
         address1City: 'Testville',
         address1Line: '123 Test Street',
         address1State: 'TS',
@@ -309,7 +297,32 @@ describe('FHIR Resource Extractors', () => {
         address2PostalCode: '12345',
         address2State: 'WI',
         address2Use: 'home',
+        birthDate: '1980-01-01',
+        ethnicity: 'Not Hispanic or Latino',
+        gender: 'male',
+        id: 'patient-1',
+        identifier1System: 'master-person-fhir-id',
+        identifier1Type:
+          'https://fhir.icanbwell.com/4_0_0/CodeSystem/vs-identifier-type=fhir-master-person',
+        identifier2System: 'sourceId',
+        identifier2Value: '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
+        identifier3System: 'uuid',
+        identifier3Value: '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
+        identifier4System: 'https://www.healthpartners.com/polnum',
+        identifier4Type: 'Member Number',
+        identifier4Use: 'usual',
+        identifier4Value: '1000000',
+        identifier5System: 'SSN',
+        identifier5Type: 'Social Security Number',
+        identifier5Use: 'usual',
+        identifier5Value: '111-11-1111',
+        name1Family: 'Doe',
+        name1Given: 'John',
+        name2Family: 'LAST',
+        name2Given: 'FIRST, M, LAST',
+        name2Text: 'FIRST M LAST',
         phone1: '555-1234',
+        race: 'White',
       });
     });
 
@@ -334,19 +347,15 @@ describe('FHIR Resource Extractors', () => {
       const extractedObservation = await extractor.extract(mockObservation);
 
       expect(extractedObservation).toEqual({
-        code1: 'Loinc=718-7 (Hemoglobin [Mass/volume] in Blood)',
         code1Code: '718-7',
         code1Display: 'Hemoglobin [Mass/volume] in Blood',
         code1System: 'Loinc',
-        code2: 'Loinc=718-7 (Hemoglobin)',
         code2Code: '718-7',
         code2Display: 'Hemoglobin',
         code2System: 'Loinc',
-        code3: 'Loinc=718-7 (in Blood)',
         code3Code: '718-7',
         code3Display: 'in Blood',
         code3System: 'Loinc',
-        code4: 'Loinc=718-7 (Hemoglobin [Mass/volume] in Blood)',
         code4Code: '718-7',
         code4Display: 'Hemoglobin [Mass/volume] in Blood',
         code4System: 'Loinc',
@@ -354,6 +363,9 @@ describe('FHIR Resource Extractors', () => {
         interpretation1: 'HL7=L (Low)',
         issued: '2023-01-01T10:00:00Z',
         patientId: 'patient-1',
+        referenceRange1High: 10,
+        referenceRange1Low: 7.5,
+        referenceRange1Unit: 'g/dl',
         status: 'final',
         value: 7.2,
         valueSystem: 'UCUM',
@@ -401,17 +413,17 @@ describe('FHIR Resource Extractors', () => {
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0]).toEqual(
-        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,identifier1,identifier2,identifier3,identifier4,identifier5,name1,name2,name3,name4,name5,active,gender,birthSex,sex,race,ethnicity,birthDate,address1,address2,address3,address4,address5,email1,email2,email3,phone1,phone2,phone3,maritalStatus,communication1Language,communication1Preferred,communication2Language,communication2Preferred,communication3Language,communication3Preferred,deceased,deceasedDateTime'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,identifier1System,identifier1Value,identifier1Type,identifier1Use,identifier2System,identifier2Value,identifier2Type,identifier2Use,identifier3System,identifier3Value,identifier3Type,identifier3Use,identifier4System,identifier4Value,identifier4Type,identifier4Use,identifier5System,identifier5Value,identifier5Type,identifier5Use,name1Use,name1Text,name1Family,name1Given,name1Prefix,name1Suffix,name2Use,name2Text,name2Family,name2Given,name2Prefix,name2Suffix,gender,birthSex,sex,race,ethnicity,birthDate,address1Line,address1City,address1State,address1PostalCode,address1Country,address1Use,address1Text,address2Line,address2City,address2State,address2PostalCode,address2Country,address2Use,address2Text,email1,email2,email3,phone1,phone2,phone3,maritalStatus,communication1Language,communication1Preferred,communication2Language,communication2Preferred,communication3Language,communication3Preferred,deceased,deceasedDateTime'
       );
       expect(extractedData['Patient'][1]).toEqual(
-        'patient-1,1,2023-01-01T10:00:00Z,foo,#source,http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient,unregistered,00000632-18eb-525e-9f74-e3c9a5cd9c7a,,2,http://hl7.org/fhir/us/core/StructureDefinition/us-core-race=undefined,http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity=undefined,,,,master-person-fhir-id=undefined,sourceId=00000632-18eb-525e-9f74-e3c9a5cd9c7a,uuid=00000632-18eb-525e-9f74-e3c9a5cd9c7a,https://www.healthpartners.com/polnum=1000000,SSN=111-11-1111,John Doe,FIRST M LAST,,,,,male,,,White,Not Hispanic or Latino,1980-01-01,"123 Test Street, Testville, TS ",,,,,,,,555-1234,,,,,,,,,,,'
+        'patient-1,1,2023-01-01T10:00:00Z,foo,#source,http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient,unregistered,00000632-18eb-525e-9f74-e3c9a5cd9c7a,,2,http://hl7.org/fhir/us/core/StructureDefinition/us-core-race=undefined,http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity=undefined,,,,master-person-fhir-id,,https://fhir.icanbwell.com/4_0_0/CodeSystem/vs-identifier-type=fhir-master-person,,sourceId,00000632-18eb-525e-9f74-e3c9a5cd9c7a,,,uuid,00000632-18eb-525e-9f74-e3c9a5cd9c7a,,,https://www.healthpartners.com/polnum,1000000,Member Number,usual,SSN,111-11-1111,Social Security Number,usual,,,Doe,John,,,,FIRST M LAST,LAST,"FIRST, M, LAST",,,male,,,White,Not Hispanic or Latino,1980-01-01,123 Test Street,Testville,TS,,,,,456 Test Avenue,West Test,WI,12345,US,home,,,,,555-1234,,,,,,,,,,,'
       );
 
       expect(extractedData['Observation'][0]).toEqual(
-        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category1,category2,category3,code1,code1System,code1Code,code1Display,code2,code2System,code2Code,code2Display,code3,code3System,code3Code,code3Display,code4,code4System,code4Code,code4Display,code5,code5System,code5Code,code5Display,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category2,category3,code1System,code1Code,code1Display,code2System,code2Code,code2Display,code3System,code3Code,code3Display,code4System,code4Code,code4Display,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued,referenceRange1Low,referenceRange1High,referenceRange1Unit,referenceRange1Text'
       );
       expect(extractedData['Observation'][1]).toEqual(
-        'obs-1,,,,,,,,,,,,,,,patient-1,final,,,,Loinc=718-7 (Hemoglobin [Mass/volume] in Blood),Loinc,718-7,Hemoglobin [Mass/volume] in Blood,Loinc=718-7 (Hemoglobin),Loinc,718-7,Hemoglobin,Loinc=718-7 (in Blood),Loinc,718-7,in Blood,Loinc=718-7 (Hemoglobin [Mass/volume] in Blood),Loinc,718-7,Hemoglobin [Mass/volume] in Blood,,,,,7.2,g/dl,UCUM,HL7=L (Low),,,,2023-01-01T10:00:00Z'
+        'obs-1,,,,,,,,,,,,,,,patient-1,final,,,Loinc,718-7,Hemoglobin [Mass/volume] in Blood,Loinc,718-7,Hemoglobin,Loinc,718-7,in Blood,Loinc,718-7,Hemoglobin [Mass/volume] in Blood,7.2,g/dl,UCUM,HL7=L (Low),,,,2023-01-01T10:00:00Z,7.5,10,g/dl,'
       );
     });
 
@@ -650,17 +662,17 @@ describe('Full Bundle Extractors', () => {
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0]).toEqual(
-        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,identifier1,identifier2,identifier3,identifier4,identifier5,name1,name2,name3,name4,name5,active,gender,birthSex,sex,race,ethnicity,birthDate,address1,address2,address3,address4,address5,email1,email2,email3,phone1,phone2,phone3,maritalStatus,communication1Language,communication1Preferred,communication2Language,communication2Preferred,communication3Language,communication3Preferred,deceased,deceasedDateTime'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,name1Use,name1Text,name1Family,name1Given,name1Prefix,name1Suffix,gender,birthSex,sex,race,ethnicity,birthDate,email1,email2,email3,phone1,phone2,phone3,maritalStatus,communication1Language,communication1Preferred,communication2Language,communication2Preferred,communication3Language,communication3Preferred,deceased,deceasedDateTime'
       );
       expect(extractedData['Patient'][1]).toEqual(
-        '123,,,,,,,,,,,,,,,,,,,,John Doe (official),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,'
+        '123,,,,,,,,,,,,,,,official,,Doe,John,,,,,,,,,,,,,,,,,,,,,,,'
       );
 
       expect(extractedData['Observation'][0]).toEqual(
-        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category1,category2,category3,code1,code1System,code1Code,code1Display,code2,code2System,code2Code,code2Display,code3,code3System,code3Code,code3Display,code4,code4System,code4Code,code4Display,code5,code5System,code5Code,code5Display,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category2,category3,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued,referenceRange1Low,referenceRange1High,referenceRange1Unit,referenceRange1Text'
       );
       expect(extractedData['Observation'][1]).toEqual(
-        '456,,,,,,,,,,,,,,,123,final,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,'
+        "456,,,,,,,,,,,,,,,123,final,,,,,,,,,,,,,,"
       );
     });
 
