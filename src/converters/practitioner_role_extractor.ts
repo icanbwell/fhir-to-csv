@@ -70,15 +70,12 @@ export class PractitionerRoleExtractor extends BaseResourceExtractor<TPractition
       healthcareService5: this.convertReference(
         practitionerRole.healthcareService?.[4]
       ),
-      telecom1: this.convertContactPoint(
-        practitionerRole.telecom?.[0]
-      ),
-      telecom2: this.convertContactPoint(
-        practitionerRole.telecom?.[1]
-      ),
-      telecom3: this.convertContactPoint(
-        practitionerRole.telecom?.[2]
-      )
+      email1: this.getEmail(practitionerRole.telecom, 0),
+      email2: this.getEmail(practitionerRole.telecom, 1),
+      email3: this.getEmail(practitionerRole.telecom, 2),
+      phone1: this.getPhone(practitionerRole.telecom, 0),
+      phone2: this.getPhone(practitionerRole.telecom, 1),
+      phone3: this.getPhone(practitionerRole.telecom, 2),
     };
   }
 }

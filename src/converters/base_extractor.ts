@@ -114,9 +114,33 @@ export abstract class BaseResourceExtractor<T> {
   convertContactPoint(
     contactPoint: TContactPoint | undefined
   ): ExtractorValueType {
-    return contactPoint
+    if (!contactPoint) return contactPoint;
+    if (contactPoint.use) {
+      return contactPoint.value;
+    }
+    return contactPoint.use
       ? `${this.getFriendlyNameForSystem(contactPoint.system)} | ${contactPoint.value} (${contactPoint.use})`
-      : contactPoint;
+      : `${this.getFriendlyNameForSystem(contactPoint.system)} | ${contactPoint.value}`;
+  }
+
+  getEmail(contactPoints: TContactPoint[] | undefined, index: number): ExtractorValueType {
+    if (!contactPoints) return undefined;
+    const emails = contactPoints.filter(
+      contactPoint => contactPoint.system === 'email'
+    );
+    const email = emails[index];
+    if (!email) return undefined;
+    return email.system === 'email' ? email.value : undefined;
+  }
+
+  getPhone(contactPoints: TContactPoint[] | undefined, index: number): ExtractorValueType {
+    if (!contactPoints) return undefined;
+    const emails = contactPoints.filter(
+      contactPoint => contactPoint.system === 'phone'
+    );
+    const email = emails[index];
+    if (!email) return undefined;
+    return email.system === 'email' ? email.value : undefined;
   }
 
   convertDosageAndRate(
@@ -127,14 +151,24 @@ export abstract class BaseResourceExtractor<T> {
       : dosage;
   }
 
-  convertExtension(
-    extension: TExtension | undefined
-  ): ExtractorValueType {
+  convertExtension(extension: TExtension | undefined): ExtractorValueType {
     if (!extension) return extension;
     if (!extension.url) return undefined;
     return extension
       ? `${extension.url} | ${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
       : extension;
+  }
+
+  getExtensionValueByUrl(
+    extensions: TExtension[] | undefined,
+    url: string
+  ): ExtractorValueType {
+    if (!extensions) return undefined;
+    const extension = extensions.find(ext => ext.url === url);
+    if (!extension) return undefined;
+    return extension.url === url
+      ? `${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
+      : undefined;
   }
 }
 

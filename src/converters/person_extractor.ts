@@ -14,9 +14,12 @@ export class PersonExtractor extends BaseResourceExtractor<TPerson> {
       address1: this.convertAddress(person.address?.[0]),
       address2: this.convertAddress(person.address?.[1]),
       address3: this.convertAddress(person.address?.[2]),
-      telecom1: this.convertContactPoint(person.telecom?.[0]),
-      telecom2: this.convertContactPoint(person.telecom?.[1]),
-      telecom3: this.convertContactPoint(person.telecom?.[2]),
+      email1: this.getEmail(person.telecom, 0),
+      email2: this.getEmail(person.telecom, 1),
+      email3: this.getEmail(person.telecom, 2),
+      phone1: this.getPhone(person.telecom, 0),
+      phone2: this.getPhone(person.telecom, 1),
+      phone3: this.getPhone(person.telecom, 2),
       managingOrganization: this.convertReference(person.managingOrganization),
       link1: this.convertReference(
         person.link?.[0]?.target

@@ -44,15 +44,12 @@ export class HealthcareServiceExtractor extends BaseResourceExtractor<THealthcar
       location3: this.convertReference(
         healthcareService.location?.[2]
       ),
-      telecom1: this.convertContactPoint(
-        healthcareService.telecom?.[0]
-      ),
-      telecom2: this.convertContactPoint(
-        healthcareService.telecom?.[1]
-      ),
-      telecom3: this.convertContactPoint(
-        healthcareService.telecom?.[2]
-      ),
+      email1: this.getEmail(healthcareService.telecom, 0),
+      email2: this.getEmail(healthcareService.telecom, 1),
+      email3: this.getEmail(healthcareService.telecom, 2),
+      phone1: this.getPhone(healthcareService.telecom, 0),
+      phone2: this.getPhone(healthcareService.telecom, 1),
+      phone3: this.getPhone(healthcareService.telecom, 2),
       coverageArea1: this.convertReference(
         healthcareService.coverageArea?.[0]
       ),

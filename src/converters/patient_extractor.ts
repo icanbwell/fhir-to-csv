@@ -19,15 +19,34 @@ export class PatientExtractor extends BaseResourceExtractor<TPatient> {
       name5: this.convertHumanName(patient.name?.[4]),
       active: patient.active,
       gender: patient.gender,
+      birthSex: this.getExtensionValueByUrl(
+        patient.extension,
+        'http://hl7.org/fhir/StructureDefinition/us-core-birthsex'
+      ),
+      sex: this.getExtensionValueByUrl(
+        patient.extension,
+        'http://hl7.org/fhir/us/core/StructureDefinition/us-core-sex'
+      ),
+      race: this.getExtensionValueByUrl(
+        patient.extension,
+        'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race'
+      ),
+      ethnicity: this.getExtensionValueByUrl(
+        patient.extension,
+        'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
+      ),
       birthDate: this.convertDateTime(patient.birthDate),
       address1: this.convertAddress(patient.address?.[0]),
       address2: this.convertAddress(patient.address?.[1]),
       address3: this.convertAddress(patient.address?.[2]),
       address4: this.convertAddress(patient.address?.[3]),
       address5: this.convertAddress(patient.address?.[4]),
-      telecom1: this.convertContactPoint(patient.telecom?.[0]),
-      telecom2: this.convertContactPoint(patient.telecom?.[1]),
-      telecom3: this.convertContactPoint(patient.telecom?.[2]),
+      email1: this.getEmail(patient.telecom, 0),
+      email2: this.getEmail(patient.telecom, 1),
+      email3: this.getEmail(patient.telecom, 2),
+      phone1: this.getPhone(patient.telecom, 0),
+      phone2: this.getPhone(patient.telecom, 1),
+      phone3: this.getPhone(patient.telecom, 2),
       maritalStatus: this.convertCodeableConcept(patient.maritalStatus),
       communication1Language: this.convertCodeableConcept(
         patient.communication?.[0]?.language

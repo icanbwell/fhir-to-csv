@@ -45,11 +45,24 @@ export class OrganizationExtractor extends BaseResourceExtractor<TOrganization> 
       contact1Name: this.convertHumanName(
         organization.contact?.[0]?.name
       ),
-      contact1Telecom1: this.convertContactPoint(
-        organization.contact?.[0]?.telecom?.[0]
+      contact1Relationship: this.convertCodeableConcept(
+        organization.contact?.[0]?.purpose
       ),
-      contact1Telecom2: this.convertContactPoint(
-        organization.contact?.[0]?.telecom?.[1]
+      contact1Email1: this.getEmail(
+        organization.contact?.[0]?.telecom,
+        0
+      ),
+      contact1Email2: this.getEmail(
+        organization.contact?.[0]?.telecom,
+        1
+      ),
+      contact1Phone1: this.getPhone(
+        organization.contact?.[0]?.telecom,
+        0
+      ),
+      contact1Phone2: this.getPhone(
+        organization.contact?.[0]?.telecom,
+        1
       ),
       contact1Address: this.convertAddress(
         organization.contact?.[0]?.address

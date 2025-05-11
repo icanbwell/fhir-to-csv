@@ -38,6 +38,7 @@ const mockPatient = {
     {
       extension: [
         {
+          url: 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race',
           valueCoding: {
             display: 'White',
           },
@@ -47,6 +48,7 @@ const mockPatient = {
     {
       extension: [
         {
+          url: 'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity',
           valueCoding: {
             display: 'Not Hispanic or Latino',
           },
