@@ -42,6 +42,9 @@ import { HealthcareServiceExtractor } from './converters/healthcare_service_extr
 import { BinaryExtractor } from './converters/binary_extractor';
 import { CommunicationExtractor } from './converters/communication_extractor';
 import { ConsentExtractor } from './converters/consent_extractor';
+import { InsurancePlanExtractor } from './converters/insurance_plan_extractor';
+import { MeasureExtractor } from './converters/measure_extractor';
+import { MeasureReportExtractor } from './converters/measure_report_extractor';
 
 const extractorMap = {
   AllergyIntolerance: AllergyIntoleranceExtractor,
@@ -63,8 +66,12 @@ const extractorMap = {
   Goal: GoalExtractor,
   HealthcareService: HealthcareServiceExtractor,
   Immunization: ImmunizationExtractor,
+  InsurancePlan: InsurancePlanExtractor,
   Location: LocationExtractor,
+  Measure: MeasureExtractor,
+  MeasureReport: MeasureReportExtractor,
   Medication: MedicationExtractor,
+  MedicationAdministration: MedicationRequestExtractor,
   MedicationDispense: MedicationDispenseExtractor,
   MedicationRequest: MedicationRequestExtractor,
   MedicationStatement: MedicationStatementExtractor,
