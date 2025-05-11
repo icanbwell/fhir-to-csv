@@ -9,7 +9,10 @@ export class EncounterExtractor extends BaseResourceExtractor<TEncounter> {
       id: encounter.id,
       patientId: this.getReferenceId(encounter.subject),
       status: encounter.status,
-      class: this.convertCoding(encounter.class_),
+      ...this.getCodingFields(
+        encounter.class_,
+        'classCode'
+      ),
       type1: this.convertCodeableConcept(encounter.type?.[0]),
       type2: this.convertCodeableConcept(encounter.type?.[1]),
       type3: this.convertCodeableConcept(encounter.type?.[2]),

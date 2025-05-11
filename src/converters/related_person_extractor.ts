@@ -5,9 +5,18 @@ export class RelatedPersonExtractor extends BaseResourceExtractor<TRelatedPerson
   async extract(relatedPerson: TRelatedPerson): Promise<Record<string, ExtractorValueType>> {
     return {
       id: relatedPerson.id,
-      name1: this.convertHumanName(relatedPerson.name?.[0]),
-      name2: this.convertHumanName(relatedPerson.name?.[1]),
-      name3: this.convertHumanName(relatedPerson.name?.[2]),
+      ...this.getHumanNameFields(
+        relatedPerson.name?.[0],
+        'name1'
+      ),
+      ...this.getHumanNameFields(
+        relatedPerson.name?.[1],
+        'name2'
+      ),
+      ...this.getHumanNameFields(
+        relatedPerson.name?.[2],
+        'name3'
+      ),
       relationship1: this.convertCodeableConcept(
         relatedPerson.relationship?.[0]
       ),

@@ -133,6 +133,15 @@ const mockPatient = {
       city: 'Testville',
       state: 'TS',
     },
+    {
+      id: 'bwell-default-address',
+      use: 'home',
+      line: ['456 Test Avenue'],
+      city: 'West Test',
+      state: 'WI',
+      postalCode: '12345',
+      country: 'US',
+    },
   ],
   telecom: [
     {
@@ -291,7 +300,15 @@ describe('FHIR Resource Extractors', () => {
         gender: 'male',
         race: 'White',
         ethnicity: 'Not Hispanic or Latino',
-        address1: '123 Test Street, Testville, TS ',
+        address1City: 'Testville',
+        address1Line: '123 Test Street',
+        address1State: 'TS',
+        address2City: 'West Test',
+        address2Country: 'US',
+        address2Line: '456 Test Avenue',
+        address2PostalCode: '12345',
+        address2State: 'WI',
+        address2Use: 'home',
         phone1: '555-1234',
       });
     });
@@ -643,7 +660,7 @@ describe('Full Bundle Extractors', () => {
         'id,versionId,lastUpdated,sourceAssigningAuthority,source,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category1,category2,category3,code1,code1System,code1Code,code1Display,code2,code2System,code2Code,code2Display,code3,code3System,code3Code,code3Display,code4,code4System,code4Code,code4Display,code5,code5System,code5Code,code5Display,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued'
       );
       expect(extractedData['Observation'][1]).toEqual(
-        "456,,,,,,,,,,,,,,,123,final,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,"
+        '456,,,,,,,,,,,,,,,123,final,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,'
       );
     });
 

@@ -33,14 +33,17 @@ export class OrganizationExtractor extends BaseResourceExtractor<TOrganization> 
       identifier5: this.convertIdentifier(
         organization.identifier?.[4]
       ),
-      address1: this.convertAddress(
-        organization.address?.[0]
+      ...this.getAddressFields(
+        organization.address?.[0],
+        'address1'
       ),
-      address2: this.convertAddress(
-        organization.address?.[1]
+      ...this.getAddressFields(
+        organization.address?.[1],
+        'address2'
       ),
-      address3: this.convertAddress(
-        organization.address?.[2]
+      ...this.getAddressFields(
+        organization.address?.[2],
+        'address3'
       ),
       contact1Name: this.convertHumanName(
         organization.contact?.[0]?.name

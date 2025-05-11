@@ -6,14 +6,32 @@ export class PersonExtractor extends BaseResourceExtractor<TPerson> {
   async extract(person: TPerson): Promise<Record<string, ExtractorValueType>> {
     return {
       id: person.id,
-      name1: this.convertHumanName(person.name?.[0]),
-      name2: this.convertHumanName(person.name?.[1]),
-      name3: this.convertHumanName(person.name?.[2]),
+      ...this.getHumanNameFields(
+        person.name?.[0],
+        'name1'
+      ),
+      ...this.getHumanNameFields(
+        person.name?.[1],
+        'name2'
+      ),
+      ...this.getHumanNameFields(
+        person.name?.[2],
+        'name3'
+      ),
       gender: person.gender,
       birthDate: this.convertDateTime(person.birthDate),
-      address1: this.convertAddress(person.address?.[0]),
-      address2: this.convertAddress(person.address?.[1]),
-      address3: this.convertAddress(person.address?.[2]),
+      ...this.getAddressFields(
+        person.address?.[0],
+        'address1'
+      ),
+      ...this.getAddressFields(
+        person.address?.[1],
+        'address2'
+      ),
+      ...this.getAddressFields(
+        person.address?.[2],
+        'address3'
+      ),
       email1: this.getEmail(person.telecom, 0),
       email2: this.getEmail(person.telecom, 1),
       email3: this.getEmail(person.telecom, 2),

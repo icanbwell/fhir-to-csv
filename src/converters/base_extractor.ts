@@ -10,6 +10,7 @@ import { TContactPoint } from '../types/partials/ContactPoint';
 import { TDosageDoseAndRate } from '../types/partials/DosageDoseAndRate';
 import { TExtension } from '../types/partials/Extension';
 import systemMap1 from './system_map.json';
+
 const systemMap: Record<string, string> = systemMap1;
 
 export type ExtractorValueType = string | number | Date | undefined | boolean;
@@ -45,6 +46,18 @@ export abstract class BaseResourceExtractor<T> {
       return this.getFriendlyNameForSystem(coding.system);
     }
     return undefined;
+  }
+
+  getCodingFields(
+    coding: TCoding | undefined,
+    prefix: string
+  ): Record<string, ExtractorValueType> {
+    if (!coding) return {};
+    return {
+      [`${prefix}System`]: this.getFriendlyNameForSystem(coding.system),
+      [`${prefix}Code`]: coding.code,
+      [`${prefix}Display`]: coding.display,
+    };
   }
 
   getFriendlyNameForSystem(system: string | undefined): string | undefined {
@@ -110,6 +123,19 @@ export abstract class BaseResourceExtractor<T> {
     return undefined;
   }
 
+  getQuantityFields(
+    quantity: TQuantity | undefined,
+    prefix: string
+  ): Record<string, ExtractorValueType> {
+    if (!quantity) return {};
+    return {
+      [`${prefix}Value`]: quantity.value,
+      [`${prefix}Unit`]: quantity.unit,
+      [`${prefix}System`]: quantity.system,
+      [`${prefix}Code`]: quantity.code,
+    };
+  }
+
   convertAddress(address: TAddress | undefined): ExtractorValueType {
     if (!address) return address;
     return address.country
@@ -117,10 +143,26 @@ export abstract class BaseResourceExtractor<T> {
       : `${address.line?.join(', ')}, ${address.city ?? ''}, ${address.state ?? ''} ${address.postalCode ?? ''}`;
   }
 
+  getAddressFields(
+    address: TAddress | undefined,
+    prefix: string
+  ): Record<string, ExtractorValueType> {
+    if (!address) return {};
+    return {
+      [`${prefix}Line`]: address.line?.join(', '),
+      [`${prefix}City`]: address.city,
+      [`${prefix}State`]: address.state,
+      [`${prefix}PostalCode`]: address.postalCode,
+      [`${prefix}Country`]: address.country,
+      [`${prefix}Use`]: address.use,
+      [`${prefix}Text`]: address.text,
+    };
+  }
+
   convertRatio(ration: TRatio | undefined): ExtractorValueType {
     return ration
-      ? `${ration.numerator?.value ?? '[No value]'} ${ration.numerator?.unit ?? '[No unit]'}`
-      +` / ${ration.denominator?.value ?? '[No value]'} ${ration.denominator?.unit ?? '[No unit]'}`
+      ? `${ration.numerator?.value ?? '[No value]'} ${ration.numerator?.unit ?? '[No unit]'}` +
+          ` / ${ration.denominator?.value ?? '[No value]'} ${ration.denominator?.unit ?? '[No unit]'}`
       : ration;
   }
 
@@ -138,6 +180,21 @@ export abstract class BaseResourceExtractor<T> {
     return humanName.use
       ? `${humanName.given?.join(' ')} ${humanName.family} (${humanName.use})`
       : `${humanName.given?.join(' ')} ${humanName.family}`;
+  }
+
+  getHumanNameFields(
+    humanName: THumanName | undefined,
+    prefix: string
+  ): Record<string, ExtractorValueType> {
+    if (!humanName) return {};
+    return {
+      [`${prefix}Use`]: humanName.use,
+      [`${prefix}Text`]: humanName.text,
+      [`${prefix}Family`]: humanName.family,
+      [`${prefix}Given`]: humanName.given?.join(', '),
+      [`${prefix}Prefix`]: humanName.prefix?.join(', '),
+      [`${prefix}Suffix`]: humanName.suffix?.join(', '),
+    };
   }
 
   getEmail(
@@ -170,9 +227,9 @@ export abstract class BaseResourceExtractor<T> {
     dosage: TDosageDoseAndRate | undefined
   ): ExtractorValueType {
     return dosage
-      ? `${dosage.doseQuantity?.value ?? '[No value]'} ${dosage.doseQuantity?.unit ?? '[No unit]'}`
-      +` (${dosage.rateRatio?.numerator?.value ?? '[No value]'} ${dosage.rateRatio?.numerator?.unit ?? '[No unit]'}`
-      +` / ${dosage.rateRatio?.denominator?.value ?? 'No value]'} ${dosage.rateRatio?.denominator?.unit ?? '[No unit]'})`
+      ? `${dosage.doseQuantity?.value ?? '[No value]'} ${dosage.doseQuantity?.unit ?? '[No unit]'}` +
+          ` (${dosage.rateRatio?.numerator?.value ?? '[No value]'} ${dosage.rateRatio?.numerator?.unit ?? '[No unit]'}` +
+          ` / ${dosage.rateRatio?.denominator?.value ?? 'No value]'} ${dosage.rateRatio?.denominator?.unit ?? '[No unit]'})`
       : dosage;
   }
 

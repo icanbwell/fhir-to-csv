@@ -12,12 +12,26 @@ export class PatientExtractor extends BaseResourceExtractor<TPatient> {
       identifier3: this.convertIdentifier(patient.identifier?.[2]),
       identifier4: this.convertIdentifier(patient.identifier?.[3]),
       identifier5: this.convertIdentifier(patient.identifier?.[4]),
-      name1: this.convertHumanName(patient.name?.[0]),
-      name2: this.convertHumanName(patient.name?.[1]),
-      name3: this.convertHumanName(patient.name?.[2]),
-      name4: this.convertHumanName(patient.name?.[3]),
-      name5: this.convertHumanName(patient.name?.[4]),
-      active: patient.active,
+      ...this.getHumanNameFields(
+        patient.name?.[0],
+        'name1'
+      ),
+      ...this.getHumanNameFields(
+        patient.name?.[1],
+        'name2'
+      ),
+      ...this.getHumanNameFields(
+        patient.name?.[2],
+        'name3'
+      ),
+      ...this.getHumanNameFields(
+        patient.name?.[3],
+        'name4'
+      ),
+      ...this.getHumanNameFields(
+        patient.name?.[4],
+        'name5'
+      ),
       gender: patient.gender,
       birthSex: this.getExtensionValueByUrl(
         patient.extension,
@@ -36,11 +50,11 @@ export class PatientExtractor extends BaseResourceExtractor<TPatient> {
         'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity'
       ),
       birthDate: this.convertDateTime(patient.birthDate),
-      address1: this.convertAddress(patient.address?.[0]),
-      address2: this.convertAddress(patient.address?.[1]),
-      address3: this.convertAddress(patient.address?.[2]),
-      address4: this.convertAddress(patient.address?.[3]),
-      address5: this.convertAddress(patient.address?.[4]),
+      ...this.getAddressFields(patient.address?.[0], 'address1'),
+      ...this.getAddressFields(patient.address?.[1], 'address2'),
+      ...this.getAddressFields(patient.address?.[2], 'address3'),
+      ...this.getAddressFields(patient.address?.[3], 'address4'),
+      ...this.getAddressFields(patient.address?.[4], 'address5'),
       email1: this.getEmail(patient.telecom, 0),
       email2: this.getEmail(patient.telecom, 1),
       email3: this.getEmail(patient.telecom, 2),

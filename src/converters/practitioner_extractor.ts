@@ -7,11 +7,18 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
   ): Promise<Record<string, ExtractorValueType>> {
     return {
       id: practitioner.id,
-      name1: this.convertHumanName(practitioner.name?.[0]),
-      name2: this.convertHumanName(practitioner.name?.[1]),
-      name3: this.convertHumanName(practitioner.name?.[2]),
-      name4: this.convertHumanName(practitioner.name?.[3]),
-      name5: this.convertHumanName(practitioner.name?.[4]),
+      ...this.getHumanNameFields(
+        practitioner.name?.[0],
+        'name1'
+      ),
+      ...this.getHumanNameFields(
+        practitioner.name?.[1],
+        'name2'
+      ),
+      ...this.getHumanNameFields(
+        practitioner.name?.[2],
+        'name3'
+      ),
       gender: practitioner.gender,
       birthDate: this.convertDateTime(practitioner.birthDate),
       email1: this.getEmail(practitioner.telecom, 0),
@@ -20,11 +27,26 @@ export class PractitionerExtractor extends BaseResourceExtractor<TPractitioner> 
       phone1: this.getPhone(practitioner.telecom, 0),
       phone2: this.getPhone(practitioner.telecom, 1),
       phone3: this.getPhone(practitioner.telecom, 2),
-      address1: this.convertAddress(practitioner.address?.[0]),
-      address2: this.convertAddress(practitioner.address?.[1]),
-      address3: this.convertAddress(practitioner.address?.[2]),
-      address4: this.convertAddress(practitioner.address?.[3]),
-      address5: this.convertAddress(practitioner.address?.[4]),
+      ...this.getAddressFields(
+        practitioner.address?.[0],
+        'address1'
+      ),
+      ...this.getAddressFields(
+        practitioner.address?.[1],
+        'address2'
+      ),
+      ...this.getAddressFields(
+        practitioner.address?.[2],
+        'address3'
+      ),
+      ...this.getAddressFields(
+        practitioner.address?.[3],
+        'address4'
+      ),
+      ...this.getAddressFields(
+        practitioner.address?.[4],
+        'address5'
+      ),
       qualification1: this.convertCodeableConcept(
         practitioner.qualification?.[0]?.code
       ),
