@@ -14,6 +14,21 @@ export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResour
           security.system ===
           'https://www.icanbwell.com/sourceAssigningAuthority'
       )?.code,
+      connectionType: resource.meta?.security?.find(
+        security =>
+          security.system ===
+          'https://www.icanbwell.com/connectionType'
+      )?.code,
+      vendor: resource.meta?.security?.find(
+        security =>
+          security.system ===
+          'https://www.icanbwell.com/vendor'
+      )?.code,
+      owner: resource.meta?.security?.find(
+        security =>
+          security.system ===
+          'https://www.icanbwell.com/owner'
+      )?.code,
       source: resource.meta?.source,
       hidden: resource.meta?.tag?.find(
         tag =>

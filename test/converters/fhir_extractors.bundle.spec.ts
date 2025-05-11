@@ -263,17 +263,17 @@ describe('Full Bundle Extractors', () => {
 
       // test that the csv data contains the correct headers
       expect(extractedData['Patient'][0]).toEqual(
-        'id,versionId,lastUpdated,sourceAssigningAuthority,source,hidden,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,name1Use,name1Text,name1Family,name1Given,name1Prefix,name1Suffix,gender,birthSex,sex,race,ethnicity,birthDate,email1,email2,email3,phone1,phone2,phone3,maritalStatus,communication1Language,communication1Preferred,communication2Language,communication2Preferred,communication3Language,communication3Preferred,deceased,deceasedDateTime'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,connectionType,vendor,owner,source,hidden,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,name1Use,name1Text,name1Family,name1Given,name1Prefix,name1Suffix,gender,birthSex,sex,race,ethnicity,birthDate,email1,email2,email3,phone1,phone2,phone3,maritalStatus,communication1Language,communication1Preferred,communication2Language,communication2Preferred,communication3Language,communication3Preferred,deceased,deceasedDateTime'
       );
       expect(extractedData['Patient'][1]).toEqual(
-        '123,,,,,,,,,,,,,,,,official,,Doe,John,,,,,,,,,,,,,,,,,,,,,,,'
+        '123,,,,,,,,,,,,,,,,,,,official,,Doe,John,,,,,,,,,,,,,,,,,,,,,,,'
       );
 
       expect(extractedData['Observation'][0]).toEqual(
-        'id,versionId,lastUpdated,sourceAssigningAuthority,source,hidden,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category2,category3,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued,referenceRange1Low,referenceRange1High,referenceRange1Unit,referenceRange1Text'
+        'id,versionId,lastUpdated,sourceAssigningAuthority,connectionType,vendor,owner,source,hidden,profile1,tag1,tag2,tag3,extensions,extension1,extension2,extension3,extension4,extension5,patientId,status,category2,category3,value,valueUnit,valueSystem,interpretation1,interpretation2,interpretation3,effective,issued,referenceRange1Low,referenceRange1High,referenceRange1Unit,referenceRange1Text'
       );
       expect(extractedData['Observation'][1]).toEqual(
-        '456,,,,,,,,,,,,,,,,123,final,,,,,,,,,,,,,,'
+        '456,,,,,,,,,,,,,,,,,,,123,final,,,,,,,,,,,,,,'
       );
     });
 
