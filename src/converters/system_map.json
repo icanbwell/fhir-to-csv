@@ -37,6 +37,8 @@
   "https://icanbwell.com/codes/client_person_id": "ClientPersonId",
   "https://icanbwell.com/codes/source_patient_id": "SourcePatientId",
   "https://icanbwell.com/codes/connection_type": "ConnectionType",
-  "https://icanbwell.com/codes/connection_name": "ConnectionName"
+  "https://icanbwell.com/codes/connection_name": "ConnectionName",
+  "http://hl7.org/fhir/sid/us-npi": "NPI",
+  "http://terminology.hl7.org/CodeSystem/v2-0203": "IdentifierType"
 
 }
