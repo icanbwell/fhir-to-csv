@@ -38,14 +38,21 @@ import { CompositionExtractor } from './converters/composition_extractor';
 import { ScheduleExtractor } from './converters/schedule_extractor';
 import { SlotExtractor } from './converters/slot_extractor';
 import { TaskExtractor } from './converters/task_extractor';
+import { HealthcareServiceExtractor } from './converters/healthcare_service_extractor';
+import { BinaryExtractor } from './converters/binary_extractor';
+import { CommunicationExtractor } from './converters/communication_extractor';
+import { ConsentExtractor } from './converters/consent_extractor';
 
 const extractorMap = {
   AllergyIntolerance: AllergyIntoleranceExtractor,
   Appointment: AppointmentExtractor,
+  Binary: BinaryExtractor,
   CarePlan: CarePlanExtractor,
   CareTeam: CareTeamExtractor,
+  Communication: CommunicationExtractor,
   Composition: CompositionExtractor,
   Condition: ConditionExtractor,
+  Consent: ConsentExtractor,
   Coverage: CoverageExtractor,
   Device: DeviceExtractor,
   DiagnosticReport: DiagnosticReportExtractor,
@@ -54,6 +61,7 @@ const extractorMap = {
   Encounter: EncounterExtractor,
   ExplanationOfBenefit: ExplanationOfBenefitExtractor,
   Goal: GoalExtractor,
+  HealthcareService: HealthcareServiceExtractor,
   Immunization: ImmunizationExtractor,
   Location: LocationExtractor,
   Medication: MedicationExtractor,
