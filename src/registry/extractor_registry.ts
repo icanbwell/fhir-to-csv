@@ -20,4 +20,8 @@ export class ExtractorRegistry {
   static has(resourceType: string) {
     return this.extractors.has(resourceType);
   }
+
+  static count() {
+    return this.extractors.size;
+  }
 }

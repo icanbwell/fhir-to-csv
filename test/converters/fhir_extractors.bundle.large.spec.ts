@@ -1,10 +1,7 @@
 import { FHIRBundleConverter } from '../../src/fhir_bundle_converter';
 import { TBundle } from '../../src/types/resources/Bundle';
-import { ExtractorRegistrar } from '../../src/registry/register';
 import * as fs from 'node:fs';
 import patient_bundle from './fixtures/patient_everything.json';
-
-ExtractorRegistrar.registerAll();
 
 describe('Full Bundle Extractors', () => {
   describe('FHIRBundleConverter large bundle', () => {

@@ -3,11 +3,15 @@ import { TResource } from './types/resources/Resource';
 import { ExtractorRegistry } from './registry/extractor_registry';
 import xlsx from 'xlsx';
 import JSZip from 'jszip';
+import { ExtractorRegistrar } from './registry/register';
 
 export class FHIRBundleConverter {
   async convertToDictionaries(
     bundle: TBundle
   ): Promise<Record<string, Record<string, any[]>[]>> {
+
+    ExtractorRegistrar.registerAll()
+
     const extractedData: Record<string, Record<string, any[]>[]> = {};
     const errorLog: Record<string, string[]> = {};
 

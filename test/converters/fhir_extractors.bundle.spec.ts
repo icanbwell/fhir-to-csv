@@ -1,9 +1,6 @@
 import { FHIRBundleConverter } from '../../src/fhir_bundle_converter';
 import { TBundle } from '../../src/types/resources/Bundle';
-import { ExtractorRegistrar } from '../../src/registry/register';
 import * as fs from 'node:fs';
-
-ExtractorRegistrar.registerAll();
 
 const mockPatient = {
   resourceType: 'Patient',

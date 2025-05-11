@@ -110,6 +110,9 @@ export class ExtractorRegistrar {
   }
 
   static registerAll() {
+    if (ExtractorRegistry.count() > 0) {
+      return;
+    }
     for (const [resourceType, ExtractorClass] of Object.entries(extractorMap)) {
       this.register(resourceType, ExtractorClass);
     }
