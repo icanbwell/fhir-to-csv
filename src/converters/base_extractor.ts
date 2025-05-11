@@ -269,9 +269,8 @@ export abstract class BaseResourceExtractor<T> {
       : dosage;
   }
 
-  convertExtension(extension: TExtension | undefined): ExtractorValueType {
+  getExtensionValue(extension: TExtension | undefined): ExtractorValueType {
     if (!extension) return extension;
-    const url = this.getFriendlyNameForSystem(extension.url);
     if (extension.valueCoding) {
       return this.convertCoding(extension.valueCoding);
     }
@@ -281,9 +280,44 @@ export abstract class BaseResourceExtractor<T> {
     if (extension.valueReference) {
       return this.convertReference(extension.valueReference);
     }
+    if (extension.valueQuantity) {
+      return this.convertQuantity(extension.valueQuantity);
+    }
+    if (extension.valueAddress) {
+      return this.convertAddress(extension.valueAddress);
+    }
+    if (extension.valueRatio) {
+      return this.convertRatio(extension.valueRatio);
+    }
+    return (
+      extension.valueString ||
+      extension.valueBoolean ||
+      extension.valueCode ||
+      extension.valueInteger ||
+      extension.valueDecimal ||
+      extension.valueUri ||
+      extension.valueBase64Binary
+    );
+  }
+
+  convertExtension(extension: TExtension | undefined): ExtractorValueType {
+    if (!extension) return extension;
+    const url = this.getFriendlyNameForSystem(extension.url);
     return url
-      ? `${url}=${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`
-      : `${extension.valueString || extension.valueBoolean || extension.valueCode || extension.valueInteger || extension.valueDecimal || extension.valueUri || extension.valueBase64Binary}`;
+      ? `${url}=${this.getExtensionValue(extension)}`
+      : this.getExtensionValue(extension);
+  }
+
+  getExtensionFields(
+    extension: TExtension | undefined,
+    prefix: string
+  ): Record<string, ExtractorValueType> {
+    if (!extension) return {};
+    return {
+      [`${prefix}Id`]: extension.id,
+      [`${prefix}Url`]: this.getFriendlyNameForSystem(extension.url),
+      [`${prefix}Value`]: this.getExtensionValue(extension),
+    };
   }
 
   getExtensionByUrl(

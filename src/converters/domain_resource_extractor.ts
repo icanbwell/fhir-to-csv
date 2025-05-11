@@ -41,10 +41,26 @@ export class DomainResourceExtractor extends BaseResourceExtractor<TDomainResour
       tag3: resource.meta?.tag?.[2]?.code,
       extensions: resource.extension?.length,
       extension1: this.convertExtension(resource.extension?.[0]),
-      extension2: this.convertExtension(resource.extension?.[1]),
-      extension3: this.convertExtension(resource.extension?.[2]),
-      extension4: this.convertExtension(resource.extension?.[3]),
-      extension5: this.convertExtension(resource.extension?.[4]),
+      ...this.getExtensionFields(
+        resource.extension?.[0],
+        'extension1'
+      ),
+      ...this.getExtensionFields(
+        resource.extension?.[1],
+        'extension2'
+      ),
+      ...this.getExtensionFields(
+        resource.extension?.[2],
+        'extension3'
+      ),
+      ...this.getExtensionFields(
+        resource.extension?.[3],
+        'extension4'
+      ),
+      ...this.getExtensionFields(
+        resource.extension?.[4],
+        'extension5'
+      ),
     };
   }
 }
