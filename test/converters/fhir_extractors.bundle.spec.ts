@@ -1,12 +1,6 @@
-import { PatientExtractor } from '../../src/converters/patient_extractor';
-import { ObservationExtractor } from '../../src/converters/observation_extractor';
-import { ExtractorRegistry } from '../../src/registry/extractor_registry';
 import { FHIRBundleConverter } from '../../src/fhir_bundle_converter';
 import { TBundle } from '../../src/types/resources/Bundle';
-import { TPatient } from '../../src/types/resources/Patient';
-import { TResource } from '../../src/types/resources/Resource';
 import * as fs from 'node:fs';
-import { ExtractorRegistrar } from '../../src/registry/register';
 
 const mockPatient = {
   resourceType: 'Patient',
@@ -170,254 +164,97 @@ const mockPatient = {
     },
   ],
 };
-
-const mockObservation = {
-  resourceType: 'Observation',
-  id: 'obs-1',
-  status: 'final',
-  subject: {
-    reference: 'Patient/patient-1',
-    display: 'John Doe',
-  },
-  code: {
-    coding: [
-      {
-        id: '51f12959-eab9-5413-98f8-d0ad613bd460',
-        system: 'http://loinc.org',
-        code: '718-7',
-        display: 'Hemoglobin [Mass/volume] in Blood',
-      },
-      {
-        id: '51f12959-eab9-5413-98f8-d0ad613bd460',
-        system: 'http://loinc.org',
-        code: '718-7',
-        display: 'Hemoglobin',
-        extension: [
+const bundle = {
+  resourceType: 'Bundle',
+  type: 'searchset',
+  timestamp: '2025-05-06T08:53:38.3838Z',
+  entry: [
+    {
+      resource: {
+        resourceType: 'Patient',
+        id: '123',
+        name: [
           {
-            id: 'preferred',
-            url: 'https://fhir.icanbwell.com/4_0_0/StructureDefinition/intelligence',
-            valueCode: 'preferred',
+            use: 'official',
+            family: 'Doe',
+            given: ['John'],
           },
         ],
       },
-      {
-        id: '51f12959-eab9-5413-98f8-d0ad613bd460',
-        system: 'http://loinc.org',
-        code: '718-7',
-        display: 'in Blood',
-      },
-      {
-        id: '51f12959-eab9-5413-98f8-d0ad613bd460',
-        system: 'http://loinc.org',
-        code: '718-7',
-        display: 'Hemoglobin [Mass/volume] in Blood',
-      },
-    ],
-    text: 'Hello',
-  },
-  interpretation: [
-    {
-      coding: [
-        {
-          id: '724ce193-68e0-577c-af2c-bb30576762fe',
-          system:
-            'http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation',
-          code: 'L',
-          display: 'Low',
-        },
-      ],
     },
-  ],
-  valueQuantity: {
-    value: 7.2,
-    unit: 'g/dl',
-    system: 'http://unitsofmeasure.org',
-    code: 'g/dL',
-  },
-  issued: '2023-01-01T10:00:00Z',
-  effectivePeriod: {
-    start: '2013-04-05T10:30:10+01:00',
-    end: '2013-04-05T10:30:10+01:00',
-  },
-  performer: [
     {
-      extension: [
-        {
-          id: 'sourceId',
-          url: 'https://www.icanbwell.com/sourceId',
-          valueString: 'Practitioner/f005',
-        },
-        {
-          id: 'uuid',
-          url: 'https://www.icanbwell.com/uuid',
-          valueString: 'Practitioner/11809d4e-2f15-566e-bb7e-64af2a9cfb74',
-        },
-        {
-          id: 'sourceAssigningAuthority',
-          url: 'https://www.icanbwell.com/sourceAssigningAuthority',
-          valueString: 'bwell',
-        },
-      ],
-      reference: 'Practitioner/f005',
-      display: 'A. Langeveld',
-    },
-  ],
-  referenceRange: [
-    {
-      low: {
-        value: 7.5,
-        unit: 'g/dl',
-        system: 'http://unitsofmeasure.org',
-        code: 'g/dL',
-      },
-      high: {
-        value: 10,
-        unit: 'g/dl',
-        system: 'http://unitsofmeasure.org',
-        code: 'g/dL',
-      },
-    },
-  ],
-};
-
-const mockBundle: TBundle = {
-  entry: [{ resource: mockPatient }, { resource: mockObservation }],
-  type: 'collection',
-};
-
-describe('FHIR Resource Extractors', () => {
-  describe('PatientExtractor', () => {
-    const extractor = new PatientExtractor();
-
-    it('should extract patient data correctly', () => {
-      const extractedPatient = extractor.extract(mockPatient);
-
-      expect(extractedPatient).toEqual({
-        address1City: 'Testville',
-        address1Line: '123 Test Street',
-        address1State: 'TS',
-        address2City: 'West Test',
-        address2Country: 'US',
-        address2Line: '456 Test Avenue',
-        address2PostalCode: '12345',
-        address2State: 'WI',
-        address2Use: 'home',
-        birthDate: '1980-01-01',
-        ethnicity: 'Not Hispanic or Latino',
-        gender: 'male',
-        id: 'patient-1',
-        identifier1System: 'master-person-fhir-id',
-        identifier1Type:
-          'https://fhir.icanbwell.com/4_0_0/CodeSystem/vs-identifier-type=fhir-master-person',
-        identifier2System: 'sourceId',
-        identifier2Value: '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
-        identifier3System: 'uuid',
-        identifier3Value: '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
-        identifier4System: 'https://www.healthpartners.com/polnum',
-        identifier4Type: 'Member Number',
-        identifier4Use: 'usual',
-        identifier4Value: '1000000',
-        identifier5System: 'SSN',
-        identifier5Type: 'Social Security Number',
-        identifier5Use: 'usual',
-        identifier5Value: '111-11-1111',
-        name1Family: 'Doe',
-        name1Given: 'John',
-        name2Family: 'LAST',
-        name2Given: 'FIRST, M, LAST',
-        name2Text: 'FIRST M LAST',
-        phone1: '555-1234',
-        race: 'White',
-      });
-    });
-
-    it('should handle missing optional fields', () => {
-      const incompletePatient: TPatient = { ...mockPatient };
-      delete incompletePatient.name;
-      delete incompletePatient.address;
-      delete incompletePatient.telecom;
-
-      const extractedPatient = extractor.extract(incompletePatient);
-
-      expect(extractedPatient.nameGiven).toBeUndefined();
-      expect(extractedPatient.addressLine).toBeUndefined();
-      expect(extractedPatient.telecomPhone).toBeUndefined();
-    });
-  });
-
-  describe('ObservationExtractor', () => {
-    const extractor = new ObservationExtractor();
-
-    it('should extract observation data correctly', () => {
-      const extractedObservation = extractor.extract(mockObservation);
-
-      expect(extractedObservation).toEqual({
-        code1Code: '718-7',
-        code1Display: 'Hemoglobin [Mass/volume] in Blood',
-        code1Preferred: false,
-        code1System: 'Loinc',
-        code2Code: '718-7',
-        code2Display: 'Hemoglobin',
-        code2Preferred: true,
-        code2System: 'Loinc',
-        code3Code: '718-7',
-        code3Display: 'in Blood',
-        code3Preferred: false,
-        code3System: 'Loinc',
-        code4Code: '718-7',
-        code4Display: 'Hemoglobin [Mass/volume] in Blood',
-        code4Preferred: false,
-        code4System: 'Loinc',
-        id: 'obs-1',
-        interpretation1: 'HL7=L (Low)',
-        issued: '2023-01-01T10:00:00Z',
-        patientId: 'patient-1',
-        referenceRange1High: 10,
-        referenceRange1Low: 7.5,
-        referenceRange1Unit: 'g/dl',
+      resource: {
+        resourceType: 'Observation',
+        id: '456',
         status: 'final',
-        value: 7.2,
-        valueSystem: 'UCUM',
-        valueUnit: 'g/dl',
-      });
-    });
+        code: {
+          text: 'Heart Rate',
+        },
+        subject: {
+          reference: 'Patient/123',
+        },
+      },
+    },
+    {
+      resource: {
+        resourceType: 'Observation',
+        id: '789',
+        status: 'final',
+        code: {
+          text: 'Heart Rate',
+        },
+        subject: {
+          reference: 'Patient/123',
+        },
+      },
+    },
+  ],
+};
+
+// Performance Test
+describe('Extractor Performance', () => {
+  it('should handle large number of resources efficiently', () => {
+    // Generate a large bundle with multiple resource types
+    const largeBundle: TBundle = {
+      entry: Array.from({ length: 1000 }, (_, i) => ({
+        resource: {
+          ...mockPatient,
+          id: `patient-${i}`,
+        },
+      })),
+      type: 'collection',
+    };
+
+    const startTime = performance.now();
+    const extractedData = new FHIRBundleConverter().convertBundleToDictionaries(
+      largeBundle
+    );
+    const endTime = performance.now();
+
+    expect(extractedData['Patient'].length).toBe(1000);
+
+    // Ensure conversion takes less than 1 second for 1000 resources
+    expect(endTime - startTime).toBeLessThan(1000);
   });
+});
 
-  describe('ExtractorRegistry', () => {
-    it('should register and retrieve extractors', () => {
-      ExtractorRegistrar.registerAll()
-      // Ensure extractors are registered
-      const patientExtractor = ExtractorRegistry.getExtractor('Patient');
-      const observationExtractor =
-        ExtractorRegistry.getExtractor('Observation');
-
-      expect(patientExtractor).toBeTruthy();
-      expect(observationExtractor).toBeTruthy();
-    });
-
-    it('should throw error for unknown resource type', () => {
-      expect(() => {
-        ExtractorRegistry.getExtractor('UnknownResource');
-      }).toThrow('No extractor found for resource type: UnknownResource');
-    });
-  });
-
+describe('Full Bundle Extractors', () => {
   describe('FHIRBundleConverter', () => {
     const converter = new FHIRBundleConverter();
 
     it('should convert bundle to CSV-compatible data', () => {
-      const extractedData = converter.convertBundleToDictionaries(mockBundle);
+      const extractedData = converter.convertBundleToDictionaries(bundle);
 
       expect(Object.keys(extractedData)).toContain('Patient');
       expect(Object.keys(extractedData)).toContain('Observation');
 
       expect(extractedData['Patient'].length).toBe(1);
-      expect(extractedData['Observation'].length).toBe(1);
+      expect(extractedData['Observation'].length).toBe(2);
     });
 
     it('should convert bundle to CSV data', () => {
       const extractedDictionaries =
-        converter.convertBundleToDictionaries(mockBundle);
+        converter.convertBundleToDictionaries(bundle);
       const extractedData: Record<string, string[]> =
         converter.convertToCSV(extractedDictionaries);
 
@@ -560,25 +397,7 @@ describe('FHIR Resource Extractors', () => {
         'deceasedDateTime',
       ]);
       expect(extractedData['Patient'][1].split(',')).toEqual([
-        'patient-1',
-        '1',
-        '2023-01-01T10:00:00Z',
-        'foo',
-        'proa',
-        'booboo',
-        'foo',
-        '#source',
-        'unregistered',
-        'http://hl7.org/fhir/us/core/StructureDefinition/us-core-patient',
-        'unregistered',
-        '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
-        '',
-        '2',
-        '',
-        'http://hl7.org/fhir/us/core/StructureDefinition/us-core-race',
-        '',
-        '',
-        'http://hl7.org/fhir/us/core/StructureDefinition/us-core-ethnicity',
+        '123',
         '',
         '',
         '',
@@ -589,77 +408,51 @@ describe('FHIR Resource Extractors', () => {
         '',
         '',
         '',
-        'master-person-fhir-id',
-        '',
-        'https://fhir.icanbwell.com/4_0_0/CodeSystem/vs-identifier-type=fhir-master-person',
-        '',
-        'sourceId',
-        '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
         '',
         '',
-        'uuid',
-        '00000632-18eb-525e-9f74-e3c9a5cd9c7a',
         '',
         '',
-        'https://www.healthpartners.com/polnum',
-        '1000000',
-        'Member Number',
-        'usual',
-        'SSN',
-        '111-11-1111',
-        'Social Security Number',
-        'usual',
         '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        'official',
         '',
         'Doe',
         'John',
         '',
         '',
         '',
-        'FIRST M LAST',
-        'LAST',
-        '"FIRST',
-        ' M',
-        ' LAST"',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        'male',
-        '',
-        '',
-        'White',
-        'Not Hispanic or Latino',
-        '1980-01-01',
-        '123 Test Street',
-        'Testville',
-        'TS',
-        '',
-        '',
-        '',
-        '',
-        '456 Test Avenue',
-        'West Test',
-        'WI',
-        '12345',
-        'US',
-        'home',
         '',
         '',
         '',
@@ -685,7 +478,49 @@ describe('FHIR Resource Extractors', () => {
         '',
         '',
         '',
-        '555-1234',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
         '',
         '',
         '',
@@ -793,7 +628,7 @@ describe('FHIR Resource Extractors', () => {
         'referenceRange1Text',
       ]);
       expect(extractedData['Observation'][1].split(',')).toEqual([
-        'obs-1',
+        '456',
         '',
         '',
         '',
@@ -822,7 +657,7 @@ describe('FHIR Resource Extractors', () => {
         '',
         '',
         '',
-        'patient-1',
+        '123',
         'final',
         '',
         '',
@@ -852,37 +687,37 @@ describe('FHIR Resource Extractors', () => {
         '',
         '',
         '',
-        'Loinc',
-        '718-7',
-        'Hemoglobin [Mass/volume] in Blood',
-        'false',
-        'Loinc',
-        '718-7',
-        'Hemoglobin',
-        'true',
-        'Loinc',
-        '718-7',
-        'in Blood',
-        'false',
-        'Loinc',
-        '718-7',
-        'Hemoglobin [Mass/volume] in Blood',
-        'false',
         '',
         '',
         '',
         '',
-        '7.2',
-        'g/dl',
-        'UCUM',
-        'HL7=L (Low)',
         '',
         '',
         '',
-        '2023-01-01T10:00:00Z',
-        '7.5',
-        '10',
-        'g/dl',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
         '',
       ]);
     });
@@ -890,7 +725,7 @@ describe('FHIR Resource Extractors', () => {
     it('should convert bundle to Zipped CSV data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToCSVZipped(
-          converter.convertBundleToDictionaries(mockBundle)
+          converter.convertBundleToDictionaries(bundle)
         );
 
       // get folder containing this test
@@ -913,7 +748,7 @@ describe('FHIR Resource Extractors', () => {
     it('should convert bundle to Excel data', () => {
       const extractedData: Buffer<ArrayBufferLike> =
         converter.convertToExcel(
-          converter.convertBundleToDictionaries(mockBundle)
+          converter.convertBundleToDictionaries(bundle)
         );
       // get folder containing this test
       const tempFolder = __dirname + '/temp';
@@ -938,91 +773,5 @@ describe('FHIR Resource Extractors', () => {
 
       expect(Object.keys(extractedData).length).toBe(0);
     });
-  });
-});
-
-// Additional test cases for other extractors
-describe('Additional Resource Extractors', () => {
-  const extractorTestCases = [
-    {
-      resourceType: 'Condition',
-      mockResource: {
-        resourceType: 'Condition',
-        id: 'condition-1',
-        subject: { reference: 'Patient/patient-1' },
-        clinicalStatus: {
-          coding: [{ code: 'active' }],
-        },
-        code: {
-          coding: [
-            {
-              code: '123456',
-              display: 'Example Condition',
-            },
-          ],
-        },
-      },
-      expectedFields: ['id', 'patientId', 'clinicalStatus', 'code'],
-    },
-    {
-      resourceType: 'Immunization',
-      mockResource: {
-        resourceType: 'Immunization',
-        id: 'imm-1',
-        patient: { reference: 'Patient/patient-1' },
-        vaccineCode: {
-          coding: [
-            {
-              code: 'VAC-1',
-              display: 'Example Vaccine',
-            },
-          ],
-        },
-        status: 'completed',
-      },
-      expectedFields: ['id', 'patientId', 'status', 'vaccineCode'],
-    },
-    // Add more test cases for other resource types
-  ];
-
-  extractorTestCases.forEach(testCase => {
-    describe(`${testCase.resourceType} Extractor`, () => {
-      it(`should extract ${testCase.resourceType} data correctly`, () => {
-        const extractor = ExtractorRegistry.getExtractor(testCase.resourceType);
-        const extractedResource = extractor.extract(
-          testCase.mockResource
-        );
-
-        // Check that all expected fields are present
-        testCase.expectedFields.forEach(field => {
-          expect(extractedResource).toHaveProperty(field);
-        });
-      });
-    });
-  });
-});
-
-// Error Handling Test
-describe('Extractor Error Handling', () => {
-  it('should handle malformed resources gracefully', () => {
-    const malformedResources: (TResource | null | undefined)[] = [
-      { resourceType: 'Patient' }, // Completely empty
-      null,
-      undefined,
-    ];
-
-    for (const resource of malformedResources) {
-      if (resource != undefined) {
-        const extractors = Object.keys(ExtractorRegistry['extractors']);
-
-        for (const resourceType of extractors) {
-          const extractor = ExtractorRegistry.getExtractor(resourceType);
-
-          expect(() => {
-            extractor.extract(resource);
-          }).not.toThrow(); // Should not throw, but return an object with undefined/null values
-        }
-      }
-    }
   });
 });

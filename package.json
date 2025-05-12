@@ -25,7 +25,7 @@
   "author": {
     "name": "Imran Qureshi",
     "email": "imranq2@users.noreply.github.com",
-    "url": "https://github.com/imranq2"
+    "url": "https://github.com/icanbwell/fhir-to-csv"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -46,9 +46,8 @@
   },
   "homepage": "https://github.com/icanbwell/fhir-to-csv#readme",
   "dependencies": {
-    "@json2csv/node": "^7.0.6",
-    "xlsx": "^0.18.5",
-    "jszip": "^3.10.1"
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "fflate": "^0.8.2"
   },
   "devDependencies": {
     "commitizen": "^4.3.1",

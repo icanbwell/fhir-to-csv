@@ -1,19 +1,20 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TDevice } from '../types/resources/Device';
 
 export class DeviceExtractor extends BaseResourceExtractor<TDevice> {
-  async extract(device: TDevice): Promise<Record<string, any>> {
+  extract(device: TDevice): Record<string, ExtractorValueType> {
     return {
       id: device.id,
-      patientId: device.patient?.reference?.split('/')?.pop(),
-      status: device.status,
-      type: device.type?.coding?.[0]?.code,
-      typeDisplay: device.type?.coding?.[0]?.display,
+      patientId: this.getReferenceId(device.patient),
+      ...this.getCodeableConceptFields(
+        device.type,
+        'type'
+      ),
       manufacturer: device.manufacturer,
       modelNumber: device.modelNumber,
-      serialNumber: device.serialNumber,
-      manufactureDate: device.manufactureDate?.toString(),
-      expirationDate: device.expirationDate?.toString(),
+      status: device.status,
+      lotNumber: device.lotNumber,
+      expirationDate: this.convertDateTime(device.expirationDate),
     };
   }
 }

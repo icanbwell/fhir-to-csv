@@ -1,4 +1,4 @@
-import { BaseResourceExtractor, Extractor } from './base_extractor';
+import { BaseResourceExtractor, Extractor } from '../converters/base_extractor';
 import { TResource } from '../types/resources/Resource';
 
 export class ExtractorRegistry {
@@ -19,5 +19,9 @@ export class ExtractorRegistry {
 
   static has(resourceType: string) {
     return this.extractors.has(resourceType);
+  }
+
+  static count() {
+    return this.extractors.size;
   }
 }

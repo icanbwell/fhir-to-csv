@@ -1,19 +1,40 @@
-import { BaseResourceExtractor } from './base_extractor';
+import { BaseResourceExtractor, ExtractorValueType } from './base_extractor';
 import { TAllergyIntolerance } from '../types/resources/AllergyIntolerance';
 
 export class AllergyIntoleranceExtractor extends BaseResourceExtractor<TAllergyIntolerance> {
-  async extract(allergyIntolerance: TAllergyIntolerance): Promise<Record<string, any>> {
+  extract(
+    allergyIntolerance: TAllergyIntolerance
+  ): Record<string, ExtractorValueType> {
     return {
       id: allergyIntolerance.id,
-      patientId: allergyIntolerance.patient?.reference?.split('/')?.pop(),
-      clinicalStatus: allergyIntolerance.clinicalStatus?.coding?.[0]?.code,
-      verificationStatus:
-        allergyIntolerance.verificationStatus?.coding?.[0]?.code,
+      patientId: this.getReferenceId(allergyIntolerance.patient),
+      ...this.getCodeableConceptFields(
+        allergyIntolerance.clinicalStatus,
+        'clinicalStatus'
+      ),
+      verificationStatus: this.convertCodeableConcept(
+        allergyIntolerance.verificationStatus
+      ),
       type: allergyIntolerance.type,
-      category: allergyIntolerance.category?.[0],
+      category1: allergyIntolerance.category?.[0],
+      category2: allergyIntolerance.category?.[1],
+      category3: allergyIntolerance.category?.[2],
       criticality: allergyIntolerance.criticality,
-      code: allergyIntolerance.code?.coding?.[0]?.code,
-      codeDisplay: allergyIntolerance.code?.coding?.[0]?.display,
+      ...this.getCodeableConceptFields(
+        allergyIntolerance.code,
+        'code1'
+      ),
+      reaction1: this.convertCodeableConcept(
+        allergyIntolerance.reaction?.[0]?.manifestation?.[0]
+      ),
+      reaction2: this.convertCodeableConcept(
+        allergyIntolerance.reaction?.[0]?.manifestation?.[1]
+      ),
+      reaction3: this.convertCodeableConcept(
+        allergyIntolerance.reaction?.[0]?.manifestation?.[2]
+      ),
+      onset: this.convertDateTime(allergyIntolerance.onsetDateTime),
+      recordedDate: this.convertDateTime(allergyIntolerance.recordedDate),
     };
   }
 }
