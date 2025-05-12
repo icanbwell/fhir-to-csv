@@ -1,5 +1,5 @@
 {
-  "name": "@icanbwell/fhir-to-csv",
+  "name": "@imranq2/fhir-to-csv",
   "version": "x.x.x",
   "description": "A template for creating npm packages using TypeScript and VSCode",
   "main": "./lib/index.js",
@@ -46,7 +46,6 @@
   },
   "homepage": "https://github.com/icanbwell/fhir-to-csv#readme",
   "dependencies": {
-    "@json2csv/node": "^7.0.6",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
     "fflate": "^0.8.2"
   },
