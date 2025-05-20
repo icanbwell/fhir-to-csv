@@ -1,6 +1,4 @@
-import * as fs from 'fs/promises';
 import { convert, HtmlToTextOptions } from 'html-to-text';
-import * as rtfParser from 'rtf-parser';
 import TurndownService from 'turndown';
 
 // Custom types for enhanced type safety
@@ -8,148 +6,86 @@ type FileExtension = 'rtf' | 'html' | 'htm';
 type ConversionResult = string;
 
 interface TextConverterOptions {
-  encoding?: BufferEncoding;
   htmlToTextOptions?: HtmlToTextOptions;
 }
 
 class TextConverter {
   private static defaultOptions: TextConverterOptions = {
-    encoding: 'utf-8',
     htmlToTextOptions: {
       wordwrap: 130,
       preserveNewlines: true,
-      uppercaseHeadings: false,
     },
   };
 
   /**
-   * Convert RTF file to plain text
-   * @param rtfFilePath Path to RTF file
-   * @param options Conversion options
-   * @returns Promise resolving to plain text content
+   * Convert RTF text to plain text
+   * @param rtfContent RTF text content
+   * @returns Plain text content
    */
-  static async convertRtfToText(
-    rtfFilePath: string,
-    options: TextConverterOptions = {}
-  ): Promise<ConversionResult> {
-    const mergedOptions = { ...this.defaultOptions, ...options };
+  static convertRtfToText(rtfContent: string): ConversionResult {
+    // Basic RTF cleaning regex
+    // noinspection UnnecessaryLocalVariableJS
+    const cleanedText = rtfContent
+      .replace(/\{[\s\S]*?}/g, '') // Remove RTF control words and groups
+      .replace(/\\[a-z]+(-?\d+)?\s?/gi, '') // Remove RTF control symbols
+      .replace(/\\'[0-9a-f]{2}/gi, '') // Remove hex-encoded characters
+      .replace(/[\r\n]+/g, ' ') // Remove newline and return characters
+      .trim(); // Trim excess whitespace
 
-    try {
-      // Read RTF file
-      const rtfContent = await fs.readFile(rtfFilePath, {
-        encoding: mergedOptions.encoding,
-      });
-
-      // Parse RTF to text
-      return await new Promise<string>((resolve, reject) => {
-        rtfParser.string(rtfContent, (err, doc) => {
-          if (err) {
-            reject(new Error(`RTF Parsing Error: ${err.message}`));
-            return;
-          }
-          resolve(doc.toString());
-        });
-      });
-    } catch (error) {
-      this.handleConversionError('RTF', error);
-      throw error;
-    }
+    return cleanedText;
   }
 
   /**
-   * Convert HTML file to plain text
-   * @param htmlFilePath Path to HTML file
+   * Convert HTML text to plain text
+   * @param htmlContent HTML text content
    * @param options Conversion options
-   * @returns Promise resolving to plain text content
+   * @returns Plain text content
    */
-  static async convertHtmlToText(
-    htmlFilePath: string,
+  static convertHtmlToText(
+    htmlContent: string,
     options: TextConverterOptions = {}
-  ): Promise<ConversionResult> {
+  ): ConversionResult {
     const mergedOptions = {
       ...this.defaultOptions,
       ...options,
     };
 
-    try {
-      // Read HTML file
-      const htmlContent = await fs.readFile(htmlFilePath, {
-        encoding: mergedOptions.encoding,
-      });
-
-      // Convert HTML to plain text
-      return convert(htmlContent, mergedOptions.htmlToTextOptions);
-    } catch (error) {
-      this.handleConversionError('HTML', error);
-      throw error;
-    }
+    return convert(htmlContent, mergedOptions.htmlToTextOptions);
   }
 
   /**
-   * Convert HTML to Markdown
-   * @param htmlFilePath Path to HTML file
-   * @param options Conversion options
-   * @returns Promise resolving to Markdown content
+   * Convert HTML text to Markdown
+   * @param htmlContent HTML text content
+   * @returns Markdown content
    */
-  static async convertHtmlToMarkdown(
-    htmlFilePath: string,
-    options: TextConverterOptions = {}
-  ): Promise<ConversionResult> {
-    const mergedOptions = {
-      ...this.defaultOptions,
-      ...options,
-    };
-
-    try {
-      // Read HTML file
-      const htmlContent = await fs.readFile(htmlFilePath, {
-        encoding: mergedOptions.encoding,
-      });
-
-      // Convert HTML to Markdown
-      const turndownService = new TurndownService();
-      return turndownService.turndown(htmlContent);
-    } catch (error) {
-      this.handleConversionError('HTML to Markdown', error);
-      throw error;
-    }
+  static convertHtmlToMarkdown(
+    htmlContent: string,
+  ): ConversionResult {
+    const turndownService = new TurndownService();
+    return turndownService.turndown(htmlContent);
   }
 
   /**
-   * Detect and convert file based on extension
-   * @param filePath Path to file
+   * Detect and convert text based on extension
+   * @param textContent Text content
+   * @param extension File extension
    * @param options Conversion options
-   * @returns Promise resolving to plain text content
+   * @returns Converted content
    */
-  static async convertFile(
-    filePath: string,
+  static convertText(
+    textContent: string,
+    extension: FileExtension,
     options: TextConverterOptions = {}
-  ): Promise<ConversionResult> {
-    const extension = filePath.split('.').pop()?.toLowerCase() as FileExtension;
-
+  ): ConversionResult {
     switch (extension) {
       case 'rtf':
-        return this.convertRtfToText(filePath, options);
+        return this.convertRtfToText(textContent);
       case 'html':
       case 'htm':
-        return this.convertHtmlToText(filePath, options);
+        return this.convertHtmlToText(textContent, options);
       default:
-        throw new Error(`Unsupported file type: ${extension}`);
+        throw new Error(`Unsupported text type: ${extension}`);
     }
-  }
-
-  /**
-   * Handle conversion errors with standardized logging
-   * @param conversionType Type of conversion
-   * @param error Original error
-   */
-  private static handleConversionError(
-    conversionType: string,
-    error: unknown
-  ): void {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-
-    console.error(`${conversionType} Conversion Error:`, errorMessage);
   }
 }
 
