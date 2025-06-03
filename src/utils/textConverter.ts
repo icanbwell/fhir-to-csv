@@ -23,13 +23,17 @@ class TextConverter {
    * @returns Plain text content
    */
   static convertRtfToText(rtfContent: string): ConversionResult {
-    // Basic RTF cleaning regex
+    // Remove RTF headers and groups while preserving text
     // noinspection UnnecessaryLocalVariableJS
     const cleanedText = rtfContent
-      .replace(/\{[\s\S]*?}/g, '') // Remove RTF control words and groups
-      .replace(/\\[a-z]+(-?\d+)?\s?/gi, '') // Remove RTF control symbols
-      .replace(/\\'[0-9a-f]{2}/gi, '') // Remove hex-encoded characters
-      .replace(/[\r\n]+/g, ' ') // Remove newline and return characters
+      .replace(/\\par[d]?/gi, '\n') // Replace paragraph markers with newlines
+      .replace(/\\'[0-9a-f]{2}/gi, match =>
+        String.fromCharCode(parseInt(match.slice(2), 16))
+      ) // Decode hex-encoded characters
+      .replace(/\\[a-z]+\d* ?/gi, '') // Remove RTF control words
+      .replace(/\{\\\*[\s\S]*?\}/g, '') // Remove RTF optional groups
+      .replace(/[{}\\]/g, '') // Remove remaining braces and backslashes
+      .replace(/[\r\n]+/g, '\n') // Normalize newlines
       .trim(); // Trim excess whitespace
 
     return cleanedText;
@@ -58,9 +62,7 @@ class TextConverter {
    * @param htmlContent HTML text content
    * @returns Markdown content
    */
-  static convertHtmlToMarkdown(
-    htmlContent: string,
-  ): ConversionResult {
+  static convertHtmlToMarkdown(htmlContent: string): ConversionResult {
     const turndownService = new TurndownService();
     return turndownService.turndown(htmlContent);
   }
