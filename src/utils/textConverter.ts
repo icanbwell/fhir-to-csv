@@ -31,7 +31,7 @@ class TextConverter {
         String.fromCharCode(parseInt(match.slice(2), 16))
       ) // Decode hex-encoded characters
       .replace(/\\[a-z]+\d* ?/gi, '') // Remove RTF control words
-      .replace(/\{\\\*[\s\S]*?\}/g, '') // Remove RTF optional groups
+      .replace(/\{\\\*[\s\S]*?}/g, '') // Remove RTF optional groups
       .replace(/[{}\\]/g, '') // Remove remaining braces and backslashes
       .replace(/[\r\n]+/g, '\n') // Normalize newlines
       .trim(); // Trim excess whitespace

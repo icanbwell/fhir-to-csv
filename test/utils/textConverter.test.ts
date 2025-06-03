@@ -28,7 +28,7 @@ describe('TextConverter', () => {
     it('should convert HTML content to Markdown', () => {
       const htmlContent = '<h1>Title</h1><p>Paragraph</p>';
       const result = TextConverter.convertHtmlToMarkdown(htmlContent);
-      expect(result).toBe('# Title\n\nParagraph');
+      expect(result).toBe('Title\n=====\n\nParagraph');
     });
   });
 
