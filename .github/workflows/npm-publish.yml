@@ -16,6 +16,7 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
           cache: 'yarn'
+          scope: '@icanbwell'
       - name: Extract version from release tag
         id: get_version
         run: |
@@ -31,5 +32,5 @@ jobs:
       - run: yarn version --new-version ${{ steps.get_version.outputs.VERSION }}
       - run: yarn publish --access public
         env:
-          NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
           NPM_CONFIG_PROVENANCE: true
