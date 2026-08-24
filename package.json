@@ -28,7 +28,7 @@
     "url": "https://github.com/icanbwell/fhir-to-csv"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=24.0.0"
   },
   "keywords": [
     "boilerplate",
