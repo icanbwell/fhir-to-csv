@@ -1,3 +1,5 @@
-# Service ownership
-# Generated 2026-11-12 from the last 90 days of commits, merged PRs and reviews. Review and edit freely.
-* @mintusah25 @alvinhenrick @adachaman-11
+* @icanbwell/fhir-team
+
+# Architecture instruction files owned by Enterprise Architecture
+/AGENTS.md @icanbwell/enterprise-architecture
+/CLAUDE.md @icanbwell/enterprise-architecture
